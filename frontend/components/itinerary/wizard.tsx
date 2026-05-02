@@ -1,22 +1,26 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Loader2, MapPin, Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+  Calendar,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  Loader2,
+  MapPin,
+  Mountain,
+  Palmtree,
+  Share2,
+  Sparkles,
+  Tent,
+  TreePine,
+  UtensilsCrossed,
+  Users,
+} from "lucide-react";
 import { api, toApiError } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 // ─────────────────────────── Types ──────────────────────────────────────
 type District = {
@@ -59,24 +63,39 @@ type Itinerary = {
   days: Day[];
 };
 
-const INTERESTS = [
-  { id: "beach", label: "Beach" },
-  { id: "wildlife", label: "Wildlife" },
-  { id: "cultural", label: "Cultural" },
-  { id: "adventure", label: "Adventure" },
-  { id: "food", label: "Food" },
-  { id: "religious", label: "Religious" },
+type InterestId =
+  | "beach"
+  | "wildlife"
+  | "cultural"
+  | "adventure"
+  | "food"
+  | "religious";
+
+const INTERESTS: Array<{ id: InterestId; label: string; icon: React.ElementType; tone: string }> = [
+  { id: "beach", label: "Beach", icon: Palmtree, tone: "from-sky-100 text-sky-900" },
+  { id: "wildlife", label: "Wildlife", icon: TreePine, tone: "from-emerald-100 text-emerald-900" },
+  { id: "cultural", label: "Cultural", icon: Mountain, tone: "from-saffron-100 text-saffron-700" },
+  { id: "adventure", label: "Adventure", icon: Tent, tone: "from-rose-100 text-rose-900" },
+  { id: "food", label: "Food", icon: UtensilsCrossed, tone: "from-orange-100 text-orange-900" },
+  { id: "religious", label: "Religious", icon: Sparkles, tone: "from-violet-100 text-violet-900" },
 ];
 
 const GROUP_TYPES = [
-  { id: "solo", label: "Solo" },
-  { id: "couple", label: "Couple" },
-  { id: "family", label: "Family" },
-  { id: "group", label: "Group" },
+  { id: "solo", label: "Solo", emoji: "𓂃" },
+  { id: "couple", label: "Couple", emoji: "𓂀" },
+  { id: "family", label: "Family", emoji: "𓊝" },
+  { id: "group", label: "Group", emoji: "𓂀𓂀" },
 ];
 
-const STEPS = ["dates", "budget", "interests", "districts", "group"] as const;
-type Step = (typeof STEPS)[number];
+const STEPS = [
+  { key: "dates", label: "Dates", helper: "When are you going?" },
+  { key: "interests", label: "Interests", helper: "What gets you out of bed?" },
+  { key: "districts", label: "Regions", helper: "Where do you want to roam?" },
+  { key: "budget", label: "Budget", helper: "How loose are the purse-strings?" },
+  { key: "group", label: "Group", helper: "Who's going?" },
+] as const;
+
+type StepKey = (typeof STEPS)[number]["key"];
 
 function todayPlus(days: number): string {
   const d = new Date();
@@ -86,11 +105,13 @@ function todayPlus(days: number): string {
 
 // ─────────────────────────── Component ──────────────────────────────────
 export function ItineraryWizard() {
-  const [step, setStep] = useState<Step>("dates");
+  const [step, setStep] = useState<StepKey>("dates");
   const [start, setStart] = useState(todayPlus(14));
   const [end, setEnd] = useState(todayPlus(20));
   const [budget, setBudget] = useState(50000);
-  const [interests, setInterests] = useState<Set<string>>(new Set(["cultural"]));
+  const [interests, setInterests] = useState<Set<InterestId>>(
+    () => new Set<InterestId>(["cultural"])
+  );
   const [districtIds, setDistrictIds] = useState<Set<number>>(new Set());
   const [groupType, setGroupType] = useState("couple");
   const [groupSize, setGroupSize] = useState(2);
@@ -101,7 +122,6 @@ export function ItineraryWizard() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Load districts on mount
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -119,17 +139,17 @@ export function ItineraryWizard() {
     };
   }, []);
 
-  const stepIndex = STEPS.indexOf(step);
+  const stepIndex = STEPS.findIndex((s) => s.key === step);
   const canPrev = stepIndex > 0;
   const canNext = stepIndex < STEPS.length - 1;
   const ready =
     interests.size > 0 && districtIds.size > 0 && start && end && start <= end;
 
   function next() {
-    if (canNext) setStep(STEPS[stepIndex + 1]);
+    if (canNext) setStep(STEPS[stepIndex + 1].key);
   }
   function prev() {
-    if (canPrev) setStep(STEPS[stepIndex - 1]);
+    if (canPrev) setStep(STEPS[stepIndex - 1].key);
   }
 
   async function submit() {
@@ -147,6 +167,8 @@ export function ItineraryWizard() {
         group_size: groupSize,
       });
       setItinerary(data);
+      // scroll to top so the result hero is visible
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       setError(toApiError(err).message);
     } finally {
@@ -167,232 +189,492 @@ export function ItineraryWizard() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">
-      <Card>
-        <CardHeader>
-          <CardTitle>Step {stepIndex + 1} of {STEPS.length}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs value={step} onValueChange={(v) => setStep(v as Step)}>
-            <TabsList className="mb-6 flex-wrap gap-1">
-              <TabsTrigger value="dates">1 · Dates</TabsTrigger>
-              <TabsTrigger value="budget">2 · Budget</TabsTrigger>
-              <TabsTrigger value="interests">3 · Interests</TabsTrigger>
-              <TabsTrigger value="districts">4 · Districts</TabsTrigger>
-              <TabsTrigger value="group">5 · Group</TabsTrigger>
-            </TabsList>
+    <div className="container py-12 md:py-16">
+      {/* Hero header */}
+      <header className="mb-12 max-w-3xl reveal">
+        <span className="kicker">
+          <Compass className="h-3 w-3" />
+          Itinerary studio
+        </span>
+        <h1 className="display mt-4 text-5xl font-medium tracking-tightest text-ink-900 md:text-7xl">
+          Let&apos;s draft your{" "}
+          <em className="text-jade-700 not-italic">trip</em>.
+        </h1>
+        <p className="mt-5 text-base leading-relaxed text-ink-600 md:text-lg">
+          Five quick decisions and the AI will hand you back a day-by-day
+          plan grounded in real seasonal data. Swap, regenerate, share.
+        </p>
+      </header>
 
-            <TabsContent value="dates">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Field label="Start date">
-                  <Input
-                    type="date"
-                    value={start}
-                    onChange={(e) => setStart(e.target.value)}
-                  />
-                </Field>
-                <Field label="End date">
-                  <Input
-                    type="date"
-                    value={end}
-                    onChange={(e) => setEnd(e.target.value)}
-                  />
-                </Field>
-              </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Plan up to 30 days at a time.
-              </p>
-            </TabsContent>
-
-            <TabsContent value="budget">
-              <div className="space-y-4">
-                <div className="flex items-end justify-between">
-                  <span className="text-sm font-medium">Daily budget</span>
-                  <span className="text-2xl font-semibold">
-                    LKR {budget.toLocaleString()}
-                  </span>
-                </div>
-                <Slider
-                  value={budget}
-                  min={5000}
-                  max={500000}
-                  step={1000}
-                  onValueChange={setBudget}
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>LKR 5,000</span>
-                  <span>LKR 500,000+</span>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="interests">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {INTERESTS.map((interest) => {
-                  const checked = interests.has(interest.id);
-                  return (
-                    <label
-                      key={interest.id}
-                      className={`flex cursor-pointer items-center gap-2 rounded-md border p-3 text-sm transition-colors ${
-                        checked
-                          ? "border-primary bg-primary/5"
-                          : "hover:bg-accent/10"
-                      }`}
+      <div className="grid gap-8 lg:grid-cols-[280px_1fr_320px]">
+        {/* ── Vertical stepper ── */}
+        <nav className="lg:sticky lg:top-28 lg:self-start">
+          <ol className="flex flex-row gap-2 overflow-x-auto lg:flex-col lg:gap-1">
+            {STEPS.map((s, i) => {
+              const isActive = step === s.key;
+              const isDone = i < stepIndex;
+              return (
+                <li key={s.key} className="lg:flex lg:items-stretch">
+                  <button
+                    onClick={() => setStep(s.key)}
+                    className={cn(
+                      "group flex w-full items-center gap-4 rounded-2xl border px-4 py-3 text-left transition-all lg:py-4",
+                      isActive
+                        ? "border-jade-700 bg-jade-700 text-white shadow-glow"
+                        : isDone
+                          ? "border-jade-200 bg-jade-50 text-jade-700"
+                          : "border-border bg-white text-ink-700 hover:border-jade-200"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-semibold",
+                        isActive
+                          ? "bg-white text-jade-900"
+                          : isDone
+                            ? "bg-jade-600 text-white"
+                            : "bg-muted text-ink-500"
+                      )}
                     >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={(c) => {
-                          const next = new Set(interests);
-                          if (c) next.add(interest.id);
-                          else next.delete(interest.id);
-                          setInterests(next);
-                        }}
-                      />
-                      <span>{interest.label}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="districts">
-              {districtError ? (
-                <Alert variant="danger">
-                  <AlertTitle>Couldn&apos;t load districts</AlertTitle>
-                  <AlertDescription>{districtError}</AlertDescription>
-                </Alert>
-              ) : (
-                <div className="grid max-h-[420px] grid-cols-2 gap-2 overflow-y-auto pr-2 sm:grid-cols-3">
-                  {districts.map((d) => {
-                    const checked = districtIds.has(d.id);
-                    return (
-                      <label
-                        key={d.id}
-                        className={`flex cursor-pointer items-start gap-2 rounded-md border p-3 text-sm transition-colors ${
-                          checked
-                            ? "border-primary bg-primary/5"
-                            : "hover:bg-accent/10"
-                        }`}
+                      {isDone ? <Check className="h-4 w-4" /> : i + 1}
+                    </span>
+                    <span className="flex-1">
+                      <span className="block text-sm font-semibold">
+                        {s.label}
+                      </span>
+                      <span
+                        className={cn(
+                          "block text-[11px]",
+                          isActive ? "text-white/75" : "text-ink-500"
+                        )}
                       >
-                        <Checkbox
-                          checked={checked}
-                          onCheckedChange={(c) => {
-                            const next = new Set(districtIds);
-                            if (c) next.add(d.id);
-                            else next.delete(d.id);
-                            setDistrictIds(next);
-                          }}
-                        />
-                        <div className="flex-1">
-                          <div className="font-medium">{d.name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {d.province} · {d.attraction_count} attractions
-                          </div>
-                        </div>
-                      </label>
-                    );
-                  })}
-                </div>
-              )}
-            </TabsContent>
+                        {s.helper}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
 
-            <TabsContent value="group">
-              <div className="space-y-4">
-                <Field label="Group type">
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    {GROUP_TYPES.map((g) => (
-                      <button
-                        key={g.id}
-                        type="button"
-                        onClick={() => setGroupType(g.id)}
-                        className={`rounded-md border px-3 py-2 text-sm transition-colors ${
-                          groupType === g.id
-                            ? "border-primary bg-primary/5 font-medium"
-                            : "hover:bg-accent/10"
-                        }`}
-                      >
-                        {g.label}
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-                <Field label="Group size">
-                  <Input
-                    type="number"
-                    min={1}
-                    max={50}
-                    value={groupSize}
-                    onChange={(e) => setGroupSize(Number(e.target.value) || 1)}
-                  />
-                </Field>
-              </div>
-            </TabsContent>
-          </Tabs>
+        {/* ── Step body ── */}
+        <section className="rounded-3xl border border-border bg-white p-6 shadow-soft md:p-10 reveal reveal-1">
+          <div className="mb-8 flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-kicker text-ink-500">
+              Step {stepIndex + 1} of {STEPS.length}
+            </span>
+            <span className="text-xs text-ink-500">
+              {STEPS[stepIndex].helper}
+            </span>
+          </div>
 
-          <div className="mt-8 flex items-center justify-between">
-            <Button variant="ghost" onClick={prev} disabled={!canPrev}>
-              <ChevronLeft className="mr-1 h-4 w-4" /> Back
-            </Button>
+          {step === "dates" && (
+            <StepDates
+              start={start}
+              end={end}
+              onStartChange={setStart}
+              onEndChange={setEnd}
+            />
+          )}
+          {step === "interests" && (
+            <StepInterests value={interests} onChange={setInterests} />
+          )}
+          {step === "districts" && (
+            <StepDistricts
+              districts={districts}
+              error={districtError}
+              value={districtIds}
+              onChange={setDistrictIds}
+            />
+          )}
+          {step === "budget" && (
+            <StepBudget value={budget} onChange={setBudget} />
+          )}
+          {step === "group" && (
+            <StepGroup
+              groupType={groupType}
+              setGroupType={setGroupType}
+              groupSize={groupSize}
+              setGroupSize={setGroupSize}
+            />
+          )}
+
+          {/* Footer controls */}
+          <div className="mt-10 flex items-center justify-between border-t border-border pt-6">
+            <button
+              onClick={prev}
+              disabled={!canPrev}
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-ink-700 transition-colors hover:text-jade-700 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Back
+            </button>
             {canNext ? (
-              <Button onClick={next}>
-                Next <ChevronRight className="ml-1 h-4 w-4" />
-              </Button>
+              <button
+                onClick={next}
+                className="inline-flex items-center gap-1.5 rounded-full bg-jade-700 px-6 py-3 text-sm font-semibold text-white shadow-soft transition-all hover:bg-jade-800 hover:shadow-lift"
+              >
+                Continue
+                <ChevronRight className="h-4 w-4" />
+              </button>
             ) : (
-              <Button onClick={submit} disabled={!ready || submitting}>
+              <button
+                onClick={submit}
+                disabled={!ready || submitting}
+                className="inline-flex items-center gap-2 rounded-full bg-saffron-400 px-7 py-3 text-sm font-semibold text-jade-900 shadow-glow transition-all hover:bg-saffron-300 disabled:cursor-not-allowed disabled:bg-ink-300 disabled:text-white disabled:shadow-none"
+              >
                 {submitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating…
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Drafting…
                   </>
                 ) : (
                   <>
-                    <Sparkles className="mr-2 h-4 w-4" />
+                    <Sparkles className="h-4 w-4" />
                     Generate itinerary
                   </>
                 )}
-              </Button>
+              </button>
             )}
           </div>
-          {error && (
-            <Alert variant="danger" className="mt-4">
-              <AlertTitle>Generation failed</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
 
-      {/* Live preferences summary */}
-      <SummaryCard
-        start={start}
-        end={end}
-        budget={budget}
-        interests={interests}
-        districtIds={districtIds}
-        districts={districts}
-        groupType={groupType}
-        groupSize={groupSize}
-      />
+          {error && (
+            <div className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+              {error}
+            </div>
+          )}
+        </section>
+
+        {/* ── Live summary ── */}
+        <aside className="lg:sticky lg:top-28 lg:self-start">
+          <SummaryCard
+            start={start}
+            end={end}
+            budget={budget}
+            interests={interests}
+            districtIds={districtIds}
+            districts={districts}
+            groupType={groupType}
+            groupSize={groupSize}
+          />
+        </aside>
+      </div>
     </div>
   );
 }
 
-// ─────────────────────────── Sub-components ─────────────────────────────
-function Field({
-  label,
-  children,
+// ─────────────────────────── Step components ────────────────────────────
+function StepDates({
+  start,
+  end,
+  onStartChange,
+  onEndChange,
 }: {
-  label: string;
-  children: React.ReactNode;
+  start: string;
+  end: string;
+  onStartChange: (v: string) => void;
+  onEndChange: (v: string) => void;
+}) {
+  const days = useMemo(() => calcDays(start, end), [start, end]);
+  return (
+    <div className="space-y-6">
+      <h2 className="display text-3xl font-medium tracking-tightest text-ink-900">
+        When are you on the island?
+      </h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <DateField label="Arrival" value={start} onChange={onStartChange} />
+        <DateField label="Departure" value={end} onChange={onEndChange} />
+      </div>
+      <div className="flex items-center gap-3 rounded-2xl border border-jade-100 bg-jade-50 px-4 py-3 text-sm text-jade-800">
+        <Calendar className="h-4 w-4 text-jade-700" />
+        <span className="font-semibold">{days} day{days === 1 ? "" : "s"} on the ground</span>
+        <span className="text-jade-700/70">
+          · {new Date(start).toLocaleDateString("en-GB", { weekday: "short" })} →
+          {" "}
+          {new Date(end).toLocaleDateString("en-GB", { weekday: "short" })}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function StepInterests({
+  value,
+  onChange,
+}: {
+  value: Set<InterestId>;
+  onChange: (v: Set<InterestId>) => void;
 }) {
   return (
-    <label className="block space-y-1">
-      <span className="text-sm font-medium">{label}</span>
-      {children}
+    <div className="space-y-6">
+      <h2 className="display text-3xl font-medium tracking-tightest text-ink-900">
+        What gets you out of bed?
+      </h2>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {INTERESTS.map((it) => {
+          const selected = value.has(it.id);
+          const Icon = it.icon;
+          return (
+            <button
+              key={it.id}
+              type="button"
+              onClick={() => {
+                const next = new Set(value);
+                if (selected) next.delete(it.id);
+                else next.add(it.id);
+                onChange(next);
+              }}
+              className={cn(
+                "group relative flex flex-col items-start gap-3 overflow-hidden rounded-2xl border p-5 text-left transition-all",
+                selected
+                  ? "border-jade-700 bg-jade-700 text-white shadow-glow"
+                  : "border-border bg-white text-ink-900 hover:border-jade-300 hover:shadow-soft"
+              )}
+            >
+              <span
+                className={cn(
+                  "grid h-10 w-10 place-items-center rounded-xl",
+                  selected ? "bg-white/15 text-white" : "bg-jade-50 text-jade-700"
+                )}
+              >
+                <Icon className="h-5 w-5" />
+              </span>
+              <div>
+                <span className="display block text-lg font-medium tracking-tightest">
+                  {it.label}
+                </span>
+              </div>
+              {selected && (
+                <span className="absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full bg-saffron-400 text-jade-900">
+                  <Check className="h-3.5 w-3.5" />
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function StepDistricts({
+  districts,
+  error,
+  value,
+  onChange,
+}: {
+  districts: District[];
+  error: string | null;
+  value: Set<number>;
+  onChange: (v: Set<number>) => void;
+}) {
+  return (
+    <div className="space-y-5">
+      <h2 className="display text-3xl font-medium tracking-tightest text-ink-900">
+        Where do you want to roam?
+      </h2>
+      {error ? (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+          {error}
+        </div>
+      ) : (
+        <div className="grid max-h-[420px] grid-cols-1 gap-2 overflow-y-auto pr-2 sm:grid-cols-2">
+          {districts.map((d) => {
+            const selected = value.has(d.id);
+            return (
+              <button
+                key={d.id}
+                onClick={() => {
+                  const next = new Set(value);
+                  if (selected) next.delete(d.id);
+                  else next.add(d.id);
+                  onChange(next);
+                }}
+                className={cn(
+                  "group flex items-start gap-3 rounded-xl border p-4 text-left transition-colors",
+                  selected
+                    ? "border-jade-700 bg-jade-50 text-jade-900"
+                    : "border-border bg-white hover:border-jade-300"
+                )}
+              >
+                <span
+                  className={cn(
+                    "mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-md border",
+                    selected
+                      ? "border-jade-700 bg-jade-700 text-white"
+                      : "border-border"
+                  )}
+                >
+                  {selected && <Check className="h-3 w-3" />}
+                </span>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold">{d.name}</p>
+                  <p className="text-[11px] uppercase tracking-kicker text-ink-500">
+                    {d.province} · {d.attraction_count} place
+                    {d.attraction_count === 1 ? "" : "s"}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StepBudget({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div className="space-y-8">
+      <h2 className="display text-3xl font-medium tracking-tightest text-ink-900">
+        Daily budget
+      </h2>
+      <div className="rounded-3xl border border-jade-100 bg-jade-50/50 p-8 text-center">
+        <div className="display text-6xl font-medium leading-none tracking-tightest text-jade-700 md:text-7xl">
+          LKR {value.toLocaleString()}
+        </div>
+        <p className="mt-3 text-xs uppercase tracking-kicker text-ink-500">
+          Per person · per day
+        </p>
+      </div>
+      <input
+        type="range"
+        min={5000}
+        max={500000}
+        step={1000}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full accent-jade-700"
+      />
+      <div className="grid grid-cols-3 gap-2 text-center text-xs text-ink-500">
+        <BudgetTier label="Backpacker" range="< 25k" active={value < 25000} />
+        <BudgetTier
+          label="Mid-range"
+          range="25k–80k"
+          active={value >= 25000 && value < 80000}
+        />
+        <BudgetTier label="Luxury" range="80k+" active={value >= 80000} />
+      </div>
+    </div>
+  );
+}
+
+function BudgetTier({
+  label,
+  range,
+  active,
+}: {
+  label: string;
+  range: string;
+  active: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-xl border p-3 transition-colors",
+        active
+          ? "border-jade-700 bg-jade-700 text-white"
+          : "border-border bg-white"
+      )}
+    >
+      <p className="text-sm font-semibold">{label}</p>
+      <p className={cn("text-[10px] uppercase tracking-kicker", active && "text-white/75")}>
+        {range}
+      </p>
+    </div>
+  );
+}
+
+function StepGroup({
+  groupType,
+  setGroupType,
+  groupSize,
+  setGroupSize,
+}: {
+  groupType: string;
+  setGroupType: (v: string) => void;
+  groupSize: number;
+  setGroupSize: (v: number) => void;
+}) {
+  return (
+    <div className="space-y-8">
+      <h2 className="display text-3xl font-medium tracking-tightest text-ink-900">
+        Who&apos;s travelling?
+      </h2>
+      <div>
+        <span className="kicker">Group type</span>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {GROUP_TYPES.map((g) => (
+            <button
+              key={g.id}
+              onClick={() => setGroupType(g.id)}
+              className={cn(
+                "flex flex-col items-center gap-2 rounded-2xl border px-4 py-5 transition-colors",
+                groupType === g.id
+                  ? "border-jade-700 bg-jade-700 text-white shadow-glow"
+                  : "border-border bg-white text-ink-700 hover:border-jade-300"
+              )}
+            >
+              <Users className="h-5 w-5" />
+              <span className="text-sm font-semibold">{g.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <span className="kicker">Headcount</span>
+        <div className="mt-3 flex items-center gap-4">
+          <button
+            onClick={() => setGroupSize(Math.max(1, groupSize - 1))}
+            className="grid h-11 w-11 place-items-center rounded-full border border-border bg-white text-lg font-semibold text-ink-700 hover:border-jade-300"
+          >
+            −
+          </button>
+          <div className="display flex-1 text-center text-5xl font-medium tracking-tightest text-jade-700">
+            {groupSize}
+          </div>
+          <button
+            onClick={() => setGroupSize(Math.min(50, groupSize + 1))}
+            className="grid h-11 w-11 place-items-center rounded-full border border-border bg-white text-lg font-semibold text-ink-700 hover:border-jade-300"
+          >
+            +
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DateField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="kicker">{label}</span>
+      <input
+        type="date"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-2 h-12 w-full rounded-xl border border-border bg-white px-4 text-base font-medium text-ink-900 shadow-soft focus:border-jade-400 focus:outline-none focus:ring-2 focus:ring-jade-100"
+      />
     </label>
   );
 }
 
+// ─────────────────────────── Summary ────────────────────────────────────
 function SummaryCard({
   start,
   end,
@@ -406,73 +688,87 @@ function SummaryCard({
   start: string;
   end: string;
   budget: number;
-  interests: Set<string>;
+  interests: Set<InterestId>;
   districtIds: Set<number>;
   districts: District[];
   groupType: string;
   groupSize: number;
 }) {
-  const days = useMemo(() => {
-    const s = new Date(start);
-    const e = new Date(end);
-    return Math.max(1, Math.round((+e - +s) / (1000 * 60 * 60 * 24)) + 1);
-  }, [start, end]);
-
-  const districtsLabel = useMemo(() => {
-    if (districtIds.size === 0) return "No districts selected";
-    return districts
-      .filter((d) => districtIds.has(d.id))
-      .map((d) => d.name)
-      .join(", ");
-  }, [districtIds, districts]);
+  const days = useMemo(() => calcDays(start, end), [start, end]);
+  const districtNames = useMemo(
+    () => districts.filter((d) => districtIds.has(d.id)).map((d) => d.name),
+    [districtIds, districts]
+  );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <MapPin className="h-4 w-4 text-accent" />
-          Trip summary
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 text-sm">
-        <SummaryRow label="Duration" value={`${days} day${days === 1 ? "" : "s"}`} />
-        <SummaryRow
-          label="Daily budget"
-          value={`LKR ${budget.toLocaleString()}`}
-        />
-        <SummaryRow
-          label="Group"
-          value={`${groupType} · ${groupSize}`}
-        />
-        <SummaryRow label="Districts" value={districtsLabel} />
-        <div>
-          <div className="mb-1 text-xs text-muted-foreground">Interests</div>
-          <div className="flex flex-wrap gap-1">
-            {Array.from(interests).length === 0 ? (
-              <span className="text-xs text-muted-foreground">none</span>
-            ) : (
-              Array.from(interests).map((i) => (
-                <Badge key={i} variant="secondary">
-                  {i}
-                </Badge>
-              ))
-            )}
-          </div>
+    <div className="space-y-3">
+      <div className="rounded-3xl border border-jade-700 bg-jade-900 p-6 text-jade-50 shadow-glow">
+        <span className="kicker text-saffron-300 before:bg-saffron-300/60">
+          <MapPin className="h-3 w-3" />
+          Trip in progress
+        </span>
+        <p className="display mt-3 text-3xl font-medium leading-tight text-white">
+          {days}-day {Array.from(interests).join(", ") || "Sri Lanka"} trip
+        </p>
+        <div className="mt-5 grid grid-cols-3 gap-3 text-center">
+          <Stat number={String(days)} label="days" />
+          <Stat number={String(districtIds.size)} label="districts" />
+          <Stat number={String(groupSize)} label={groupType} />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      <div className="rounded-3xl border border-border bg-white p-5 shadow-soft">
+        <div className="space-y-3 text-sm">
+          <Row label="Daily budget">
+            LKR {budget.toLocaleString()}
+          </Row>
+          <Row label="Districts">
+            {districtNames.length
+              ? districtNames.slice(0, 3).join(", ") +
+                (districtNames.length > 3 ? ` + ${districtNames.length - 3}` : "")
+              : "—"}
+          </Row>
+          <Row label="Themes">
+            {interests.size
+              ? Array.from(interests).join(", ")
+              : "Pick at least one"}
+          </Row>
+        </div>
+      </div>
+    </div>
   );
 }
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
+function Stat({ number, label }: { number: string; label: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-3">
-      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+    <div>
+      <div className="display text-3xl font-medium leading-none text-saffron-300">
+        {number}
+      </div>
+      <div className="mt-1 text-[10px] uppercase tracking-kicker text-jade-100/70">
         {label}
-      </span>
-      <span className="text-right font-medium">{value}</span>
+      </div>
     </div>
   );
+}
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-baseline justify-between gap-3 border-b border-border/60 pb-2 last:border-none last:pb-0">
+      <span className="text-[10px] font-semibold uppercase tracking-kicker text-ink-500">
+        {label}
+      </span>
+      <span className="text-right text-sm font-semibold text-ink-900">
+        {children}
+      </span>
+    </div>
+  );
+}
+
+function calcDays(start: string, end: string) {
+  const s = new Date(start);
+  const e = new Date(end);
+  return Math.max(1, Math.round((+e - +s) / (1000 * 60 * 60 * 24)) + 1);
 }
 
 // ─────────────────────────── Result view ───────────────────────────────
@@ -483,80 +779,149 @@ function ItineraryResult({
   itinerary: Itinerary;
   onStartOver: () => void;
 }) {
+  const [openDay, setOpenDay] = useState<number>(itinerary.days[0]?.day_number ?? 1);
   return (
-    <div className="space-y-6">
-      <Alert variant="info">
-        <AlertTitle>Itinerary ready</AlertTitle>
-        <AlertDescription>
-          Saved as <code>{itinerary.share_token}</code>. Share with travel partners
-          using the read-only by-share endpoint.
-        </AlertDescription>
-      </Alert>
+    <div className="container py-12 md:py-16">
+      <div className="rounded-[2.5rem] bg-jade-900 p-10 text-white shadow-lift md:p-14">
+        <span className="kicker text-saffron-300 before:bg-saffron-300/60">
+          <Sparkles className="h-3 w-3" />
+          Your trip is ready
+        </span>
+        <h1 className="display mt-4 text-4xl font-medium tracking-tightest text-white md:text-6xl">
+          {itinerary.title}
+        </h1>
+        <p className="mt-4 text-sm text-white/75">
+          {itinerary.start_date} → {itinerary.end_date} ·{" "}
+          {itinerary.group_type} of {itinerary.group_size} ·{" "}
+          {itinerary.days.length} day
+          {itinerary.days.length === 1 ? "" : "s"}
+        </p>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>{itinerary.title}</span>
-            <Button variant="outline" onClick={onStartOver} size="sm">
-              Plan another
-            </Button>
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            {itinerary.start_date} → {itinerary.end_date} · {itinerary.group_type}
-            {" · "}
-            {itinerary.days.length} day{itinerary.days.length === 1 ? "" : "s"}
-          </p>
-        </CardHeader>
-        <CardContent>
-          <Accordion type="multiple" defaultValue={[`day-${itinerary.days[0]?.day_number}`]}>
-            {itinerary.days.map((day) => (
-              <AccordionItem key={day.id} value={`day-${day.day_number}`}>
-                <AccordionTrigger>
-                  <span className="flex items-center gap-2">
-                    <Badge variant="amber">Day {day.day_number}</Badge>
-                    <span className="font-medium">
-                      {day.district_name ?? "Unassigned"}
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => navigator.clipboard?.writeText(itinerary.share_token)}
+            className="inline-flex items-center gap-2 rounded-full bg-saffron-400 px-5 py-2.5 text-sm font-semibold text-jade-900 transition-colors hover:bg-saffron-300"
+          >
+            <Share2 className="h-4 w-4" />
+            Copy share token
+          </button>
+          <button
+            onClick={onStartOver}
+            className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/20"
+          >
+            Plan another
+          </button>
+          <code className="rounded-md bg-white/10 px-3 py-1 text-xs text-saffron-200">
+            {itinerary.share_token}
+          </code>
+        </div>
+      </div>
+
+      {/* Day-by-day timeline */}
+      <div className="mt-12 grid gap-6 lg:grid-cols-[260px_1fr]">
+        <nav className="lg:sticky lg:top-28 lg:self-start">
+          <ol className="flex flex-row gap-2 overflow-x-auto lg:flex-col lg:gap-1">
+            {itinerary.days.map((d) => {
+              const active = openDay === d.day_number;
+              return (
+                <li key={d.id}>
+                  <button
+                    onClick={() => setOpenDay(d.day_number)}
+                    className={cn(
+                      "flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all",
+                      active
+                        ? "border-jade-700 bg-jade-700 text-white shadow-glow"
+                        : "border-border bg-white text-ink-700 hover:border-jade-300"
+                    )}
+                  >
+                    <span className="display text-2xl font-medium">
+                      {String(d.day_number).padStart(2, "0")}
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      {day.stops.length} stop{day.stops.length === 1 ? "" : "s"}
-                    </span>
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent>
-                  {day.notes && (
-                    <p className="mb-3 text-xs italic text-muted-foreground">
-                      {day.notes}
-                    </p>
-                  )}
-                  <ul className="space-y-2">
-                    {day.stops.map((stop) => (
-                      <li
-                        key={stop.id}
-                        className="rounded-md border bg-card p-3 text-sm"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">
-                            {stop.stop_order}. {stop.name}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {stop.arrival_time?.slice(0, 5) ?? "—"} ·{" "}
-                            {stop.duration_mins ?? "?"} min
-                          </span>
-                        </div>
-                        {stop.tip && (
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            {stop.tip}
-                          </p>
+                    <span className="flex-1">
+                      <span className="block text-sm font-semibold">
+                        {d.district_name ?? "Unassigned"}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[11px]",
+                          active ? "text-white/75" : "text-ink-500"
                         )}
-                      </li>
-                    ))}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </CardContent>
-      </Card>
+                      >
+                        {d.stops.length} stop{d.stops.length === 1 ? "" : "s"}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+
+        <div className="space-y-6">
+          {itinerary.days.map((d) => (
+            <section
+              key={d.id}
+              className={cn(
+                "rounded-3xl border bg-white p-6 transition-all md:p-8",
+                openDay === d.day_number
+                  ? "border-jade-700 shadow-lift"
+                  : "border-border opacity-60"
+              )}
+            >
+              <header className="mb-6 flex items-center justify-between gap-3">
+                <div>
+                  <span className="kicker">Day {d.day_number}</span>
+                  <h3 className="display mt-1 text-3xl font-medium tracking-tightest text-ink-900">
+                    {d.district_name ?? "Free day"}
+                  </h3>
+                </div>
+                <span className="hidden text-xs uppercase tracking-kicker text-ink-500 md:inline">
+                  {d.stops.length} stop{d.stops.length === 1 ? "" : "s"}
+                </span>
+              </header>
+              {d.notes && (
+                <p className="mb-6 rounded-2xl bg-jade-50 px-4 py-3 text-xs italic text-jade-800">
+                  {d.notes}
+                </p>
+              )}
+              <ol className="space-y-3">
+                {d.stops.map((stop) => (
+                  <li
+                    key={stop.id}
+                    className="group flex gap-4 rounded-2xl border border-border p-4 transition-colors hover:border-jade-300"
+                  >
+                    <div className="flex flex-col items-center">
+                      <span className="display text-xl font-medium text-jade-700">
+                        {stop.arrival_time?.slice(0, 5) ?? "—"}
+                      </span>
+                      <span className="my-1 h-full w-px flex-1 bg-jade-100" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <h4 className="text-base font-semibold text-ink-900">
+                          {stop.name}
+                        </h4>
+                        <span className="text-[11px] uppercase tracking-kicker text-ink-500">
+                          {stop.duration_mins ?? "?"} min
+                        </span>
+                      </div>
+                      {stop.tip && (
+                        <p className="mt-1 text-sm text-ink-600">{stop.tip}</p>
+                      )}
+                      <Link
+                        href={`/explore/${stop.slug}`}
+                        className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-jade-700 hover:text-jade-800"
+                      >
+                        View attraction →
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

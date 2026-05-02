@@ -2,13 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Filter, Loader2, MapPin, TrendingUp } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { Select, SelectItem } from "@/components/ui/select";
+import {
+  ArrowUpRight,
+  Filter,
+  MapPin,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { api, toApiError } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 // ─────────────────────────── Types ──────────────────────────────────────
 type District = { id: number; name: string; province: string };
@@ -26,22 +30,22 @@ type Attraction = {
 };
 
 const CATEGORIES = [
-  { id: "", label: "All categories" },
-  { id: "beach", label: "Beach" },
-  { id: "wildlife", label: "Wildlife" },
-  { id: "cultural", label: "Cultural" },
-  { id: "religious", label: "Religious" },
-  { id: "adventure", label: "Adventure" },
-  { id: "food", label: "Food" },
-];
+  { id: "", label: "All", icon: "✦" },
+  { id: "cultural", label: "Cultural", icon: "▲" },
+  { id: "wildlife", label: "Wildlife", icon: "✿" },
+  { id: "beach", label: "Beach", icon: "≈" },
+  { id: "religious", label: "Religious", icon: "❋" },
+  { id: "adventure", label: "Adventure", icon: "↗" },
+  { id: "food", label: "Food", icon: "♨" },
+] as const;
 
-const CATEGORY_COLORS: Record<string, string> = {
-  beach: "bg-blue-500/10 text-blue-700 border-blue-500/20",
-  wildlife: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20",
-  cultural: "bg-amber-500/10 text-amber-700 border-amber-500/20",
-  religious: "bg-violet-500/10 text-violet-700 border-violet-500/20",
-  adventure: "bg-rose-500/10 text-rose-700 border-rose-500/20",
-  food: "bg-orange-500/10 text-orange-700 border-orange-500/20",
+const CATEGORY_TINTS: Record<string, string> = {
+  cultural: "from-saffron-700/85 via-saffron-700/30 to-transparent",
+  wildlife: "from-jade-800/85 via-jade-700/30 to-transparent",
+  beach: "from-sky-900/85 via-sky-700/30 to-transparent",
+  religious: "from-purple-900/85 via-purple-700/30 to-transparent",
+  adventure: "from-rose-900/85 via-rose-700/30 to-transparent",
+  food: "from-orange-900/85 via-orange-700/30 to-transparent",
 };
 
 // ─────────────────────────── Component ──────────────────────────────────
@@ -52,8 +56,9 @@ export function ExploreGrid() {
   const [error, setError] = useState<string | null>(null);
 
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
-  const [districtId, setDistrictId] = useState("");
+  const [category, setCategory] = useState<string>("");
+  const [districtId, setDistrictId] = useState<string>("");
+  const [showFilters, setShowFilters] = useState(false);
 
   // Districts (one-shot)
   useEffect(() => {
@@ -108,154 +113,361 @@ export function ExploreGrid() {
     return Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
   }, [attractions]);
 
+  const trending = useMemo(
+    () => [...attractions].sort((a, b) => b.trend_score - a.trend_score).slice(0, 3),
+    [attractions]
+  );
+
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardContent className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-3">
-          <div className="sm:col-span-1">
-            <Input
-              placeholder="Search attractions…"
+    <>
+      {/* ── Editorial header ── */}
+      <section className="container pt-12 md:pt-20">
+        <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+          <div className="reveal">
+            <span className="kicker">
+              <Sparkles className="h-3 w-3" />
+              The atlas
+            </span>
+            <h1 className="display mt-4 text-5xl font-medium tracking-tightest text-ink-900 md:text-7xl">
+              Every corner of the{" "}
+              <em className="text-jade-700 not-italic">island</em>,
+              <br />
+              <span className="underline-brush">curated</span>.
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-600">
+              {attractions.length || "60+"} attractions across{" "}
+              {districts.length || "25"} districts — sortable by category,
+              season, and crowd index. The data behind every itinerary.
+            </p>
+          </div>
+
+          {/* Trending side card */}
+          <div className="reveal reveal-2 rounded-3xl border border-border bg-white/80 p-5 shadow-soft backdrop-blur md:p-6">
+            <div className="flex items-center justify-between">
+              <span className="kicker">Trending now</span>
+              <span className="text-[10px] font-semibold uppercase tracking-kicker text-ink-500">
+                Updated · 6h
+              </span>
+            </div>
+            <div className="mt-4 space-y-3">
+              {trending.length === 0 ? (
+                <div className="h-20 animate-pulse rounded-xl bg-muted/60" />
+              ) : (
+                trending.map((a, i) => (
+                  <Link
+                    key={a.id}
+                    href={`/explore/${a.slug}`}
+                    className="group flex items-center gap-4 rounded-xl px-2 py-1 transition-colors hover:bg-jade-50/60"
+                  >
+                    <span className="display text-3xl font-medium text-ink-300 group-hover:text-jade-700">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-ink-900 group-hover:text-jade-700">
+                        {a.name}
+                      </p>
+                      <p className="truncate text-[11px] uppercase tracking-kicker text-ink-500">
+                        {a.district_name} · {a.category}
+                      </p>
+                    </div>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-ink-400 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-jade-700" />
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Filter strip (sticky) ── */}
+      <section className="sticky top-16 z-30 mt-12 border-y border-border/70 bg-background/85 backdrop-blur md:top-20">
+        <div className="container flex flex-col gap-3 py-4 md:flex-row md:items-center md:justify-between">
+          {/* Search */}
+          <div className="relative flex-1 md:max-w-md">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
+            <input
+              type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search attractions, regions, themes…"
+              className="h-11 w-full rounded-full border border-border bg-white pl-11 pr-4 text-sm text-ink-900 placeholder:text-ink-400 shadow-soft focus:border-jade-400 focus:outline-none focus:ring-2 focus:ring-jade-100"
             />
           </div>
-          <Select value={category} onValueChange={setCategory}>
-            {CATEGORIES.map((c) => (
-              <SelectItem key={c.id || "all"} value={c.id}>
-                {c.label}
-              </SelectItem>
-            ))}
-          </Select>
-          <Select value={districtId} onValueChange={setDistrictId}>
-            <SelectItem value="">All districts</SelectItem>
-            {districts.map((d) => (
-              <SelectItem key={d.id} value={String(d.id)}>
-                {d.name} ({d.province})
-              </SelectItem>
-            ))}
-          </Select>
-        </CardContent>
-      </Card>
 
-      {error && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+          {/* Category pills */}
+          <div className="-mx-1 flex items-center gap-1 overflow-x-auto scrollbar-thin">
+            {CATEGORIES.map((c) => {
+              const active = category === c.id;
+              return (
+                <button
+                  key={c.id || "all"}
+                  onClick={() => setCategory(c.id)}
+                  className={cn(
+                    "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors",
+                    active
+                      ? "border-jade-700 bg-jade-700 text-white shadow-soft"
+                      : "border-border bg-white text-ink-700 hover:border-jade-300 hover:text-jade-700"
+                  )}
+                >
+                  <span className="text-sm leading-none">{c.icon}</span>
+                  {c.label}
+                </button>
+              );
+            })}
+          </div>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-24 text-muted-foreground">
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Loading attractions…
-        </div>
-      ) : attractions.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 py-24 text-center text-muted-foreground">
-          <Filter className="h-8 w-8" />
-          <p>No attractions match these filters.</p>
-        </div>
-      ) : (
-        grouped.map(([districtName, list]) => (
-          <section key={districtName} className="space-y-3">
-            <header className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">{districtName}</h2>
-              <span className="text-xs text-muted-foreground">
-                {list.length} attraction{list.length === 1 ? "" : "s"}
+          {/* District filter trigger */}
+          <button
+            onClick={() => setShowFilters((s) => !s)}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-soft transition-colors",
+              districtId
+                ? "border-jade-300 bg-jade-50 text-jade-700"
+                : "border-border bg-white text-ink-700 hover:border-jade-300"
+            )}
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            District
+            {districtId && (
+              <span className="ml-1 rounded-full bg-jade-700 px-1.5 py-0.5 text-[10px] text-white">
+                1
               </span>
-            </header>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((a) => (
-                <AttractionCard key={a.id} attraction={a} />
-              ))}
+            )}
+          </button>
+        </div>
+
+        {showFilters && (
+          <div className="border-t border-border/70 bg-white/90 backdrop-blur">
+            <div className="container py-4">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="kicker">Filter by district</span>
+                {districtId && (
+                  <button
+                    onClick={() => setDistrictId("")}
+                    className="inline-flex items-center gap-1 text-xs text-ink-600 hover:text-jade-700"
+                  >
+                    <X className="h-3 w-3" /> Clear
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {districts.map((d) => {
+                  const active = districtId === String(d.id);
+                  return (
+                    <button
+                      key={d.id}
+                      onClick={() =>
+                        setDistrictId(active ? "" : String(d.id))
+                      }
+                      className={cn(
+                        "rounded-full border px-3 py-1.5 text-xs transition-colors",
+                        active
+                          ? "border-jade-600 bg-jade-600 text-white"
+                          : "border-border bg-white text-ink-700 hover:border-jade-300"
+                      )}
+                    >
+                      {d.name}
+                      <span className="ml-1.5 text-[10px] opacity-60">
+                        {d.province}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </section>
-        ))
-      )}
-    </div>
+          </div>
+        )}
+      </section>
+
+      {/* ── Body ── */}
+      <section className="container py-12 md:py-16">
+        {error && (
+          <div className="mb-6 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
+        {loading ? (
+          <SkeletonGrid />
+        ) : attractions.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div className="space-y-16">
+            {grouped.map(([districtName, list], idx) => (
+              <DistrictSection
+                key={districtName}
+                name={districtName}
+                attractions={list}
+                index={idx}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    </>
   );
 }
 
-// ─────────────────────────── Card ───────────────────────────────────────
-function AttractionCard({ attraction }: { attraction: Attraction }) {
+// ─────────────────────────── Sub-components ─────────────────────────────
+function DistrictSection({
+  name,
+  attractions,
+  index,
+}: {
+  name: string;
+  attractions: Attraction[];
+  index: number;
+}) {
+  return (
+    <section className="reveal" style={{ animationDelay: `${index * 60}ms` }}>
+      <header className="mb-6 flex items-end justify-between gap-4 border-b border-border pb-4">
+        <div>
+          <span className="kicker">District</span>
+          <h2 className="display mt-2 text-3xl font-medium tracking-tightest text-ink-900 md:text-4xl">
+            {name}
+          </h2>
+        </div>
+        <div className="text-right text-xs uppercase tracking-kicker text-ink-500">
+          {attractions.length} place{attractions.length === 1 ? "" : "s"}
+        </div>
+      </header>
+
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {attractions.map((a, i) => (
+          <AttractionCard key={a.id} attraction={a} stagger={i} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AttractionCard({
+  attraction,
+  stagger,
+}: {
+  attraction: Attraction;
+  stagger: number;
+}) {
+  const tint =
+    CATEGORY_TINTS[attraction.category] ??
+    "from-jade-900/85 via-jade-700/30 to-transparent";
   const trendPct = Math.round(Math.min(10, attraction.trend_score) * 10);
-  const colorClass =
-    CATEGORY_COLORS[attraction.category] ??
-    "bg-secondary text-secondary-foreground";
 
   return (
     <Link
       href={`/explore/${attraction.slug}`}
-      className="group block focus:outline-none"
+      className="group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-3xl bg-jade-900 shadow-soft lift reveal"
+      style={{ animationDelay: `${stagger * 40}ms` }}
     >
-      <Card className="h-full transition-shadow group-hover:shadow-md">
-        <div className="aspect-[16/10] overflow-hidden rounded-t-lg bg-muted">
-          {attraction.featured_media?.url ? (
-            // Using <img> because the seeded URLs are external/CDN; switch to
-            // next/image after configuring `images.remotePatterns`.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={attraction.featured_media.url}
-              alt={attraction.featured_media.caption || attraction.name}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          ) : (
-            <PlaceholderImage label={attraction.name} />
-          )}
+      {attraction.featured_media?.url ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={attraction.featured_media.url}
+          alt={attraction.featured_media.caption || attraction.name}
+          className="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+        />
+      ) : (
+        <PlaceholderCanvas label={attraction.name} />
+      )}
+
+      <div
+        className={cn(
+          "absolute inset-0 -z-10 bg-gradient-to-t",
+          tint
+        )}
+      />
+
+      {/* Top tag */}
+      <div className="absolute left-4 top-4 z-10 flex items-center gap-1.5">
+        <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-kicker text-white backdrop-blur">
+          {attraction.category}
+        </span>
+        {trendPct > 70 && (
+          <span className="rounded-full bg-saffron-400 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-kicker text-jade-900">
+            Trending
+          </span>
+        )}
+      </div>
+
+      {/* Bottom content */}
+      <div className="relative z-10 space-y-2 p-5 text-white">
+        <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-kicker text-saffron-200">
+          <MapPin className="h-3 w-3" />
+          {attraction.district_name}
+        </span>
+        <h3 className="display text-2xl font-medium leading-tight tracking-tightest">
+          {attraction.name}
+        </h3>
+        <div className="flex items-center justify-between pt-2">
+          <CrowdMeter value={attraction.crowd_index} />
+          <ArrowUpRight className="h-4 w-4 text-white/80 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-saffron-200" />
         </div>
-        <CardContent className="space-y-3 p-4">
-          <div className="flex items-start justify-between gap-2">
-            <div className="space-y-1">
-              <h3 className="line-clamp-1 text-base font-semibold">
-                {attraction.name}
-              </h3>
-              <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                <MapPin className="h-3 w-3" />
-                {attraction.district_name}
-              </p>
-            </div>
-            <Badge className={`shrink-0 border ${colorClass}`} variant="outline">
-              {attraction.category}
-            </Badge>
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" />
-                Crowd index
-              </span>
-              <span>{attraction.crowd_index}/10</span>
-            </div>
-            <Progress value={attraction.crowd_index * 10} />
-          </div>
-          {attraction.best_season.length > 0 && (
-            <p className="text-[11px] text-muted-foreground">
-              Best months: {attraction.best_season.slice(0, 4).join(", ")}
-              {attraction.best_season.length > 4 && "…"}
-            </p>
-          )}
-          <div className="flex items-center justify-between border-t pt-2">
-            <span className="text-xs text-muted-foreground">Trend score</span>
-            <Badge variant="amber">{trendPct}%</Badge>
-          </div>
-        </CardContent>
-      </Card>
+      </div>
     </Link>
   );
 }
 
-function PlaceholderImage({ label }: { label: string }) {
-  // Deterministic pastel gradient so each attraction has a stable thumbnail.
+function CrowdMeter({ value }: { value: number }) {
+  const segments = 10;
+  return (
+    <div className="flex flex-col gap-0.5 text-[10px] uppercase tracking-kicker text-white/70">
+      <span>Crowd · {value}/10</span>
+      <div className="flex gap-0.5">
+        {Array.from({ length: segments }).map((_, i) => (
+          <span
+            key={i}
+            className={cn(
+              "h-1 w-2 rounded-full",
+              i < value ? "bg-saffron-300" : "bg-white/25"
+            )}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PlaceholderCanvas({ label }: { label: string }) {
   const hash = Array.from(label).reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  const hue1 = hash % 360;
-  const hue2 = (hue1 + 60) % 360;
+  const hue = hash % 360;
   return (
     <div
-      className="flex h-full w-full items-center justify-center text-2xl font-semibold text-white"
+      className="absolute inset-0 -z-10"
       style={{
-        background: `linear-gradient(135deg, hsl(${hue1} 50% 40%), hsl(${hue2} 50% 55%))`,
+        background: `linear-gradient(135deg, hsl(${hue} 35% 22%) 0%, hsl(${
+          (hue + 50) % 360
+        } 45% 35%) 100%)`,
       }}
       aria-label={label}
-    >
-      {label.charAt(0)}
+    />
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 py-24 text-center text-ink-600">
+      <Filter className="h-8 w-8 text-ink-400" />
+      <p className="display text-2xl font-medium text-ink-900">
+        No matches yet.
+      </p>
+      <p className="max-w-md text-sm">
+        Try clearing a filter, broadening the category, or asking the AI
+        guide instead.
+      </p>
+    </div>
+  );
+}
+
+function SkeletonGrid() {
+  return (
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div
+          key={i}
+          className="aspect-[4/5] animate-pulse rounded-3xl bg-muted/60"
+          style={{ animationDelay: `${i * 80}ms` }}
+        />
+      ))}
     </div>
   );
 }

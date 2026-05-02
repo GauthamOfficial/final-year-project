@@ -1,15 +1,11 @@
-/**
- * Chat page — implementation lands in Prompt 5A. This file ships now so the
- * sidebar nav + route group resolves immediately after Prompt 1B.
- */
 import { ChatPanel } from "@/components/chat/chat-panel";
 
-export const metadata = { title: "AI Chat · LankaGuide" };
+export const metadata = {
+  title: "Ask the AI guide",
+  description:
+    "Get grounded, sourced answers about Sri Lanka travel — culture, wildlife, monsoons, train routes — from the LankaGuide AI assistant.",
+};
 
 export default function ChatPage() {
-  return (
-    <div className="flex h-screen flex-col">
-      <ChatPanel />
-    </div>
-  );
+  return <ChatPanel />;
 }
