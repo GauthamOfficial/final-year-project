@@ -18,13 +18,13 @@ class ItineraryAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "title",
-        "visitor",
+        "user",
         "start_date",
         "end_date",
         "status",
     )
     list_filter = ("status", "group_type")
-    search_fields = ("title", "share_token")
+    search_fields = ("title", "share_token", "user__email")
     inlines = [DayInline]
 
 

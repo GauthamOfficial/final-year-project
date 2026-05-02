@@ -1,0 +1,29 @@
+# Negombo Lagoon
+
+**District:** Gampaha (Western Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Dec, Jan, Feb, Mar
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+Mangrove-fringed lagoon with traditional outrigger canoes and birding boat tours.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Negombo Lagoon via Gampaha town. From Colombo it is roughly 30 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Gampaha town.
+
+## Background (excerpted from Wikipedia)
+Negombo Lagoon is a large estuarine lagoon in Negombo, south-west Sri Lanka.
+The lagoon is fed by a number of small rivers and the Hamilton Canal (also known as the Dutch canal). It is linked to the sea by a narrow channel to the north, near Negombo city. It is surrounded by a densely populated region containing rice paddies, coconut plantations and grassland. The land is used for fishing and agriculture. The lagoon has extensive mangrove swamps and attracts a wide variety of water birds including cormorants, herons, egrets, gulls, terns and other waders. Negombo, Katunayake, Seeduwa are some nearby towns. Lagoon fishing is popular among the fishing community in Negombo. Lagoon crabs and lagoon prawns are in high taste and demand.
+
+_Source: https://en.wikipedia.org/wiki/Negombo_Lagoon_
+
+## Quick facts
+- ID: 123
+- Slug: negombo-lagoon-gampaha
+- Coordinates: 7.091700, 79.999900
+- District: Gampaha (id 27)

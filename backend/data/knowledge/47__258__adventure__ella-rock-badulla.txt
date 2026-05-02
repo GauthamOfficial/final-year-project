@@ -1,0 +1,28 @@
+# Ella Rock
+
+**District:** Badulla (Uva Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug, Sep
+**District peak season:** Jan, Feb, Mar, Apr, Aug
+**Climate zone:** intermediate
+**Entry fee:** Free
+
+## Overview
+4-hour return hike with sweeping views of Ella Gap; start at sunrise to beat the heat.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Ella Rock via Badulla town. From Colombo it is roughly 220 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Badulla town.
+
+## Background (excerpted from Wikipedia)
+Ella (Sinhala: ඇල්ල, lit. 'fall', [ællə]; Tamil: எல்ல) is a small town in the Badulla District of Uva Province, Sri Lanka governed by  Ella Pradeshiya Sabha. It is approximately 200 kilometres (120 mi) east of Colombo and is situated at an elevation of 1,041 metres (3,415 ft) above sea level. The area has a rich bio-diversity, dense with numerous varieties of flora and fauna. Ella is surrounded by hills covered with cloud forests and tea plantations. The town has a cooler climate than surrounding lowlands, due to its elevation. The Ella Gap allows views across the southern plains of Sri Lanka.
+
+_Source: https://en.wikipedia.org/wiki/Ella,_Sri_Lanka_
+
+## Quick facts
+- ID: 258
+- Slug: ella-rock-badulla
+- Coordinates: 6.993400, 81.055000
+- District: Badulla (id 47)

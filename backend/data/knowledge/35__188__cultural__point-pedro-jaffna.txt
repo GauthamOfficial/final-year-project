@@ -1,0 +1,30 @@
+# Point Pedro
+
+**District:** Jaffna (Northern Province)
+**Category:** cultural / heritage site
+**Best months to visit:** May, Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Sri Lanka's northernmost tip; a quiet fishing town with a working lighthouse.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Point Pedro via Jaffna town. From Colombo it is roughly 400 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Jaffna town.
+
+## Background (excerpted from Wikipedia)
+Point Pedro, also known as Paruthithurai (Tamil: பருத்தித்துறை, romanized: Paruttittuṟai; Sinhala: පේදුරු තුඩුව, romanized: Pēduru Tuḍuva) is a town, located in Jaffna District, Sri Lanka, at the northernmost point of the island.
+Cotton is produced around Point Pedro in the fertile calcic red latosol soils. The eastern coast of Point Pedro forms a 3 mile wide, 20 mile long beach with sand dunes up to 100 feet high, extending to Thalayady. The porous soil has a water table deep underground with an estimated one billion litres of fresh water. The Boxing Day tsunami of 2004 raised the salt content of the ground water. The tsunami destroyed parts of the town and submerged some parts with seawater up to 4 feet deep.
+The town came briefly under the control of the Tamil Tigers (LTTE) during the early 1990s, until the Sri Lankan Army recaptured it in 1995.
+
+_Source: https://en.wikipedia.org/wiki/Point_Pedro_
+
+## Quick facts
+- ID: 188
+- Slug: point-pedro-jaffna
+- Coordinates: 9.661500, 80.025500
+- District: Jaffna (id 35)

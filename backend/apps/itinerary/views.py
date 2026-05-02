@@ -1,24 +1,18 @@
-"""
-Itinerary endpoints (PRD §5.2, §8.2, §8.3).
-
-`POST /api/v1/itinerary/generate/` constructs an itinerary using the
-`ItineraryService` (Prompt 4B). Until that lands, a deterministic stub keeps
-the UI flow exercisable end-to-end.
-"""
+"""Itinerary endpoints — owned by the authenticated user."""
 
 from __future__ import annotations
 
 import logging
 
-from rest_framework import status, viewsets
+from django.conf import settings
+from django.http import HttpResponse
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.attractions.models import Attraction
-from apps.core.models import Visitor
-
-from .models import Itinerary, ItineraryDay, ItineraryStatus, ItineraryStop
+from .models import Itinerary
+from .pdf import render_itinerary_pdf
 from .serializers import (
     GenerateItineraryRequestSerializer,
     ItinerarySerializer,
@@ -27,91 +21,53 @@ from .serializers import (
 logger = logging.getLogger("lankaguide.itinerary")
 
 
-def _resolve_visitor(request) -> Visitor:
-    token = request.headers.get("X-Session-Token") or ""
-    visitor, _ = Visitor.get_or_create_by_token(token)
-    return visitor
-
-
-def _stub_generate(visitor: Visitor, prefs: dict) -> Itinerary:
-    """
-    Fallback used when `ItineraryService` is unavailable. Picks attractions
-    that match the requested districts/categories so the response shape is
-    populated correctly even without Gemini access.
-    """
-    qs = Attraction.objects.filter(
-        district_id__in=prefs["district_ids"],
-        category__in=prefs["interests"],
-    ).order_by("-trend_score")
-    pool = list(qs[: max(prefs["num_days"] * 3, 6)])
-
-    itinerary = Itinerary.objects.create(
-        visitor=visitor,
-        title=prefs.get("title")
-        or f"{prefs['num_days']}-Day Sri Lanka Itinerary",
-        start_date=prefs["start_date"],
-        end_date=prefs["end_date"],
-        budget_lkr=prefs["budget_lkr"],
-        group_type=prefs["group_type"],
-        group_size=prefs["group_size"],
-        status=ItineraryStatus.DRAFT,
+def _service_unavailable(message: str) -> Response:
+    return Response(
+        {"detail": message, "code": "service_unavailable"},
+        status=status.HTTP_503_SERVICE_UNAVAILABLE,
     )
-
-    for day_idx in range(prefs["num_days"]):
-        day_attractions = pool[day_idx * 3 : day_idx * 3 + 3] or pool[:3]
-        district = day_attractions[0].district if day_attractions else None
-        day = ItineraryDay.objects.create(
-            itinerary=itinerary,
-            day_number=day_idx + 1,
-            district=district,
-            notes="(stub) ItineraryService not configured — RAG-grounded itinerary lands in Prompt 4B.",
-            ai_generated=False,
-        )
-        for order, att in enumerate(day_attractions, start=1):
-            ItineraryStop.objects.create(
-                day=day,
-                attraction=att,
-                stop_order=order,
-                duration_mins=90,
-                tip="Arrive early to avoid crowds; check seasonal opening hours.",
-            )
-
-    return itinerary
 
 
 class GenerateItineraryView(APIView):
     """`POST /api/v1/itinerary/generate/`."""
+
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         ser = GenerateItineraryRequestSerializer(data=request.data)
         ser.is_valid(raise_exception=True)
         prefs = ser.validated_data
 
-        visitor = _resolve_visitor(request)
+        if not getattr(settings, "GEMINI_API_KEY", ""):
+            return _service_unavailable(
+                "AI itinerary planner is not configured. Set GEMINI_API_KEY."
+            )
 
         try:
             from apps.itinerary.services import ItineraryService
 
-            itinerary = ItineraryService().generate(visitor=visitor, preferences=prefs)
+            itinerary = ItineraryService().generate(user=request.user, preferences=prefs)
+        except RuntimeError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as exc:  # noqa: BLE001
-            logger.warning(
-                "ItineraryService unavailable, falling back to stub: %s", exc
+            logger.exception("Itinerary generation failed: %s", exc)
+            return _service_unavailable(
+                "Itinerary planner is temporarily unavailable. Please retry shortly."
             )
-            itinerary = _stub_generate(visitor, prefs)
 
         out = ItinerarySerializer(itinerary)
         return Response(out.data, status=status.HTTP_201_CREATED)
 
 
 class ItineraryViewSet(viewsets.ReadOnlyModelViewSet):
-    """`GET /api/v1/itinerary/{id}/` and `…/by_share/{token}/`."""
+    """`GET /api/v1/itinerary/` and `…/by_share/{token}/`."""
 
     serializer_class = ItinerarySerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        visitor = _resolve_visitor(self.request)
         return (
-            Itinerary.objects.filter(visitor=visitor)
+            Itinerary.objects.filter(user=self.request.user)
             .prefetch_related("days__stops__attraction")
             .order_by("-created_at")
         )
@@ -120,6 +76,7 @@ class ItineraryViewSet(viewsets.ReadOnlyModelViewSet):
         detail=False,
         methods=["get"],
         url_path=r"by_share/(?P<token>[^/]+)",
+        permission_classes=[permissions.AllowAny],
     )
     def by_share(self, request, token: str = ""):
         try:
@@ -138,12 +95,16 @@ class ItineraryViewSet(viewsets.ReadOnlyModelViewSet):
         url_path=r"day/(?P<day_num>\d+)/regenerate",
     )
     def regenerate_day(self, request, slug=None, pk=None, day_num: str = "1"):
-        """`PATCH .../day/{day_num}/regenerate/` — wired to ItineraryService."""
         try:
             itinerary = self.get_queryset().get(pk=pk)
         except Itinerary.DoesNotExist:
             return Response(
                 {"detail": "Itinerary not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        if not getattr(settings, "GEMINI_API_KEY", ""):
+            return _service_unavailable(
+                "AI itinerary planner is not configured."
             )
 
         try:
@@ -156,10 +117,61 @@ class ItineraryViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as exc:  # noqa: BLE001
             logger.warning("regenerate_day failed: %s", exc)
-            return Response(
-                {"detail": "Regeneration failed; try again later."},
-                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            return _service_unavailable(
+                "Regeneration failed; try again later."
             )
 
         itinerary.refresh_from_db()
         return Response(ItinerarySerializer(itinerary).data)
+
+    @action(detail=True, methods=["delete"], url_path="delete")
+    def delete_itinerary(self, request, pk=None):
+        itinerary = self.get_object()
+        itinerary.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=True,
+        methods=["get"],
+        url_path="pdf",
+        permission_classes=[permissions.AllowAny],
+    )
+    def pdf(self, request, pk=None):
+        """`GET /api/v1/itinerary/{id}/pdf/` — bytes/pdf.
+
+        Owner can always download. Anyone with the share token may also
+        download by appending `?token=<share_token>`.
+        """
+        try:
+            itinerary = Itinerary.objects.prefetch_related(
+                "days__stops__attraction", "days__district"
+            ).get(pk=pk)
+        except Itinerary.DoesNotExist:
+            return Response(
+                {"detail": "Itinerary not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        token = request.query_params.get("token", "")
+        is_owner = (
+            request.user.is_authenticated and itinerary.user_id == request.user.id
+        )
+        is_shared = token and token == itinerary.share_token
+        if not (is_owner or is_shared):
+            return Response(
+                {"detail": "Sign in or use a valid share token."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        try:
+            pdf_bytes = render_itinerary_pdf(itinerary)
+        except Exception as exc:  # noqa: BLE001
+            logger.exception("PDF render failed: %s", exc)
+            return Response(
+                {"detail": "PDF generation failed."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        response = HttpResponse(pdf_bytes, content_type="application/pdf")
+        filename = f"lankaguide-itinerary-{itinerary.id}.pdf"
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response

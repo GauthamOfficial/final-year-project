@@ -1,4 +1,4 @@
-"""DRF serializers for the chat endpoints (PRD §8.3)."""
+"""Serializers for the chat endpoints."""
 
 from __future__ import annotations
 
@@ -10,8 +10,6 @@ from .models import ChatMessage, ChatSession
 
 
 class ChatMessageRequestSerializer(serializers.Serializer):
-    """Body schema for `POST /api/v1/chat/message/` (PRD §8.3)."""
-
     session_id = serializers.IntegerField(required=False, allow_null=True)
     message = serializers.CharField(min_length=1, max_length=4000)
     language = serializers.ChoiceField(
@@ -29,9 +27,37 @@ class ChatMessageSerializer(serializers.ModelSerializer):
             "content",
             "retrieved_docs",
             "tokens_used",
+            "backend",
             "created_at",
         ]
         read_only_fields = fields
+
+
+class ChatSessionListSerializer(serializers.ModelSerializer):
+    message_count = serializers.SerializerMethodField()
+    preview = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ChatSession
+        fields = [
+            "id",
+            "title",
+            "language",
+            "started_at",
+            "last_activity_at",
+            "message_count",
+            "preview",
+        ]
+
+    def get_message_count(self, obj) -> int:
+        return obj.messages.count()
+
+    def get_preview(self, obj) -> str:
+        first = obj.messages.first()
+        if first is None:
+            return ""
+        text = first.content[:140]
+        return text
 
 
 class ChatSessionSerializer(serializers.ModelSerializer):
@@ -39,5 +65,12 @@ class ChatSessionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ChatSession
-        fields = ["id", "visitor", "started_at", "messages"]
+        fields = [
+            "id",
+            "title",
+            "language",
+            "started_at",
+            "last_activity_at",
+            "messages",
+        ]
         read_only_fields = fields

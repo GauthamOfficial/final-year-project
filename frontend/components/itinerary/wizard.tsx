@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "@/lib/auth";
 import {
   Calendar,
   Check,
@@ -21,6 +23,9 @@ import {
 } from "lucide-react";
 import { api, toApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { MapView } from "@/components/maps/map-view";
+import { WeatherCard } from "@/components/weather/weather-card";
+import { Download } from "lucide-react";
 
 // ─────────────────────────── Types ──────────────────────────────────────
 type District = {
@@ -36,6 +41,8 @@ type Stop = {
   attraction_id: number;
   name: string;
   slug: string;
+  lat: string | null;
+  lng: string | null;
   arrival_time: string | null;
   duration_mins: number | null;
   tip: string;
@@ -46,6 +53,7 @@ type Day = {
   day_number: number;
   district: number | null;
   district_name: string | null;
+  district_slug?: string | null;
   notes: string;
   stops: Stop[];
 };
@@ -105,6 +113,8 @@ function todayPlus(days: number): string {
 
 // ─────────────────────────── Component ──────────────────────────────────
 export function ItineraryWizard() {
+  const router = useRouter();
+  const { user, hydrated } = useAuth();
   const [step, setStep] = useState<StepKey>("dates");
   const [start, setStart] = useState(todayPlus(14));
   const [end, setEnd] = useState(todayPlus(20));
@@ -121,6 +131,12 @@ export function ItineraryWizard() {
   const [submitting, setSubmitting] = useState(false);
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (hydrated && !user) {
+      router.replace("/login?next=/itinerary");
+    }
+  }, [hydrated, user, router]);
 
   useEffect(() => {
     let cancelled = false;
@@ -174,6 +190,10 @@ export function ItineraryWizard() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (hydrated && !user) {
+    return null;
   }
 
   if (itinerary) {
@@ -771,6 +791,62 @@ function calcDays(start: string, end: string) {
   return Math.max(1, Math.round((+e - +s) / (1000 * 60 * 60 * 24)) + 1);
 }
 
+function DayEta({
+  stops,
+}: {
+  stops: Array<{ id: number | string; name: string; lat: number; lng: number }>;
+}) {
+  const [eta, setEta] = useState<{
+    duration_min_estimated: number;
+    distance_km: number;
+    congestion_label: string;
+  } | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (stops.length < 2) return;
+    const a = stops[0];
+    const b = stops[stops.length - 1];
+    let cancelled = false;
+    api
+      .get(`/api/v1/routing/eta/?from=${a.lat},${a.lng}&to=${b.lat},${b.lng}`)
+      .then(({ data }) => {
+        if (!cancelled) setEta(data);
+      })
+      .catch((e) => {
+        if (!cancelled) setErr(e?.response?.data?.detail || "ETA unavailable");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [stops]);
+
+  if (stops.length < 2) return null;
+  if (err)
+    return (
+      <div className="rounded-2xl border border-dashed border-border bg-muted px-4 py-3 text-xs text-ink-500">
+        {err}
+      </div>
+    );
+  if (!eta) return null;
+  const hours = Math.floor(eta.duration_min_estimated / 60);
+  const mins = eta.duration_min_estimated % 60;
+  return (
+    <div className="rounded-2xl border border-border bg-white px-4 py-3 text-xs shadow-soft">
+      <p className="text-[10px] font-semibold uppercase tracking-kicker text-ink-500">
+        Day drive · estimated
+      </p>
+      <p className="mt-1 text-sm font-semibold text-ink-900">
+        {hours > 0 ? `${hours}h ` : ""}
+        {mins}m · {eta.distance_km} km
+      </p>
+      <p className="text-[11px] text-ink-500">
+        {eta.congestion_label} traffic between first and last stop
+      </p>
+    </div>
+  );
+}
+
 // ─────────────────────────── Result view ───────────────────────────────
 function ItineraryResult({
   itinerary,
@@ -798,9 +874,18 @@ function ItineraryResult({
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
+          <a
+            href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/api/v1/itinerary/${itinerary.id}/pdf/`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-saffron-400 px-5 py-2.5 text-sm font-semibold text-jade-900 transition-colors hover:bg-saffron-300"
+          >
+            <Download className="h-4 w-4" />
+            Download PDF
+          </a>
           <button
             onClick={() => navigator.clipboard?.writeText(itinerary.share_token)}
-            className="inline-flex items-center gap-2 rounded-full bg-saffron-400 px-5 py-2.5 text-sm font-semibold text-jade-900 transition-colors hover:bg-saffron-300"
+            className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
           >
             <Share2 className="h-4 w-4" />
             Copy share token
@@ -884,6 +969,26 @@ function ItineraryResult({
                   {d.notes}
                 </p>
               )}
+              {(() => {
+                const stopsWithCoords = d.stops
+                  .filter((s) => s.lat && s.lng)
+                  .map((s) => ({
+                    id: s.id,
+                    name: s.name,
+                    lat: Number(s.lat),
+                    lng: Number(s.lng),
+                  }));
+                if (stopsWithCoords.length === 0) return null;
+                return (
+                  <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_280px]">
+                    <MapView stops={stopsWithCoords} height={280} zoom={9} />
+                    <div className="space-y-3">
+                      {d.district && <WeatherCard districtId={d.district} />}
+                      <DayEta stops={stopsWithCoords} />
+                    </div>
+                  </div>
+                );
+              })()}
               <ol className="space-y-3">
                 {d.stops.map((stop) => (
                   <li

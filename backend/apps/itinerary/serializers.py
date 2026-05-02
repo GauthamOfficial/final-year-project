@@ -1,4 +1,4 @@
-"""Serializers for the itinerary endpoints (PRD §8.3)."""
+"""Serializers for the itinerary endpoints."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from .models import GroupType, Itinerary, ItineraryDay, ItineraryStop
 
 
 class GenerateItineraryRequestSerializer(serializers.Serializer):
-    """Body schema for `POST /api/v1/itinerary/generate/` (PRD §8.3)."""
+    """Body schema for `POST /api/v1/itinerary/generate/`."""
 
     start_date = serializers.DateField()
     end_date = serializers.DateField()
@@ -46,6 +46,20 @@ class ItineraryStopSerializer(serializers.ModelSerializer):
     attraction_id = serializers.IntegerField(source="attraction.id", read_only=True)
     name = serializers.CharField(source="attraction.name", read_only=True)
     slug = serializers.CharField(source="attraction.slug", read_only=True)
+    lat = serializers.DecimalField(
+        source="attraction.lat",
+        max_digits=9,
+        decimal_places=6,
+        read_only=True,
+        allow_null=True,
+    )
+    lng = serializers.DecimalField(
+        source="attraction.lng",
+        max_digits=9,
+        decimal_places=6,
+        read_only=True,
+        allow_null=True,
+    )
 
     class Meta:
         model = ItineraryStop
@@ -55,6 +69,8 @@ class ItineraryStopSerializer(serializers.ModelSerializer):
             "attraction_id",
             "name",
             "slug",
+            "lat",
+            "lng",
             "arrival_time",
             "duration_mins",
             "tip",
@@ -63,6 +79,7 @@ class ItineraryStopSerializer(serializers.ModelSerializer):
 
 class ItineraryDaySerializer(serializers.ModelSerializer):
     district_name = serializers.CharField(source="district.name", read_only=True)
+    district_slug = serializers.CharField(source="district.slug", read_only=True)
     stops = ItineraryStopSerializer(many=True, read_only=True)
 
     class Meta:
@@ -72,6 +89,7 @@ class ItineraryDaySerializer(serializers.ModelSerializer):
             "day_number",
             "district",
             "district_name",
+            "district_slug",
             "notes",
             "ai_generated",
             "stops",

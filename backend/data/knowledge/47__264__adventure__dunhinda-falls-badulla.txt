@@ -1,0 +1,30 @@
+# Dunhinda Falls
+
+**District:** Badulla (Uva Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Oct, Nov, Dec, Jan, Feb
+**District peak season:** Jan, Feb, Mar, Apr, Aug
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 100.00
+
+## Overview
+63-metre fall reached via a one-kilometre forest path from Badulla.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Dunhinda Falls via Badulla town. From Colombo it is roughly 220 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Badulla town.
+
+## Background (excerpted from Wikipedia)
+Dunhinda Falls is a waterfall located about 5 kilometres (3.1 mi) from Badulla in the lower central hills of Sri Lanka.   
+The waterfall, which is 64 metres (210 ft) high, is created by the Badulu Oya, a river that flows through Badulla. The name "Dunhinda" is derived from the Sinhala word dun (දුන්), meaning mist or smoke, referring to the smoky spray-like mist that rises at the base of the falls.
+Dunhinda is one of the most popular and scenic waterfalls in Sri Lanka. Although it is not among the tallest waterfalls in the country, it is renowned for its dramatic appearance and surrounding natural beauty, and is often described as one of the most picturesque waterfalls on the island.
+
+_Source: https://en.wikipedia.org/wiki/Dunhinda_Falls_
+
+## Quick facts
+- ID: 264
+- Slug: dunhinda-falls-badulla
+- Coordinates: 6.993400, 81.055000
+- District: Badulla (id 47)

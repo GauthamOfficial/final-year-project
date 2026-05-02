@@ -1,0 +1,29 @@
+# Knuckles Mountain Range
+
+**District:** Kandy (Central Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 2500.00
+
+## Overview
+UNESCO-listed range offering multi-day treks through cloud forest and montane grassland.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Knuckles Mountain Range via Kandy town. From Colombo it is roughly 115 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kandy town.
+
+## Background (excerpted from Wikipedia)
+The Dumbara Mountain Range lies in central Sri Lanka, in the Districts of Matale and Kandy. The Sinhalese residents have traditionally referred to the area as Dumbara Kanduvetiya meaning Mist-laden Mountain Range. Early British surveyors gave the name knuckles, referring to a series of recumbent folds and peaks in the west of the massif which resemble the knuckles of clenched fist when viewed from certain locations in the Kandy District. 
+The higher montane area is often robed in thick layers of cloud. In addition to its aesthetic value, the range is of great scientific interest. It is a climatic microcosm of the rest of Sri Lanka as the conditions of all the climatic zones in the country are exhibited in the massif. At higher elevations there is a series of isolated cloud forests, harbouring a variety of flora and fauna. Although the range constitutes approximately 0.03% of the island's total area, it is home to a significantly higher proportion of the country's biodiversity. The isolated Dumbara range harbours several relict, endemic flora and fauna that are distinct from central massif. More than 34 percent of Sri Lanka's endemic trees, shrubs, and herbs are only found in these 
+
+_Source: https://en.wikipedia.org/wiki/Knuckles_Mountain_Range_
+
+## Quick facts
+- ID: 141
+- Slug: knuckles-mountain-range-kandy
+- Coordinates: 7.290600, 80.633700
+- District: Kandy (id 29)

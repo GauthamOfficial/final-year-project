@@ -3,6 +3,10 @@ Django>=5.0,<5.2
 djangorestframework>=3.15.2
 django-cors-headers>=4.4.0
 django-environ>=0.11.2
+django-filter>=24.3
+
+# ─── Authentication (JWT + Google OAuth via id_token verification) ────
+djangorestframework-simplejwt>=5.3.1
 
 # ─── Database ──────────────────────────────────────────────────────────
 # mysqlclient ships pre-built wheels on Windows for CPython 3.12.
@@ -19,12 +23,16 @@ gunicorn>=22.0.0
 
 # ─── Media / Imaging ──────────────────────────────────────────────────
 pillow>=10.4.0
+requests>=2.31.0
+
+# ─── PDF Generation ──────────────────────────────────────────────────
+# ReportLab is the cross-platform choice (no GTK / Cairo needed on Windows).
+reportlab>=4.0.9
 
 # ─── AI / RAG Stack ───────────────────────────────────────────────────
-# `google-generativeai` is the package named in PRD Prompt 1A. It has been
-# superseded by `google-genai`; keep this until Prompt 4A so the migration
-# is a single, isolated change with its own tests.
+# Chat/generate still uses `google-generativeai`; embeddings use `google-genai`.
 google-generativeai>=0.7.2
+google-genai>=1.0
 chromadb>=0.5.5
 
 # ─── ML — Sentiment + Vision + Forecasting ────────────────────────────

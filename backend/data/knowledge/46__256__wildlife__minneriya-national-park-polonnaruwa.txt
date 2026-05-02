@@ -1,0 +1,28 @@
+# Minneriya National Park
+
+**District:** Polonnaruwa (North Central Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** Jul, Aug, Sep, Oct
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee (LKR, indicative):** 5500.00
+
+## Overview
+Stage of 'The Gathering' — up to 300 wild elephants assemble around the tank in dry season.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Minneriya National Park via Polonnaruwa town. From Colombo it is roughly 215 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Polonnaruwa town.
+
+## Background (excerpted from Wikipedia)
+Minneriya National Park (Sinhala: මින්නේරිය ජාතික වනෝද්‍යානය, romanized: Minnēriya Jātika Vanōdyānaya; Tamil: மின்னேரியா தேசிய வனம், romanized: Miṉṉēriyā Tēciya Vaṉam) is a national park in North Central Province of Sri Lanka. The area was designated as a national park on 12 August 1997, having been originally declared as a wildlife sanctuary in 1938. The reason for declaring the area as  protected is to protect the catchment of Minneriya tank and the wildlife of the surrounding area. The tank is of historical importance, having been built by King Mahasen in third century AD. The park is a dry season feeding ground for the elephant population dwelling in forests of Matale, Polonnaruwa, and Trincomalee districts. The park earned revenue of Rs. 10.7 million in the six months ending in August 2009. Along with Kaudulla and Girithale, Minneriya forms one of the 70 Important Bird Areas (IBAs) of Sri Lanka. The park is situated 182 kilometres (113 mi) from Colombo.
+
+_Source: https://en.wikipedia.org/wiki/Minneriya_National_Park_
+
+## Quick facts
+- ID: 256
+- Slug: minneriya-national-park-polonnaruwa
+- Coordinates: 7.940300, 81.018800
+- District: Polonnaruwa (id 46)

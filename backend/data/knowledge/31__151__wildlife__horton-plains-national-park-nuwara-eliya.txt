@@ -1,0 +1,30 @@
+# Horton Plains National Park
+
+**District:** Nuwara Eliya (Central Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** Jan, Feb, Mar, Apr
+**District peak season:** Jan, Feb, Mar, Apr, Aug
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 5000.00
+
+## Overview
+High-elevation plateau with the cliff at World's End, Baker's Falls and rare endemic montane wildlife.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Horton Plains National Park via Nuwara Eliya town. From Colombo it is roughly 180 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Nuwara Eliya town.
+
+## Background (excerpted from Wikipedia)
+Horton Plains National Park (Sinhala: හෝර්ටන් තැන්න ජාතික උද්‍යානය, romanized: Hortan Thanna Jathika Udyanaya) is a national park in the central highlands of Sri Lanka that was designated in 1988. It encompasses an area of 31 km2 (12 sq mi) and borders Thotupalakanda Nature Reserve. It is located at an elevation of 2,100–2,300 m (6,900–7,500 ft) and encompasses montane grassland and cloud forest. It is rich in biodiversity and many species found here are endemic to the region.
+The Horton Plains are the headwaters of three major Sri Lankan rivers, the Mahaweli, Kelani, and Walawe rivers. In Sinhala the plains are known as Maha Eliya Plains (මහ එළිය තැන්න). Stone tools dating back to Balangoda culture have been found here. The plains' vegetation is grasslands interspersed with montane forest and includes many endemic woody plants. Large herds of Sri Lankan sambar deer feature as typical mammals and the park is also an Important Bird Area with many species not only endemic to Sri Lanka but restricted to the Horton Plains. Forest dieback is one of the major threats to the park and some studies suggest that it is caused by a natural phenomenon.
+The sheer precipice of World's End and Bak
+
+_Source: https://en.wikipedia.org/wiki/Horton_Plains_National_Park_
+
+## Quick facts
+- ID: 151
+- Slug: horton-plains-national-park-nuwara-eliya
+- Coordinates: 6.949700, 80.789100
+- District: Nuwara Eliya (id 31)

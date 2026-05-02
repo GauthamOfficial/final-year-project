@@ -1,14 +1,12 @@
 """
-Embedding clients used by the RAG pipeline (PRD §9.1.2 → §9.2).
+Embedding clients for the RAG pipeline (PRD §9.1.2 → §9.2).
 
-The primary backend is Google Gemini (`models/text-embedding-004` per PRD).
-A deterministic local fallback (`HashEmbeddingClient`) is shipped so:
+**Primary:** `google-genai` (`google.genai`) with `gemini-embedding-001` and
+`output_dimensionality=768`. The older `google.generativeai.embed_content` path
+often returns **404** on current Generative Language API keys — do not use it
+for new deployments.
 
-  • Unit tests run without API access.
-  • Prompt 3A's `ingest_knowledge_base` works offline against a local
-    ChromaDB for development before keys are provisioned.
-
-`get_embedding_client()` picks the backend based on `settings.GEMINI_API_KEY`.
+**Offline / tests:** `HashEmbeddingClient` — deterministic 768-d vectors.
 """
 
 from __future__ import annotations
@@ -19,39 +17,46 @@ import math
 import os
 import struct
 import time
-from typing import Sequence
+from typing import Literal, Sequence
 
 from django.conf import settings
 
 logger = logging.getLogger("lankaguide.core.embeddings")
 
-EMBEDDING_DIM = 768  # Matches Gemini text-embedding-004
+EMBEDDING_DIM = 768  # Must match `output_dimensionality` for Gemini embeddings
 
 
 class EmbeddingClient:
     name: str = "base"
     dimension: int = EMBEDDING_DIM
 
-    def embed(self, text: str) -> list[float]:  # pragma: no cover - abstract
+    def embed(
+        self, text: str, *, purpose: Literal["query", "document"] = "query"
+    ) -> list[float]:
         raise NotImplementedError
 
-    def embed_batch(self, texts: Sequence[str]) -> list[list[float]]:
-        return [self.embed(t) for t in texts]
+    def embed_batch(
+        self,
+        texts: Sequence[str],
+        *,
+        purpose: Literal["query", "document"] = "query",
+    ) -> list[list[float]]:
+        return [self.embed(t, purpose=purpose) for t in texts]
 
 
 class HashEmbeddingClient(EmbeddingClient):
     """
     Deterministic offline embedding (SHA-512-derived, 768-d, unit-norm).
-    Useless for real semantic retrieval, but stable and zero-dependency,
-    which is exactly what tests need.
     """
 
     name = "hash-deterministic"
 
-    def embed(self, text: str) -> list[float]:
+    def embed(
+        self, text: str, *, purpose: Literal["query", "document"] = "query"
+    ) -> list[float]:
+        _ = purpose
         seed = hashlib.sha512(text.encode("utf-8")).digest()
         floats: list[float] = []
-        # 768 floats * 4 bytes = 3072 bytes; SHA-512 gives 64. Tile + xor.
         i = 0
         while len(floats) < self.dimension:
             chunk = hashlib.sha512(seed + i.to_bytes(2, "big")).digest()
@@ -59,44 +64,77 @@ class HashEmbeddingClient(EmbeddingClient):
                 if len(floats) >= self.dimension:
                     break
                 (raw,) = struct.unpack("I", chunk[offset : offset + 4])
-                # Map to [-1, 1)
                 floats.append((raw / 0xFFFFFFFF) * 2 - 1)
             i += 1
         norm = math.sqrt(sum(x * x for x in floats)) or 1.0
         return [x / norm for x in floats]
 
 
+def _normalize_embedding_model(name: str) -> str:
+    """
+    Map legacy / PRD names to IDs that work on the current Gemini API
+    (google-genai, ML Dev).
+    """
+    n = (name or "").strip()
+    if n.startswith("models/"):
+        n = n[7:]
+    # Old SDK defaults & PRD names → current embedding model
+    legacy = {
+        "embedding-001": "gemini-embedding-001",
+        "text-embedding-004": "gemini-embedding-001",
+    }
+    return legacy.get(n, n) or "gemini-embedding-001"
+
+
+def _task_type(purpose: Literal["query", "document"]) -> str:
+    return (
+        "RETRIEVAL_QUERY" if purpose == "query" else "RETRIEVAL_DOCUMENT"
+    )
+
+
 class GeminiEmbeddingClient(EmbeddingClient):
-    """Gemini-backed embedding (PRD §9.1.2). Uses exponential backoff (PRD §14.2)."""
+    """Gemini embeddings via `google-genai` (not deprecated `google.generativeai`)."""
 
     name = "gemini"
 
     def __init__(self, model: str | None = None, max_retries: int = 5):
-        import google.generativeai as genai
+        from google import genai
+        from google.genai import types as genai_types
 
         api_key = settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY", "")
         if not api_key:
             raise RuntimeError("GEMINI_API_KEY is not set; cannot use GeminiEmbeddingClient.")
-        genai.configure(api_key=api_key)
-        self._genai = genai
-        self.model = model or settings.GEMINI_EMBEDDING_MODEL
+        self._client = genai.Client(api_key=api_key)
+        raw = model or settings.GEMINI_EMBEDDING_MODEL
+        self.model = _normalize_embedding_model(raw)
         self.max_retries = max_retries
+        self._EmbedContentConfig = genai_types.EmbedContentConfig
 
-    def _embed_once(self, text: str) -> list[float]:
-        result = self._genai.embed_content(
-            model=self.model,
-            content=text,
-            task_type="retrieval_document",
+    def _embed_once(
+        self, text: str, *, purpose: Literal["query", "document"]
+    ) -> list[float]:
+        cfg = self._EmbedContentConfig(
+            output_dimensionality=EMBEDDING_DIM,
+            task_type=_task_type(purpose),
         )
-        embedding = result["embedding"] if isinstance(result, dict) else result.embedding
-        return list(embedding)
+        resp = self._client.models.embed_content(
+            model=self.model,
+            contents=text,
+            config=cfg,
+        )
+        embs = resp.embeddings
+        if not embs or not embs[0].values:
+            raise RuntimeError("Gemini returned no embedding values")
+        return list(embs[0].values)
 
-    def embed(self, text: str) -> list[float]:
+    def embed(
+        self, text: str, *, purpose: Literal["query", "document"] = "query"
+    ) -> list[float]:
         delay = 1.0
         last_exc: Exception | None = None
         for attempt in range(self.max_retries):
             try:
-                return self._embed_once(text)
+                return self._embed_once(text, purpose=purpose)
             except Exception as exc:  # noqa: BLE001
                 last_exc = exc
                 logger.warning(
@@ -107,15 +145,21 @@ class GeminiEmbeddingClient(EmbeddingClient):
                 )
                 time.sleep(delay)
                 delay = min(delay * 2, 30)
-        raise RuntimeError(f"Gemini embed failed after {self.max_retries} retries") from last_exc
+        raise RuntimeError(
+            f"Gemini embed failed after {self.max_retries} retries"
+        ) from last_exc
 
 
 def get_embedding_client() -> EmbeddingClient:
-    if settings.GEMINI_API_KEY:
-        try:
-            return GeminiEmbeddingClient()
-        except Exception as exc:  # noqa: BLE001
-            logger.warning(
-                "Falling back to HashEmbeddingClient (Gemini init failed: %s)", exc
-            )
-    return HashEmbeddingClient()
+    """Return a real Gemini embedding client. Raises if not configured.
+
+    The deterministic HashEmbeddingClient is retained in this module purely
+    as a fixture for unit tests; we never silently fall back to it for real
+    user requests.
+    """
+    if not settings.GEMINI_API_KEY:
+        raise RuntimeError(
+            "GEMINI_API_KEY is not configured. Set it in the backend env "
+            "to enable real embeddings."
+        )
+    return GeminiEmbeddingClient()

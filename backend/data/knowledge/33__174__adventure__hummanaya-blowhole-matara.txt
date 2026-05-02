@@ -1,0 +1,28 @@
+# Hummanaya Blowhole
+
+**District:** Matara (Southern Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Dec, Jan, Feb, Mar
+**District peak season:** Dec, Jan, Feb, Mar, Apr
+**Climate zone:** wet
+**Entry fee (LKR, indicative):** 200.00
+
+## Overview
+Second-largest sea blowhole in the world, sending water 25 m skyward on swelly days.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Hummanaya Blowhole via Matara town. From Colombo it is roughly 160 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matara town.
+
+## Background (excerpted from Wikipedia)
+Hummanaya Blowhole is the only known blowhole in Sri Lanka and it is considered to be the second largest blowhole in the world. Hummanaya (Sinhala: හුම්මානය = හූ+මානය) refers to the noise, "hoo", that can be heard a distance away when the blowhole is active.
+
+_Source: https://en.wikipedia.org/wiki/Hummanaya_
+
+## Quick facts
+- ID: 174
+- Slug: hummanaya-blowhole-matara
+- Coordinates: 5.948500, 80.535300
+- District: Matara (id 33)

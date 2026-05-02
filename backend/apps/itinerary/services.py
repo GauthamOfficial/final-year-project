@@ -1,21 +1,15 @@
 """
-ItineraryService — Prompt 4B (PRD §9.4).
-
-Generates a day-by-day itinerary as structured JSON.
+ItineraryService — generates a day-by-day itinerary as structured JSON.
 
 Strategy:
-1. Fetch crowd_forecast data for the chosen districts (PRD §4.2.2 / §7.1).
-2. Fetch attraction context from ChromaDB filtered by user interests.
-3. Build the itinerary prompt described in PRD §9.4.
-4. Call `gemini-1.5-pro` with `response_mime_type="application/json"`.
-5. Parse the JSON, persist to MySQL (Itinerary + Day + Stop), return the
-   freshly-saved Itinerary instance.
+1. Fetch attraction context from the relational pool filtered by user interests.
+2. Build the itinerary prompt with seasonal context.
+3. Call Gemini Pro with `response_mime_type="application/json"`.
+4. Parse the JSON, persist to the relational store, return the freshly-saved
+   Itinerary instance.
 
-Resilience:
-   • No GEMINI_API_KEY → falls back to a deterministic "round-robin-by-district"
-     planner so the API contract is preserved end-to-end.
-   • JSON parse error → one retry with a stricter "JSON ONLY" instruction;
-     after that, falls back to the deterministic planner.
+If Gemini cannot produce a usable plan after retries, this service raises
+a RuntimeError. The view turns that into a 503 — there is no fake fallback.
 """
 
 from __future__ import annotations
@@ -31,8 +25,9 @@ from typing import Any, Iterable
 from django.conf import settings
 from django.db import transaction
 
+from django.contrib.auth import get_user_model
+
 from apps.attractions.models import Attraction, District
-from apps.core.models import Visitor
 from apps.core.services.embeddings import get_embedding_client
 from apps.core.services.vectorstore import get_collection
 from apps.itinerary.models import (
@@ -41,6 +36,8 @@ from apps.itinerary.models import (
     ItineraryStatus,
     ItineraryStop,
 )
+
+User = get_user_model()
 
 logger = logging.getLogger("lankaguide.itinerary.service")
 
@@ -164,7 +161,7 @@ def _retrieve_chunks_for(
             + " activities across districts: "
             + ", ".join(map(str, district_ids))
         )
-        embedding = embed.embed(question)
+        embedding = embed.embed(question, purpose="query")
         result = collection.query(query_embeddings=[embedding], n_results=k)
         docs = (result.get("documents") or [[]])[0]
         metas = (result.get("metadatas") or [[]])[0]
@@ -179,24 +176,27 @@ def _retrieve_chunks_for(
 # ───────────────────────── Service ─────────────────────────────────────
 class ItineraryService:
     def __init__(self, gemini_client: Any | None = None):
-        self._gemini = gemini_client
         self._gemini_model = settings.GEMINI_PRO_MODEL
-        if self._gemini is None and settings.GEMINI_API_KEY:
+        if not settings.GEMINI_API_KEY:
+            raise RuntimeError(
+                "GEMINI_API_KEY is not configured. The itinerary planner is unavailable."
+            )
+        if gemini_client is not None:
+            self._gemini = gemini_client
+        else:
             try:
                 import google.generativeai as genai
 
                 genai.configure(api_key=settings.GEMINI_API_KEY)
                 self._gemini = genai.GenerativeModel(self._gemini_model)
             except Exception as exc:  # noqa: BLE001
-                logger.warning(
-                    "Gemini init failed for itinerary; using deterministic planner. (%s)",
-                    exc,
-                )
-                self._gemini = None
+                raise RuntimeError(
+                    f"Failed to initialise Gemini for itinerary: {exc}"
+                ) from exc
 
     # ─────────────────── Public API ────────────────────────────────────
     @transaction.atomic
-    def generate(self, *, visitor: Visitor, preferences: dict) -> Itinerary:
+    def generate(self, *, user, preferences: dict) -> Itinerary:
         pool = _build_attraction_pool(
             interests=preferences["interests"],
             district_ids=preferences["district_ids"],
@@ -221,9 +221,12 @@ class ItineraryService:
             )
 
         if plan_dict is None:
-            plan_dict = self._deterministic_plan(pool, preferences)
+            raise RuntimeError(
+                "AI planner returned no usable itinerary. Please retry; if "
+                "the issue persists, contact support."
+            )
 
-        return self._persist(visitor=visitor, preferences=preferences, plan=plan_dict)
+        return self._persist(user=user, preferences=preferences, plan=plan_dict)
 
     @transaction.atomic
     def regenerate_day(self, *, itinerary: Itinerary, day_number: int) -> ItineraryDay:
@@ -367,62 +370,13 @@ class ItineraryService:
             ]
         return data
 
-    # ─────────────────── Deterministic fallback ────────────────────────
-    @staticmethod
-    def _deterministic_plan(
-        pool: list[AttractionContext], preferences: dict
-    ) -> dict:
-        """Used when Gemini is unavailable. Round-robins attractions by district."""
-        by_district: dict[int, list[AttractionContext]] = {}
-        for a in pool:
-            by_district.setdefault(a.district_id, []).append(a)
-
-        district_cycle = list(by_district.keys()) or [0]
-        days: list[dict] = []
-        cursor = {d: 0 for d in district_cycle}
-        for day_idx in range(preferences["num_days"]):
-            district_id = district_cycle[day_idx % len(district_cycle)]
-            attractions = by_district.get(district_id, [])
-            if not attractions:
-                continue
-            window = attractions[cursor[district_id] : cursor[district_id] + 3]
-            cursor[district_id] += 3
-            if not window:
-                window = attractions[:3]
-            days.append(
-                {
-                    "day": day_idx + 1,
-                    "district": window[0].district_name,
-                    "district_id": district_id,
-                    "notes": (
-                        "(Deterministic plan — set GEMINI_API_KEY for an "
-                        "AI-tailored itinerary.)"
-                    ),
-                    "stops": [
-                        {
-                            "attraction_id": a.id,
-                            "name": a.name,
-                            "arrival_time": _suggested_time(idx),
-                            "duration_mins": 120,
-                            "tip": "Arrive early to dodge crowds; check seasonal hours.",
-                        }
-                        for idx, a in enumerate(window)
-                    ],
-                }
-            )
-        return {
-            "title": preferences.get("title")
-            or f"{preferences['num_days']}-Day {', '.join(preferences['interests']).title()} Trip",
-            "days": days,
-        }
-
     # ─────────────────── Persistence ───────────────────────────────────
     @staticmethod
     def _persist(
-        *, visitor: Visitor, preferences: dict, plan: dict
+        *, user, preferences: dict, plan: dict
     ) -> Itinerary:
         itinerary = Itinerary.objects.create(
-            visitor=visitor,
+            user=user,
             title=plan.get("title")
             or preferences.get("title")
             or f"{preferences['num_days']}-Day Sri Lanka Trip",

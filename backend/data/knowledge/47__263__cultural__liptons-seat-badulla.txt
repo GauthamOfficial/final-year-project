@@ -1,0 +1,28 @@
+# Lipton's Seat
+
+**District:** Badulla (Uva Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug
+**District peak season:** Jan, Feb, Mar, Apr, Aug
+**Climate zone:** intermediate
+**Entry fee:** Free
+
+## Overview
+Hilltop viewpoint where Sir Thomas Lipton surveyed his tea empire; reach it before 09:00 for clear views.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Lipton's Seat via Badulla town. From Colombo it is roughly 220 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Badulla town.
+
+## Background (excerpted from Wikipedia)
+Haputale (Sinhala: හපුතලේ; Tamil: ஹபுதலே) is a town of Badulla District in the Uva Province, Sri Lanka, governed by an Urban Council. The elevation is 1431 m (4695 ft) above the sea level. The area has a rich bio-diversity dense with numerous varieties of flora and fauna. Haputale is surrounded by hills covered with cloud forests and tea plantations. The town has a cooler climate than its surroundings, due to its elevation. The Haputale pass allows views across the Southern plains of Sri Lanka. The South-West boundary of Uva basin is marked by the Haputale mountain ridges, which continue on to Horton Plains and Adam's Peak to the west. CNN in 2010 named Haputale as one of Asia's most overlooked destinations.
+
+_Source: https://en.wikipedia.org/wiki/Lipton's_Seat_
+
+## Quick facts
+- ID: 263
+- Slug: liptons-seat-badulla
+- Coordinates: 6.993400, 81.055000
+- District: Badulla (id 47)

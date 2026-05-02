@@ -1,0 +1,30 @@
+# Ratnapura Gem Museum
+
+**District:** Ratnapura (Sabaragamuwa Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee (LKR, indicative):** 1000.00
+
+## Overview
+Comprehensive collection of Sri Lanka's gem heritage — sapphires, cat's eyes and moonstones.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Ratnapura Gem Museum via Ratnapura town. From Colombo it is roughly 100 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Ratnapura town.
+
+## Background (excerpted from Wikipedia)
+Ratnapura (Sinhala: රත්නපුර, IPA: [rət̪n̪əpurə]; Tamil: இரத்தினபுரி, IPA: [iɾɐt̪ːinɐβuɾi]) ("City of Gems" in Sinhala and Tamil) is a major city in Sri Lanka. It is the capital city of Sabaragamuwa Province, as well as the Ratnapura District, and is a traditional centre for the Sri Lankan gem trade. It is located on the Kalu Ganga (Black River) in south-central Sri Lanka, some 101 km (63 mi) southeast of the country's capital, Colombo. Ratnapura is also spelled as Rathnapura.
+The name 'Ratnapura' is a Sanskrit word meaning "city of gems", from the Sanskrit words pura (town) and ratna (gemstone). Over 2000 years ago, the Buddhist teachings in Sanskrit and Pali influenced the local language. While candy produced from the jaggery palm is traditionally known in this region as ratnapura, it is more likely that the candy was named for the locale rather than vice versa.
+It is the centre of a long-established industry of precious stone mining including rubies, sapphires, and other gems. Apart from gem mining, the city is known for the production of rice and fruit. Large plantations of tea and rubber surround the city. Tea grown in this region is called low-country tea. There is a well-esta
+
+_Source: https://en.wikipedia.org/wiki/Ratnapura_
+
+## Quick facts
+- ID: 277
+- Slug: ratnapura-gem-museum-ratnapura
+- Coordinates: 6.682800, 80.399200
+- District: Ratnapura (id 49)

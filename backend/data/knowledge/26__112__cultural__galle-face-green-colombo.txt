@@ -1,0 +1,28 @@
+# Galle Face Green
+
+**District:** Colombo (Western Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Dec, Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+A 500-metre seafront promenade beloved for sunset walks, kite-flying and street food.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Galle Face Green via Colombo town. From Colombo it is roughly 0 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Colombo town.
+
+## Background (excerpted from Wikipedia)
+Galle Face Green is a 5 ha (12 acres) ocean-side urban park, which stretches for 500 m (1,600 ft) along the coast, in the heart of Colombo, the financial and business capital of Sri Lanka. The promenade was initially laid out in 1859 by Governor Sir Henry George Ward, although the original Galle Face Green extended over a much larger area than is seen today. The Galle Face Green was initially used for horse racing and as a golf course, but was also used for cricket, polo, football, tennis, and rugby.
+
+_Source: https://en.wikipedia.org/wiki/Galle_Face_Green_
+
+## Quick facts
+- ID: 112
+- Slug: galle-face-green-colombo
+- Coordinates: 6.927100, 79.861200
+- District: Colombo (id 26)

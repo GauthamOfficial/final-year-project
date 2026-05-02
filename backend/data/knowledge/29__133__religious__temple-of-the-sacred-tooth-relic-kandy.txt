@@ -1,0 +1,29 @@
+# Temple of the Sacred Tooth Relic
+
+**District:** Kandy (Central Province)
+**Category:** religious site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 1500.00
+
+## Overview
+Sri Lanka's most venerated Buddhist temple, housing a relic of the Buddha's tooth in a gold and gem-encrusted casket.
+
+## Practical tips
+- Cover shoulders and knees, remove shoes and hats, and refrain from posing with your back to Buddha statues. Many sites do not allow drones.
+
+## How to get there
+Most travellers reach Temple of the Sacred Tooth Relic via Kandy town. From Colombo it is roughly 115 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kandy town.
+
+## Background (excerpted from Wikipedia)
+Sri Dalada Maligawa, commonly known in English as the Temple of the Sacred Tooth Relic, is a Buddhist temple in Kandy, Sri Lanka. It is located in the Royal Palace Complex of the former Kingdom of Kandy, which houses the relic of the tooth of the Buddha. Since ancient times, the relic has played an important role in local politics because it is believed that whoever holds the relic holds the governance of the country. The relic was historically held by Sinhalese kings. The Temple of the Tooth is a World Heritage Site mainly due to the temple and the relic.
+Bhikkhus of two particular chapters, the Malwathu chapter and the Asgiri chapter, conduct daily worship in the inner chamber of the temple. Rituals are performed three times daily: at dawn, at noon and in the evenings. On Wednesdays, there is a symbolic bathing of the relic with a herbal preparation made from scented water and fragrant flowers called Nanumura Mangallaya; this holy water is believed to contain healing powers and is distributed among those present. The Kandy Esala Perahera is conducted annually to pay homage to the Sacred Tooth Relic.
+
+_Source: https://en.wikipedia.org/wiki/Sri_Dalada_Maligawa_
+
+## Quick facts
+- ID: 133
+- Slug: temple-of-the-sacred-tooth-relic-kandy
+- Coordinates: 7.290600, 80.633700
+- District: Kandy (id 29)

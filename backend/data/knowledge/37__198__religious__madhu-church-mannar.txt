@@ -1,0 +1,30 @@
+# Madhu Church
+
+**District:** Mannar (Northern Province)
+**Category:** religious site
+**Best months to visit:** Jul, Aug
+**District peak season:** May, Jun, Jul, Aug
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Pilgrimage shrine to Our Lady of Madhu — Sri Lanka's most important Catholic site, 400 years old.
+
+## Practical tips
+- Cover shoulders and knees, remove shoes and hats, and refrain from posing with your back to Buddha statues. Many sites do not allow drones.
+
+## How to get there
+Most travellers reach Madhu Church via Mannar town. From Colombo it is roughly 320 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Mannar town.
+
+## Background (excerpted from Wikipedia)
+The Shrine of Our Lady of Madhu is a Roman Catholic Marian shrine in Mannar district of Sri Lanka. With a history of more than 400 years, the shrine acts as a center of pilgrimage and worship for Sri Lankan Catholics. The site is considered as the holiest Catholic shrine in the island and is a well known place of devotion for both Tamil and Sinhalese Catholics. The church has been a symbol of unity not just between Tamils and Sinhalese but also between people of different religions, including Buddhists, Hindus and Protestants.
+Pope Benedict XV granted the image a pontifical decree of coronation on 7 April 1921 via  the Prefect of the Sacred Congregation for the Propagation of the Faith, Cardinal Willem Marinus van Rossum. The rite of coronation was executed on 2 July 1924.
+Attendance for the August festival at times almost reached one million people before the outbreak of the Sri Lankan Civil War. Situated in the heart of the conflict zone, pilgrimage to this shrine was dramatically affected by the civil war with the presence of refugee camps around the shrine complex. It was shelled a number of times.
+
+_Source: https://en.wikipedia.org/wiki/Madhu_Church_
+
+## Quick facts
+- ID: 198
+- Slug: madhu-church-mannar
+- Coordinates: 8.981000, 79.904700
+- District: Mannar (id 37)

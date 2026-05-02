@@ -1,0 +1,28 @@
+# Mirissa Beach
+
+**District:** Matara (Southern Province)
+**Category:** beach / coastal experience
+**Best months to visit:** Nov, Dec, Jan, Feb, Mar
+**District peak season:** Dec, Jan, Feb, Mar, Apr
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+Crescent of palm-fringed sand, world-famous for blue-whale watching and Coconut Tree Hill sunsets.
+
+## Practical tips
+- Reef shoes help on rocky coves; surf currents can be strong, especially May-September on the south coast and December-March on the east.
+
+## How to get there
+Most travellers reach Mirissa Beach via Matara town. From Colombo it is roughly 160 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matara town.
+
+## Background (excerpted from Wikipedia)
+Mirissa (Sinhala: මිරිස්ස, romanized: Mirissa; Tamil: மிரிஸ்ஸ, romanized: Miris'sa) is a small town on the south coast of Sri Lanka, located in the Matara District of the Southern Province. It is approximately 150 kilometres (93 mi) south of Colombo and is situated at an elevation of 4 metres (13 ft) above sea level. Mirissa's beach and nightlife make it a popular tourist destination. It is also a fishing port and one of the island's main whale and dolphin watching locations.
+
+_Source: https://en.wikipedia.org/wiki/Mirissa_
+
+## Quick facts
+- ID: 168
+- Slug: mirissa-beach-matara
+- Coordinates: 5.948500, 80.535300
+- District: Matara (id 33)

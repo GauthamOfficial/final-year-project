@@ -1,0 +1,28 @@
+# Mihintale
+
+**District:** Anuradhapura (North Central Province)
+**Category:** religious site
+**Best months to visit:** Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee (LKR, indicative):** 1000.00
+
+## Overview
+Cradle of Sri Lankan Buddhism — climb 1,840 steps to where King Devanampiya Tissa met Mahinda in 247 BC.
+
+## Practical tips
+- Cover shoulders and knees, remove shoes and hats, and refrain from posing with your back to Buddha statues. Many sites do not allow drones.
+
+## How to get there
+Most travellers reach Mihintale via Anuradhapura town. From Colombo it is roughly 205 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Anuradhapura town.
+
+## Background (excerpted from Wikipedia)
+Mihintale is a mountain peak near Anuradhapura in Sri Lanka.  It is believed by Sri Lankans to be the site of a meeting between the Buddhist monk Mahinda and King Devanampiyatissa which inaugurated the presence of Buddhism in Sri Lanka.  It is now a pilgrimage site, and the site of several religious monuments and abandoned structures.
+
+_Source: https://en.wikipedia.org/wiki/Mihintale_
+
+## Quick facts
+- ID: 246
+- Slug: mihintale-anuradhapura
+- Coordinates: 8.311400, 80.403700
+- District: Anuradhapura (id 45)

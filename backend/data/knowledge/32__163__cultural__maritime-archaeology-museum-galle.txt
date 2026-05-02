@@ -1,0 +1,23 @@
+# Maritime Archaeology Museum
+
+**District:** Galle (Southern Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Nov, Dec, Jan, Feb, Mar
+**Climate zone:** wet
+**Entry fee (LKR, indicative):** 800.00
+
+## Overview
+Inside a Dutch-era warehouse: shipwreck artifacts and Indian Ocean trade history.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Maritime Archaeology Museum via Galle town. From Colombo it is roughly 120 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Galle town.
+
+## Quick facts
+- ID: 163
+- Slug: maritime-archaeology-museum-galle
+- Coordinates: 6.053500, 80.221000
+- District: Galle (id 32)

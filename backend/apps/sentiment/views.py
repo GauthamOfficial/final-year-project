@@ -5,8 +5,7 @@ Trends API (`/api/v1/trends/`) — PRD §5.4 / §8.2.
 from __future__ import annotations
 
 from django.core.cache import cache
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -22,6 +21,8 @@ TREND_CACHE_TTL = 60 * 60 * 6  # PRD §9.7
 
 class TrendingAttractionsView(APIView):
     """`GET /api/v1/trends/attractions/` — top-N by trend_score."""
+
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         limit = int(request.query_params.get("limit", 12))
@@ -39,12 +40,9 @@ class TrendingAttractionsView(APIView):
 
 
 class IngestReviewView(APIView):
-    """
-    `POST /api/v1/trends/reviews/` — manual review ingestion.
+    """`POST /api/v1/trends/reviews/` — manual review ingestion."""
 
-    Useful when the Kafka pipeline isn't running locally; the worker would
-    normally consume the same payload from `raw_reviews`.
-    """
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         attraction_id = request.data.get("attraction_id")

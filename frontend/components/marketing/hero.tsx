@@ -63,14 +63,14 @@ export function Hero() {
           </div>
 
           <div className="mt-12 flex items-center gap-6 text-xs text-white/70">
-            <button className="flex items-center gap-2 transition-colors hover:text-white">
+            <Link href="/signup" className="flex items-center gap-2 transition-colors hover:text-white">
               <span className="grid h-9 w-9 place-items-center rounded-full border border-white/30 bg-white/10 backdrop-blur">
                 <Play className="h-3.5 w-3.5 fill-white" />
               </span>
-              Watch a 90-second tour
-            </button>
+              Create a free account
+            </Link>
             <span className="hidden h-px w-12 bg-white/30 sm:block" />
-            <span className="hidden sm:inline">No login. No spam. Anonymous sessions.</span>
+            <span className="hidden sm:inline">English · Sinhala · Tamil · Voice + maps</span>
           </div>
         </div>
 
@@ -82,7 +82,7 @@ export function Hero() {
                 Live atlas
               </span>
               <span className="text-[10px] font-semibold uppercase tracking-kicker text-jade-700">
-                v1 · 2026
+                Live · 2026
               </span>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-4 text-jade-900">
@@ -96,7 +96,7 @@ export function Hero() {
               </div>
               <div>
                 <div className="display text-3xl font-semibold leading-none">
-                  60+
+                  250+
                 </div>
                 <div className="mt-1 text-[11px] uppercase tracking-kicker text-ink-600">
                   Attractions

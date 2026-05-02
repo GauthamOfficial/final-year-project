@@ -1,16 +1,13 @@
-"""
-Itinerary models — direct port of PRD §7.1 (`itineraries`, `itinerary_days`,
-`itinerary_stops`).
-"""
+"""Itinerary models — owned by an authenticated user."""
 
 from __future__ import annotations
 
 import secrets
 
+from django.conf import settings
 from django.db import models
 
 from apps.attractions.models import Attraction, District
-from apps.core.models import Visitor
 
 
 class GroupType(models.TextChoices):
@@ -31,8 +28,10 @@ def _new_share_token() -> str:
 
 
 class Itinerary(models.Model):
-    visitor = models.ForeignKey(
-        Visitor, on_delete=models.CASCADE, related_name="itineraries"
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="itineraries",
     )
     title = models.CharField(max_length=200, blank=True)
     start_date = models.DateField()

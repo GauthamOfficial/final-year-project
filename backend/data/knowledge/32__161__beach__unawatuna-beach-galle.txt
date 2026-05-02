@@ -1,0 +1,28 @@
+# Unawatuna Beach
+
+**District:** Galle (Southern Province)
+**Category:** beach / coastal experience
+**Best months to visit:** Nov, Dec, Jan, Feb, Mar
+**District peak season:** Nov, Dec, Jan, Feb, Mar
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+Crescent of golden sand and warm shallows; one of the south coast's most loved beaches.
+
+## Practical tips
+- Reef shoes help on rocky coves; surf currents can be strong, especially May-September on the south coast and December-March on the east.
+
+## How to get there
+Most travellers reach Unawatuna Beach via Galle town. From Colombo it is roughly 120 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Galle town.
+
+## Background (excerpted from Wikipedia)
+Unawatuna is a coastal town in Galle district of Sri Lanka. Unawatuna is a major tourist attraction in Sri Lanka and known for its beach and corals. It is a suburb of Galle, about five kilometres (three miles) southeast of the city center and approximately 108 kilometres (67 mi) south of Colombo. Unawatuna is situated at an elevation of 5 metres (16 ft) above sea level. Despite significant development in the last decade it is still home to the endangered and endemic purple-faced langur, an unusually shy monkey species only found in Sri Lanka's forests.
+
+_Source: https://en.wikipedia.org/wiki/Unawatuna_
+
+## Quick facts
+- ID: 161
+- Slug: unawatuna-beach-galle
+- Coordinates: 6.053500, 80.221000
+- District: Galle (id 32)

@@ -31,12 +31,15 @@ class DistrictSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "slug",
             "province",
             "description",
             "climate_zone",
             "peak_months",
             "lat",
             "lng",
+            "youtube_video_ids",
+            "hero_image_url",
             "attraction_count",
         ]
         read_only_fields = ["id", "attraction_count"]

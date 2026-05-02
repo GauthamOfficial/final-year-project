@@ -1,0 +1,28 @@
+# Bundala National Park
+
+**District:** Hambantota (Southern Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** Sep, Oct, Nov, Dec, Jan, Feb, Mar
+**District peak season:** Feb, Mar, Apr, May, Jun, Jul
+**Climate zone:** dry
+**Entry fee (LKR, indicative):** 4500.00
+
+## Overview
+Ramsar-listed coastal lagoons that host migratory flamingos, painted storks and waders.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Bundala National Park via Hambantota town. From Colombo it is roughly 240 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Hambantota town.
+
+## Background (excerpted from Wikipedia)
+Bundala National Park is an internationally important wintering ground for migratory water birds in Sri Lanka. Bundala harbors 197 species of birds, the highlight being the greater flamingo, which migrate in large flocks. Bundala was designated a wildlife sanctuary in 1969 and redesignated to a national park on 4 January 1993. In 1991 Bundala became the first wetland to be declared as a Ramsar site in Sri Lanka. In 2005 the national park was designated as a biosphere reserve by UNESCO, the fourth biosphere reserve in Sri Lanka. The national park is situated 245 kilometres (152 mi) southeast of Colombo.
+
+_Source: https://en.wikipedia.org/wiki/Bundala_National_Park_
+
+## Quick facts
+- ID: 176
+- Slug: bundala-national-park-hambantota
+- Coordinates: 6.124100, 81.118500
+- District: Hambantota (id 34)

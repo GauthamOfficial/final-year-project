@@ -1,12 +1,9 @@
-"""
-Chat persistence models (PRD §7.1 — `chat_sessions`, `chat_messages`).
-"""
+"""Chat persistence models — sessions and messages tied to authenticated users."""
 
 from __future__ import annotations
 
+from django.conf import settings
 from django.db import models
-
-from apps.core.models import Visitor
 
 
 class Role(models.TextChoices):
@@ -15,17 +12,22 @@ class Role(models.TextChoices):
 
 
 class ChatSession(models.Model):
-    visitor = models.ForeignKey(
-        Visitor, on_delete=models.CASCADE, related_name="chat_sessions"
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="chat_sessions",
     )
+    title = models.CharField(max_length=200, blank=True)
+    language = models.CharField(max_length=2, default="en")
     started_at = models.DateTimeField(auto_now_add=True)
+    last_activity_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "chat_sessions"
-        ordering = ["-started_at"]
+        ordering = ["-last_activity_at"]
 
     def __str__(self) -> str:
-        return f"Session<{self.id}@{self.visitor_id}>"
+        return f"Session<{self.id}@{self.user_id}>"
 
 
 class ChatMessage(models.Model):
@@ -34,9 +36,9 @@ class ChatMessage(models.Model):
     )
     role = models.CharField(max_length=10, choices=Role.choices)
     content = models.TextField()
-    # JSON array: [{"chroma_id": "...", "title": "...", "score": 0.94}, ...]
     retrieved_docs = models.JSONField(default=list, blank=True)
     tokens_used = models.PositiveIntegerField(default=0)
+    backend = models.CharField(max_length=32, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -45,4 +47,5 @@ class ChatMessage(models.Model):
         indexes = [models.Index(fields=["session", "created_at"])]
 
     def __str__(self) -> str:
-        return f"{self.role}: {self.content[:40]}…"
+        snippet = self.content[:40].replace("\n", " ")
+        return f"{self.role}: {snippet}"

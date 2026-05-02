@@ -1,0 +1,28 @@
+# Kalutara Beach
+
+**District:** Kalutara (Western Province)
+**Category:** beach / coastal experience
+**Best months to visit:** Nov, Dec, Jan, Feb, Mar
+**District peak season:** Dec, Jan, Feb, Mar
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+Long sweep of golden sand at the river mouth — popular for windsurfing and beach hotels.
+
+## Practical tips
+- Reef shoes help on rocky coves; surf currents can be strong, especially May-September on the south coast and December-March on the east.
+
+## How to get there
+Most travellers reach Kalutara Beach via Kalutara town. From Colombo it is roughly 45 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kalutara town.
+
+## Background (excerpted from Wikipedia)
+Kalutara (Sinhala: කළුතර, Tamil: களுத்துறை) or Kalutota is a major city in Kalutara District, Western Province, Sri Lanka. It is also the administrative capital of Kalutara District. It is located approximately 43 km (27 mi) south of the capital Colombo. The city holds a unique position for one of the four major rivers in Sri Lanka, the Kalu Ganga, which joins the sea at the centre of the city. Kaluthara is known for making rope, baskets, and other articles from the fibre of the coconut palm. The area also produces the Mangosteens, a fruit introduced from Malaysia in the 19th century.
+
+_Source: https://en.wikipedia.org/wiki/Kalutara_
+
+## Quick facts
+- ID: 129
+- Slug: kalutara-beach-kalutara
+- Coordinates: 6.585400, 79.960700
+- District: Kalutara (id 28)

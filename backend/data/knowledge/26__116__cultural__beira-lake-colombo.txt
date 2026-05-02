@@ -1,0 +1,28 @@
+# Beira Lake
+
+**District:** Colombo (Western Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Dec, Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+Central-city lake with swan boats and the floating Seema Malaka temple.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Beira Lake via Colombo town. From Colombo it is roughly 0 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Colombo town.
+
+## Background (excerpted from Wikipedia)
+Beira Lake (/ˈbeɪrə/; Sinhala: බේරේ වැව, romanized: Bērē væva (IPA: [beːreː ˈʋæʋə]); Tamil: பேரே ஏரி, romanized: Pērē ēri (IPA: [peːɾeː eːɾi])) is a man-made lake in the centre of the city of Colombo in Sri Lanka. The lake is surrounded by many large businesses in the city. It initially occupied approximately 1.65 km2 (0.64 sq mi) of land 100 years ago but has since been reduced to 0.65 km2 (0.25 sq mi) today due to various reasons. During the Portuguese, Dutch and English colonial era, the lake was used for a wide variety of purposes. It still retains its Portuguese name. It is connected to many intricate canals which provided an easy way of transporting goods within the city and suburban cities.
+
+_Source: https://en.wikipedia.org/wiki/Beira_Lake_
+
+## Quick facts
+- ID: 116
+- Slug: beira-lake-colombo
+- Coordinates: 6.927100, 79.861200
+- District: Colombo (id 26)

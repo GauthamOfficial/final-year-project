@@ -1,0 +1,30 @@
+# Sigiriya Rock Fortress
+
+**District:** Matale (Central Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, May, Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 6000.00
+
+## Overview
+5th-century royal citadel atop a 200-metre granite column; UNESCO World Heritage site with frescoes and lion staircase.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Sigiriya Rock Fortress via Matale town. From Colombo it is roughly 140 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matale town.
+
+## Background (excerpted from Wikipedia)
+Sigiriya or Sinhagiri (Lion  Rock Sinhala: සීගිරිය, Tamil: சிகிரியா/சிங்ககிரி, ) is an ancient rock fortress located in the northern Matale District near the town of Dambulla in the Central Province, Sri Lanka. It is a site of historical and archaeological significance that is dominated by a massive column of granite approximately 180 m (590 ft) high.
+According to the ancient Sri Lankan chronicle the Cūḷavaṃsa, this area was a large forest, then after storms and landslides it became a hill and was selected by King Kashyapa (CE 477–495) for his new capital. He built his palace on top of this rock and decorated its sides with colourful frescoes. On a small plateau about halfway up the side of this rock he built a gateway in the form of an enormous lion. The name of this place is derived from this structure; Sinhagiri, the Lion Rock.
+The capital and the royal palace were abandoned after the king's death. It was used as a Buddhist monastery until the 14th century. Sigiriya today is a UNESCO listed World Heritage Site. It is one of the best preserved examples of ancient urban planning.
+
+_Source: https://en.wikipedia.org/wiki/Sigiriya_
+
+## Quick facts
+- ID: 143
+- Slug: sigiriya-rock-fortress-matale
+- Coordinates: 7.467500, 80.623400
+- District: Matale (id 30)

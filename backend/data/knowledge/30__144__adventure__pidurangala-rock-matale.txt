@@ -1,0 +1,23 @@
+# Pidurangala Rock
+
+**District:** Matale (Central Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, May, Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 1000.00
+
+## Overview
+Adjacent rock with the iconic sunrise view of Sigiriya from the recumbent Buddha summit.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Pidurangala Rock via Matale town. From Colombo it is roughly 140 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matale town.
+
+## Quick facts
+- ID: 144
+- Slug: pidurangala-rock-matale
+- Coordinates: 7.467500, 80.623400
+- District: Matale (id 30)

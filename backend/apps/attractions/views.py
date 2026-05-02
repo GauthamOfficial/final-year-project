@@ -1,9 +1,9 @@
-"""ViewSets for the `attractions` app (PRD §8.2)."""
+"""ViewSets for the `attractions` app."""
 
 from __future__ import annotations
 
 from django.db.models import Count, Prefetch
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -20,6 +20,7 @@ from .serializers import (
 class DistrictsViewSet(viewsets.ReadOnlyModelViewSet):
     """List + retrieve districts. Aggregates a per-district attraction count."""
 
+    permission_classes = [permissions.AllowAny]
     serializer_class = DistrictSerializer
 
     def get_queryset(self):
@@ -27,17 +28,64 @@ class DistrictsViewSet(viewsets.ReadOnlyModelViewSet):
             attraction_count=Count("attractions")
         ).order_by("name")
 
+    def get_object(self):
+        """Look up a district by either numeric pk or slug for friendly URLs."""
+        lookup = self.kwargs.get("pk")
+        qs = self.get_queryset()
+        if lookup and not str(lookup).isdigit():
+            obj = qs.filter(slug=lookup).first()
+            if obj is None:
+                obj = qs.filter(name__iexact=lookup).first()
+            if obj is None:
+                from django.http import Http404
+
+                raise Http404("District not found.")
+            self.check_object_permissions(self.request, obj)
+            return obj
+        return super().get_object()
+
+    @action(detail=True, methods=["get"], url_path="gallery")
+    def gallery(self, request, pk=None):
+        """Return media + curated YouTube IDs + linked attractions for a district."""
+        district = self.get_object()
+        attractions = (
+            Attraction.objects.filter(district=district)
+            .order_by("-trend_score", "name")
+            .values("id", "name", "slug", "category")
+        )
+        media = (
+            MediaAsset.objects.filter(attraction__district=district)
+            .order_by("-is_featured", "id")
+            .values(
+                "id",
+                "type",
+                "cdn_url",
+                "s3_key",
+                "caption",
+                "attribution",
+                "license",
+                "source_url",
+                "attraction_id",
+            )[:60]
+        )
+        ser = self.get_serializer(district)
+        return Response(
+            {
+                "district": ser.data,
+                "attractions": list(attractions),
+                "media": list(media),
+            }
+        )
+
 
 class AttractionsViewSet(viewsets.ReadOnlyModelViewSet):
-    """List + retrieve attractions, with district/category/season filters.
+    """List + retrieve attractions, with district/category/season filters."""
 
-    Supports lookup by slug (PRD §8.2 example: `/attractions/<slug>/`).
-    """
-
+    permission_classes = [permissions.AllowAny]
     lookup_field = "slug"
 
     def get_queryset(self):
-        media_qs = MediaAsset.objects.filter(is_featured=True)
+        media_qs = MediaAsset.objects.all().order_by("-is_featured", "id")
         qs = (
             Attraction.objects.select_related("district")
             .prefetch_related(Prefetch("media", queryset=media_qs))
@@ -52,7 +100,6 @@ class AttractionsViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="trending")
     def trending(self, request):
-        """Top-N attractions sorted by `trend_score` (powers PRD §5.4)."""
         limit = int(request.query_params.get("limit", 10))
         qs = self.get_queryset().order_by("-trend_score")[:limit]
         ser = AttractionListSerializer(qs, many=True, context={"request": request})
@@ -60,6 +107,7 @@ class AttractionsViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class MediaAssetsViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [permissions.AllowAny]
     serializer_class = MediaAssetSerializer
 
     def get_queryset(self):

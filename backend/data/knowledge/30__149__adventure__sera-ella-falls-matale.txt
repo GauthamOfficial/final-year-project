@@ -1,0 +1,28 @@
+# Sera Ella Falls
+
+**District:** Matale (Central Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Apr
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 200.00
+
+## Overview
+Two-tier waterfall in Knuckles foothills; short forest walk to the base pool.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Sera Ella Falls via Matale town. From Colombo it is roughly 140 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matale town.
+
+## Background (excerpted from Wikipedia)
+Sera Ella (Sinhala:සේර ඇල්ල) is a waterfall located in Pothatawela village, a place near Laggala in the Matale District of Sri Lanka. It is formed by the waters of Kitul Canal which runs down Kaudagammana peak and the Hunumadala River, which flows from the mountains of Gonamada and Deyuthu Gammmaduwa, combining to form the Puwakpitiya River, a waterway which joins Thelgamu Oya to create the waterfall at its point of joining.
+
+_Source: https://en.wikipedia.org/wiki/Sera_Ella_
+
+## Quick facts
+- ID: 149
+- Slug: sera-ella-falls-matale
+- Coordinates: 7.467500, 80.623400
+- District: Matale (id 30)

@@ -1,14 +1,12 @@
 """
 Django settings for the LankaGuide AI project.
 
-LankaGuide AI — AI-Powered Immersive Tourism Companion for Sri Lanka.
-See `LankaGuide_AI_PRD.md` (Section 6 & 13) for the full architectural rationale.
-
-This file follows the layout proposed in **Prompt 1A** of the PRD's Cursor AI
-Development Plan: MySQL via `django-environ`, CORS for the Next.js client on
-`localhost:3000`, DRF wired in, and Redis-backed caching ready for the RAG layer.
+LankaGuide is an AI-powered tourism companion for Sri Lanka — RAG-grounded
+chat, itinerary generation, gallery, voice, translation, weather, and
+drive-time estimates, all driven from a curated 25-district knowledge base.
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -17,8 +15,6 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ───────────────────────── Environment ─────────────────────────────────
-# Load values from a `.env` file at the project root. Anything not declared
-# in the env file falls back to the default supplied to `env()` below.
 env = environ.Env(
     DEBUG=(bool, True),
     DJANGO_ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
@@ -28,6 +24,7 @@ env = environ.Env(
         ["http://localhost:3000", "http://127.0.0.1:3000"],
     ),
     REDIS_URL=(str, "redis://127.0.0.1:6379/1"),
+    EMAIL_BACKEND=(str, "django.core.mail.backends.console.EmailBackend"),
 )
 
 env_file = BASE_DIR / ".env"
@@ -56,10 +53,12 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
 ]
 
 LOCAL_APPS = [
+    "apps.accounts",
     "apps.core",
     "apps.attractions",
     "apps.chat",
@@ -68,6 +67,10 @@ LOCAL_APPS = [
     "apps.sentiment",
     "apps.alerts",
     "apps.analytics",
+    "apps.weather",
+    "apps.routing",
+    "apps.translation",
+    "apps.admin_api",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -105,9 +108,6 @@ WSGI_APPLICATION = "lankaguide.wsgi.application"
 ASGI_APPLICATION = "lankaguide.asgi.application"
 
 # ───────────────────────── Database ────────────────────────────────────
-# Production target is MySQL (PRD Section 7). For local bring-up before MySQL
-# is available we fall back to SQLite when `USE_SQLITE_FALLBACK=true` and no
-# `DB_HOST` is configured. Toggle via the `.env` file.
 if env("USE_SQLITE_FALLBACK") and not env("DB_HOST", default=""):
     DATABASES = {
         "default": {
@@ -148,6 +148,12 @@ CACHES = {
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 
 # ───────────────────────── Authentication ──────────────────────────────
+AUTH_USER_MODEL = "accounts.User"
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -169,8 +175,15 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ───────────────────────── REST Framework ──────────────────────────────
+# ───────────────────────── REST Framework + JWT ────────────────────────
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
@@ -184,10 +197,27 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 20,
 }
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "SIGNING_KEY": env("JWT_SIGNING_KEY", default=SECRET_KEY),
+}
+
 # ───────────────────────── CORS (Next.js client) ───────────────────────
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS")
+CORS_ALLOWED_ORIGIN_REGEXES = []
+if DEBUG:
+    CORS_ALLOWED_ORIGIN_REGEXES.extend(
+        [
+            r"^http://127\.0\.0\.1(:\d{1,5})?$",
+            r"^http://localhost(:\d{1,5})?$",
+            r"^http://\[::1\](:\d{1,5})?$",
+        ]
+    )
 CORS_ALLOW_CREDENTIALS = True
-# The Next.js client passes the anonymous session via this custom header.
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",
@@ -198,15 +228,14 @@ CORS_ALLOW_HEADERS = [
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
-    "x-session-token",
 ]
 
 # ───────────────────────── External Services ───────────────────────────
 GEMINI_API_KEY = env("GEMINI_API_KEY", default="")
-GEMINI_CHAT_MODEL = env("GEMINI_CHAT_MODEL", default="gemini-1.5-flash")
-GEMINI_PRO_MODEL = env("GEMINI_PRO_MODEL", default="gemini-1.5-pro")
+GEMINI_CHAT_MODEL = env("GEMINI_CHAT_MODEL", default="gemini-2.5-flash")
+GEMINI_PRO_MODEL = env("GEMINI_PRO_MODEL", default="gemini-2.5-pro")
 GEMINI_EMBEDDING_MODEL = env(
-    "GEMINI_EMBEDDING_MODEL", default="models/text-embedding-004"
+    "GEMINI_EMBEDDING_MODEL", default="gemini-embedding-001"
 )
 
 CHROMA_PERSIST_DIR = env(
@@ -220,6 +249,27 @@ KAFKA_BOOTSTRAP_SERVERS = env(
 KAFKA_TOPIC_RAW_REVIEWS = env("KAFKA_TOPIC_RAW_REVIEWS", default="raw_reviews")
 KAFKA_TOPIC_SENTIMENT_DONE = env(
     "KAFKA_TOPIC_SENTIMENT_DONE", default="sentiment_done"
+)
+
+# Google OAuth (used by apps.accounts.views.GoogleAuthView)
+GOOGLE_OAUTH_CLIENT_ID = env("GOOGLE_OAUTH_CLIENT_ID", default="")
+GOOGLE_OAUTH_CLIENT_SECRET = env("GOOGLE_OAUTH_CLIENT_SECRET", default="")
+
+# OpenWeatherMap (free tier) for the weather widget
+OPENWEATHER_API_KEY = env("OPENWEATHER_API_KEY", default="")
+
+# Public OSRM endpoint for drive-time estimates
+OSRM_BASE_URL = env(
+    "OSRM_BASE_URL", default="https://router.project-osrm.org"
+)
+
+# Frontend URL (used in transactional emails / share links)
+FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")
+
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="noreply@localhost")
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND",
+    default="django.core.mail.backends.console.EmailBackend",
 )
 
 # ───────────────────────── Logging ─────────────────────────────────────

@@ -1,0 +1,28 @@
+# National Museum of Colombo
+
+**District:** Colombo (Western Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Dec, Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee (LKR, indicative):** 1000.00
+
+## Overview
+The country's largest museum, housing the Kandyan king's regalia and 5,000 years of artifacts.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach National Museum of Colombo via Colombo town. From Colombo it is roughly 0 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Colombo town.
+
+## Background (excerpted from Wikipedia)
+The Colombo National Museum, also known as the Sri Lanka National Museum, is a museum in Colombo and the largest in Sri Lanka. Founded in 1877 and maintained by the Department of National Museums, it holds collections of significant importance to Sri Lanka, such as the regalia of the Kandyan monarchs, as well as many other exhibits relating the country's cultural and natural heritage.
+
+_Source: https://en.wikipedia.org/wiki/Colombo_National_Museum_
+
+## Quick facts
+- ID: 113
+- Slug: national-museum-of-colombo-colombo
+- Coordinates: 6.927100, 79.861200
+- District: Colombo (id 26)

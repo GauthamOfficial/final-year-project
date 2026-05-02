@@ -1,0 +1,28 @@
+# Nine Arches Bridge
+
+**District:** Badulla (Uva Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Jan, Feb, Mar, Apr, Aug
+**Climate zone:** intermediate
+**Entry fee:** Free
+
+## Overview
+Iconic 1921 colonial-era stone railway bridge; train passes around 06:30, 09:30, 11:00 and 15:00.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Nine Arches Bridge via Badulla town. From Colombo it is roughly 220 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Badulla town.
+
+## Background (excerpted from Wikipedia)
+The Nine Arches Bridge is a viaduct over the River Dodder in Milltown, Dublin, Ireland. The Luas tram Green Line crosses the bridge. There is no access for pedestrians. The bridge is included on the Record of Protected Structures maintained by Dublin City Council.
+
+_Source: https://en.wikipedia.org/wiki/Nine_Arches_Bridge_
+
+## Quick facts
+- ID: 259
+- Slug: nine-arches-bridge-badulla
+- Coordinates: 6.993400, 81.055000
+- District: Badulla (id 47)

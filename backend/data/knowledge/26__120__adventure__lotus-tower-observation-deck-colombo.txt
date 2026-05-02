@@ -1,0 +1,28 @@
+# Lotus Tower Observation Deck
+
+**District:** Colombo (Western Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Dec, Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee (LKR, indicative):** 2500.00
+
+## Overview
+South Asia's tallest self-supported tower; observation deck at 350 m gives panoramic city views.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Lotus Tower Observation Deck via Colombo town. From Colombo it is roughly 0 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Colombo town.
+
+## Background (excerpted from Wikipedia)
+The Lotus Tower (Sinhala: නෙළුම් කුළුණ, romanized: Nelum Kuluna; Tamil: தாமரைக் கோபுரம், romanized: Tāmaraik Kōpuram), also known as the Colombo Lotus Tower, stands at a height of 351.5 meters (1,153 feet) in Colombo, Sri Lanka.   It has become a symbolic landmark for the country. As of 2019, the tower is the tallest self-supported structure in South Asia and the second tallest overall, behind the guy-wire-supported INS Kattabomman antenna tower in India. It ranks as the 11th tallest tower in Asia and the 19th tallest tower in the world. Initially, the tower was proposed to be built in Peliyagoda, but the Government of Sri Lanka later decided to change the location. The lotus-shaped structure serves various purposes, including communication and observation, as well as leisure facilities. The estimated cost of construction was approximately US$113 million.
+
+_Source: https://en.wikipedia.org/wiki/Lotus_Tower_
+
+## Quick facts
+- ID: 120
+- Slug: lotus-tower-observation-deck-colombo
+- Coordinates: 6.927100, 79.861200
+- District: Colombo (id 26)

@@ -1,0 +1,29 @@
+# Sinharaja Forest Reserve
+
+**District:** Ratnapura (Sabaragamuwa Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug, Sep
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee (LKR, indicative):** 1500.00
+
+## Overview
+UNESCO-listed virgin lowland rainforest; biodiversity hotspot of the Indian Ocean.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Sinharaja Forest Reserve via Ratnapura town. From Colombo it is roughly 100 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Ratnapura town.
+
+## Background (excerpted from Wikipedia)
+Sinharaja Forest Reserve is the last virgin Rainforest left in Sri Lanka. Home to many rare endemic flora and fauna, it has been designated a World Heritage Site by UNESCO.
+Formed during the Jurassic period (from 200 to 145 million years ago), Sinharaja forest is the most dense rain forest in Asia.
+
+_Source: https://en.wikipedia.org/wiki/Sinharaja_Forest_Reserve_
+
+## Quick facts
+- ID: 274
+- Slug: sinharaja-forest-reserve-ratnapura
+- Coordinates: 6.682800, 80.399200
+- District: Ratnapura (id 49)

@@ -1,0 +1,29 @@
+# Abhayagiri Monastery
+
+**District:** Anuradhapura (North Central Province)
+**Category:** religious site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee (LKR, indicative):** 1500.00
+
+## Overview
+Sprawling ancient monastery with the Samadhi Buddha statue and elaborate moonstones.
+
+## Practical tips
+- Cover shoulders and knees, remove shoes and hats, and refrain from posing with your back to Buddha statues. Many sites do not allow drones.
+
+## How to get there
+Most travellers reach Abhayagiri Monastery via Anuradhapura town. From Colombo it is roughly 205 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Anuradhapura town.
+
+## Background (excerpted from Wikipedia)
+Abhayagiri Vihāra (Sinhala:අභයගිරි විහාරය or අබාගිරි වෙහෙර​) was a major monastery site of Theravada, Mahayana and Vajrayana Buddhism that was situated in Anuradhapura, Sri Lanka. It is one of the most extensive ruins in the world and one of the most sacred Buddhist pilgrimage cities in the nation. Historically it was a great monastic center as well as a royal capital, with magnificent monasteries rising to many stories, roofed with gilt bronze or tiles of burnt clay glazed in brilliant colours. To the north of the city, encircled by great walls and containing elaborate bathing ponds, carved balustrades and moonstones, stood "Abhayagiri", one of seventeen such religious units in Anuradhapura and the largest of its five major viharas. One of the focal points of the complex is an ancient stupa, the Abhayagiri Dagaba. Surrounding the humped dagaba, Abhayagiri Vihara was a seat of the Northern Monastery, or Uttara Vihara and the original custodian of the Tooth relic in the island.
+The term "Abhayagiri Vihara" refers not only to the complex of monastic buildings, but also to a fraternity of Buddhist monks, or Sangha, which maintained its own historical records, traditions and way of lif
+
+_Source: https://en.wikipedia.org/wiki/Abhayagiri_vihāra_
+
+## Quick facts
+- ID: 244
+- Slug: abhayagiri-monastery-anuradhapura
+- Coordinates: 8.311400, 80.403700
+- District: Anuradhapura (id 45)

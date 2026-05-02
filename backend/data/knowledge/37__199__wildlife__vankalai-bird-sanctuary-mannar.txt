@@ -1,0 +1,30 @@
+# Vankalai Bird Sanctuary
+
+**District:** Mannar (Northern Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** Nov, Dec, Jan, Feb, Mar
+**District peak season:** May, Jun, Jul, Aug
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Migratory hotspot — flamingos, painted storks and waders winter on its lagoons.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Vankalai Bird Sanctuary via Mannar town. From Colombo it is roughly 320 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Mannar town.
+
+## Background (excerpted from Wikipedia)
+Vankalai Sanctuary, also known as the Mannar Bird Sanctuary, is located in the northwest of Sri Lanka in the Mannar District. This site covers an area of 4,839 ha (11,960 acres).
+The region was designated as a sanctuary by the Department of Wildlife Conservation in 2008, and it offers a range of ecosystems (mangroves, salt marshes, lagoons, waterholes, and grasslands). In July 2010 it was selected as the fourth Ramsar wetland in Sri Lanka. 
+The sanctuary harbours more than 150 distinct bird species, including the Northern Pintail (Anas acuta), Greater Flamingo (Phoenicopterus roseus), the Eurasian Wigeon (Anas Penelope), Indian spot-billed duck (Anas poecilorhyncha), Comb duck (Sarkidiornis sylvicola), Long-toed stint (Calidris subminuta) , Peregrine falcon (Falco peregrinus), and Black-tailed godwit (Limosa limosa). The marine ecosystem has over sixty species of fish, marine turtles, and threatened species such as Dugong (Dugong dugon) Green sea turtle (Chelonia mydas), and Saltwater Crocodile (Crocodylus porosus).
+
+_Source: https://en.wikipedia.org/wiki/Vankalai_Sanctuary_
+
+## Quick facts
+- ID: 199
+- Slug: vankalai-bird-sanctuary-mannar
+- Coordinates: 8.981000, 79.904700
+- District: Mannar (id 37)

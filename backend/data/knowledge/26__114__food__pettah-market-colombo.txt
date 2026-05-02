@@ -1,0 +1,32 @@
+# Pettah Market
+
+**District:** Colombo (Western Province)
+**Category:** food / culinary experience
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Dec, Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+Sprawling commercial bazaar with spice, fruit, fabric and electronics streets.
+
+## Practical tips
+- Carry small denominations of LKR for tickets and tips.
+
+## How to get there
+Most travellers reach Pettah Market via Colombo town. From Colombo it is roughly 0 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Colombo town.
+
+## Background (excerpted from Wikipedia)
+Pettah may refer to:
+
+Pettah of Ahmednagar, a fortified town outside the Fort of Ahmednagar stormed by British soldiers in 1803 during Second Anglo-Maratha War
+Pettah, Colombo, a neighborhood in Colombo, Sri Lanka located east of the City centre fort.
+Pettah, Thiruvananthapuram, a residential suburb of Thiruvananthapuram, the capital of Kerala, India.
+
+_Source: https://en.wikipedia.org/wiki/Pettah_
+
+## Quick facts
+- ID: 114
+- Slug: pettah-market-colombo
+- Coordinates: 6.927100, 79.861200
+- District: Colombo (id 26)

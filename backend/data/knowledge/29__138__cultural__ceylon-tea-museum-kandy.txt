@@ -1,0 +1,31 @@
+# Ceylon Tea Museum
+
+**District:** Kandy (Central Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 1000.00
+
+## Overview
+Hantana hilltop museum tracing the rise of Sri Lanka's signature export with antique machinery.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Ceylon Tea Museum via Kandy town. From Colombo it is roughly 115 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kandy town.
+
+## Background (excerpted from Wikipedia)
+The Ceylon Tea Museum is located in the former Hanthana Tea Factory, which was originally constructed in 1925. It is situated 3 km (1.9 mi) south of Kandy. 
+Hanthana was one of the first successful areas to cultivate tea following the failure of coffee production on the island. In 1959 the Tea Research Institute of Ceylon established a substation on land leased from the Hanthana Estate, similar to the Passara substation established in the 1920s. The Hanthana Station was set up to cater to the needs of mid-country tea plantations with regard to the physiology and entomology of tea, in particular the identification of drought-resistant clones and the insect pest shot-hole borer.
+The Ceylon Tea Museum was incorporated on 9 January 1998, under Section 21 of the Companies Act of 1982, in a move initiated by Clifford Ratwatte, chairman of the Sri Lanka Tea Board. The museum was formally opened on 1 December 2001.
+The four-storey tea factory had been abandoned for more than a decade before it was refurbished in 2001 by the Sri Lanka Tea Board and the Planters’ Association of Sri Lanka. The museum contains exhibits on tea pioneers, including James Taylor and Thomas Lipton, as well as much 
+
+_Source: https://en.wikipedia.org/wiki/Ceylon_Tea_Museum_
+
+## Quick facts
+- ID: 138
+- Slug: ceylon-tea-museum-kandy
+- Coordinates: 7.290600, 80.633700
+- District: Kandy (id 29)

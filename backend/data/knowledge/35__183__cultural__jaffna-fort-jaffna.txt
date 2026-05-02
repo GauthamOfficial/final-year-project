@@ -1,0 +1,30 @@
+# Jaffna Fort
+
+**District:** Jaffna (Northern Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+17th-century Dutch fort by Jaffna lagoon, with churches, ramparts and a moat.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Jaffna Fort via Jaffna town. From Colombo it is roughly 400 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Jaffna town.
+
+## Background (excerpted from Wikipedia)
+Jaffna Fort (Tamil: யாழ்ப்பாணக் கோட்டை, romanized: Yāḻppāṇak Kōṭṭai; Sinhala: යාපනය බලකොටුව Yapanaya Balakotuwa) is a fort built by the Portuguese at Jaffna, Sri Lanka, in 1618 under Phillippe de Oliveira following the Portuguese invasion of Jaffna. The fort is located near the coastal village of Gurunagar. Owing to numerous miracles attributed to the statue of the Virgin Mary in the church nearby, the fort was named as Fortress of Our Lady of Miracles of Jafanapatão (Fortaleza de Nossa Senhora dos Milagres de Jafanapatão). It was captured by the Dutch under Rijcklof van Goens in 1658, who expanded the structure. In 1795, it was taken over by the British, and remained under the control of a British garrison until 1948. As the only large military fort in the country, because of the presence of only government and military buildings within its ramparts, it was garrisoned by a detachment of the Ceylon Army.
+
+With the onset of the Sri Lankan Civil War, it came under siege on several occasions and was the scene of pitched battles. From 1985 to 1995 it was under the control of the Liberation Tigers of Tamil Eelam (LTTE); during this time the LTTE destroyed several key features of the for
+
+_Source: https://en.wikipedia.org/wiki/Jaffna_Fort_
+
+## Quick facts
+- ID: 183
+- Slug: jaffna-fort-jaffna
+- Coordinates: 9.661500, 80.025500
+- District: Jaffna (id 35)

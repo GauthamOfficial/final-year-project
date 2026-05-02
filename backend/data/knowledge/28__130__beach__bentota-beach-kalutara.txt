@@ -1,0 +1,28 @@
+# Bentota Beach
+
+**District:** Kalutara (Western Province)
+**Category:** beach / coastal experience
+**Best months to visit:** Nov, Dec, Jan, Feb, Mar
+**District peak season:** Dec, Jan, Feb, Mar
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+South-coast resort beach famed for water sports on the Madu Ganga and turtle hatcheries.
+
+## Practical tips
+- Reef shoes help on rocky coves; surf currents can be strong, especially May-September on the south coast and December-March on the east.
+
+## How to get there
+Most travellers reach Bentota Beach via Kalutara town. From Colombo it is roughly 45 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kalutara town.
+
+## Background (excerpted from Wikipedia)
+Bentota is a coastal town in Sri Lanka, located in the Galle District of the Southern Province. It is approximately 65 kilometres (40 mi) south of Colombo and 56 kilometres (35 mi) north of Galle. Bentota is situated on the southern bank of the Bentota River mouth, at an elevation of 3 metres (9.8 ft) above the sea level.
+
+_Source: https://en.wikipedia.org/wiki/Bentota_
+
+## Quick facts
+- ID: 130
+- Slug: bentota-beach-kalutara
+- Coordinates: 6.585400, 79.960700
+- District: Kalutara (id 28)

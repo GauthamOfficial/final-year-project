@@ -1,0 +1,30 @@
+# Pinnawala Elephant Orphanage
+
+**District:** Kegalle (Sabaragamuwa Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 3000.00
+
+## Overview
+World-renowned sanctuary where rescued elephants bottle-feed and bathe in the Maha Oya river twice a day.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Pinnawala Elephant Orphanage via Kegalle town. From Colombo it is roughly 80 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kegalle town.
+
+## Background (excerpted from Wikipedia)
+Pinnawala Elephant Orphanage (Sinhala: පින්නවල අලි අනාථාගාරය), is a captive breeding and conservation institute for wild Asian elephants located at Pinnawala village, 13 km (8.1 mi) northeast of Kegalle town in Sabaragamuwa Province of Sri Lanka. Pinnawala has the largest herd of captive elephants in the world. In 2023, there were 71 elephants, including 30 males and 41 females from 3 generations, living in Pinnawala.
+The orphanage was founded to care and protect the many orphaned unweaned wild elephants found wandering in and near the forests of Sri Lanka. It was established in 1975 by the Sri Lanka Department of Wildlife Conservation (DWC).
+On 31 August 2021, a 25 year old elephant named Surangi gave birth to twin male baby elephants at the orphanage. It also marked the first instance of the birth of twin elephants in Sri Lanka after a gap of 80 years since 1941.
+
+_Source: https://en.wikipedia.org/wiki/Pinnawala_Elephant_Orphanage_
+
+## Quick facts
+- ID: 281
+- Slug: pinnawala-elephant-orphanage-kegalle
+- Coordinates: 7.251300, 80.346400
+- District: Kegalle (id 50)

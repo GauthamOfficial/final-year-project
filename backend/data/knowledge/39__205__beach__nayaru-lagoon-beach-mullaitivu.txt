@@ -1,0 +1,28 @@
+# Nayaru Lagoon Beach
+
+**District:** Mullaitivu (Northern Province)
+**Category:** beach / coastal experience
+**Best months to visit:** May, Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Empty crescent of white sand where a lagoon meets the sea; one of Sri Lanka's wildest beaches.
+
+## Practical tips
+- Reef shoes help on rocky coves; surf currents can be strong, especially May-September on the south coast and December-March on the east.
+
+## How to get there
+Most travellers reach Nayaru Lagoon Beach via Mullaitivu town. From Colombo it is roughly 335 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Mullaitivu town.
+
+## Background (excerpted from Wikipedia)
+Mullaitivu District (Tamil: முல்லைத்தீவு மாவட்டம், Mullaittīvu Māvaṭṭam; Sinhala: මුලතිවු දිස්ත්‍රික්කය, Mulativu distrikkaya) is one of the 25 districts of Sri Lanka, the second level administrative division of the country. The district is administered by a District Secretariat headed by a District Secretary (previously known as a Government Agent) appointed by the central government of Sri Lanka. The capital of the district is the town of Mullaitivu.
+
+_Source: https://en.wikipedia.org/wiki/Mullaitivu_District_
+
+## Quick facts
+- ID: 205
+- Slug: nayaru-lagoon-beach-mullaitivu
+- Coordinates: 9.267100, 80.814200
+- District: Mullaitivu (id 39)

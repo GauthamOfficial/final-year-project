@@ -1,0 +1,28 @@
+# Beli Lena Cave
+
+**District:** Kegalle (Sabaragamuwa Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 200.00
+
+## Overview
+Pre-historic cave shelter where 30,000-year-old human remains were unearthed.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Beli Lena Cave via Kegalle town. From Colombo it is roughly 80 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kegalle town.
+
+## Background (excerpted from Wikipedia)
+Belilena Cave (Sinhala: කිතුල්ගල බෙලි ලෙන) is a cave in Sri Lanka, located 8 km (5.0 mi) from the town of Kitulgala. Evidence of prehistoric human presence as early as 32,000 years ago was recorded at the site. The skeletal remains of ten individuals were discovered by Paul E. P. Deraniyagala, who attributed them to Balangoda Man (Homo sapiens balangodensis). Balangoda Man is assumed to have lived as early as 32,000 years ago and occupied high altitude territories of up to 2,000 ft (609.6 m) above sea level.
+
+_Source: https://en.wikipedia.org/wiki/Belilena_
+
+## Quick facts
+- ID: 284
+- Slug: beli-lena-cave-kegalle
+- Coordinates: 7.251300, 80.346400
+- District: Kegalle (id 50)

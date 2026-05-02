@@ -1,0 +1,30 @@
+# Sembuwatta Lake
+
+**District:** Matale (Central Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 600.00
+
+## Overview
+Crystalline reservoir set in tea country at 1,000 m, with kayaks and a 90-minute jungle walk.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Sembuwatta Lake via Matale town. From Colombo it is roughly 140 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matale town.
+
+## Background (excerpted from Wikipedia)
+Sembuwatta Lake (Sinhala: සෙම්ඹුවත්ත වැව) is a tourist attraction situated at Elkaduwa tea plantation in the Matale District of Sri Lanka, adjacent to the Campbell's Lane Forest Reserve. Situated approximately 25 km (16 mi) from the main road, the lake is a man-made lake noted for its scenic surroundings and unique integration with the natural landscape. It is estimated to be 9–12 m (30–39 ft) deep and is fed by a natural spring, which forms a nearby swimming pool.
+The lake offers visitors opportunities for leisure walking and nature observation. While swimming in the lake itself is not permitted, the nearby spring pool allows recreational swimming. The site offers panoramic views, the Loolecondera and Elkaduwa tea estates, and the Hanthana and Ambuluwawa mountain ranges. Birdwatching is possible, though not formally developed as an activity.
+The lake area includes other features such as the Hunnas waterfall, adding to its attraction. Visitors can also visit nearby tea plantations, such as Loolecondera and Elkaduwa estates, and the Hanthana mountain range.
+
+_Source: https://en.wikipedia.org/wiki/Sembuwatta_Lake_
+
+## Quick facts
+- ID: 147
+- Slug: sembuwatta-lake-matale
+- Coordinates: 7.467500, 80.623400
+- District: Matale (id 30)

@@ -1,0 +1,31 @@
+# Dambulla Cave Temple
+
+**District:** Matale (Central Province)
+**Category:** religious site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 2000.00
+
+## Overview
+Five painted caves containing 153 statues of the Buddha; oldest murals date to the 1st century BCE.
+
+## Practical tips
+- Cover shoulders and knees, remove shoes and hats, and refrain from posing with your back to Buddha statues. Many sites do not allow drones.
+
+## How to get there
+Most travellers reach Dambulla Cave Temple via Matale town. From Colombo it is roughly 140 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matale town.
+
+## Background (excerpted from Wikipedia)
+Dambulla cave temple (Sinhala: දඹුල්ල රජ මහා විහාරය, romanized: Dam̆būlla Raja Maha Vihāraya; Tamil: தம்புள்ளை பொற்கோவில், romanized: Tampuḷḷai Poṟkōvil), also known as the Golden Temple of Dambulla, is a World Heritage Site (1991) in Sri Lanka, situated in the central part of the country. This site is situated 148 kilometres (92 mi) east of Colombo, 72 kilometres (45 mi) north of Kandy and
+43 kilometres (27 mi) north of Matale.
+Dambulla is the largest and best-preserved cave temple complex in Sri Lanka. The rock towers 160 m (520 ft) over the surrounding plains. There are more than eighty documented caves in the surrounding area. Major attractions are spread over five caves, which contain statues and paintings. These paintings and statues are related to Gautama Buddha and his life. There are a total of 153 Buddha statues, three statues of Sri Lankan kings and four statues of gods and goddesses. The latter include Vishnu and the Ganesha. The murals cover an area of 2,100 square metres (23,000 sq ft). Depictions on the walls of the caves include the temptation by the demon Mara, and Buddha's first sermon.
+Prehistoric Sri Lankans would have lived in these cave complexes before the ar
+
+_Source: https://en.wikipedia.org/wiki/Dambulla_cave_temple_
+
+## Quick facts
+- ID: 145
+- Slug: dambulla-cave-temple-matale
+- Coordinates: 7.467500, 80.623400
+- District: Matale (id 30)

@@ -1,10 +1,10 @@
 """
-`python manage.py ingest_knowledge_base` — Prompt 3A.
+`python manage.py ingest_knowledge_base` — embed knowledge files into ChromaDB.
 
 Walks `data/knowledge/` (configurable via --path), extracts text from
 `.txt` and `.pdf` files, chunks each document into 512-token segments with
-64-token overlap, embeds each chunk via Gemini (with offline fallback),
-and upserts into the `sri_lanka_tourism` ChromaDB collection.
+64-token overlap, embeds each chunk via Gemini, and upserts into the
+`sri_lanka_tourism` ChromaDB collection.
 
 Filename metadata convention (parsed by `_metadata_from_path`):
 
@@ -12,7 +12,7 @@ Filename metadata convention (parsed by `_metadata_from_path`):
     e.g. 5__123__cultural__sigiriya-rock-fortress.txt
 
 Anything missing in the filename is left as `None` so `where=` filters in
-PRD §9.2 still work.
+metadata queries still work.
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ DEFAULT_KNOWLEDGE_DIR = Path(settings.BASE_DIR) / "data" / "knowledge"
 
 
 class Command(BaseCommand):
-    help = "Embed local knowledge documents into ChromaDB (PRD §9.1)."
+    help = "Embed local knowledge documents into ChromaDB."
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -178,7 +178,7 @@ class Command(BaseCommand):
                             "token_estimate": chunk.token_estimate,
                         }
                     )
-                embeddings = embed_client.embed_batch(docs)
+                embeddings = embed_client.embed_batch(docs, purpose="document")
                 collection.upsert(
                     ids=ids,
                     documents=docs,

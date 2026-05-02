@@ -1,0 +1,29 @@
+# Athugala Rock
+
+**District:** Kurunegala (North Western Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** intermediate
+**Entry fee:** Free
+
+## Overview
+'Elephant Rock' towering over Kurunegala town — a 30-minute climb to a giant white Buddha at the summit.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Athugala Rock via Kurunegala town. From Colombo it is roughly 95 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kurunegala town.
+
+## Background (excerpted from Wikipedia)
+Kurunegala (Sinhala: කුරුණෑගල, IPA: [kurunæːɡələ]; Tamil: குருணாகல், IPA: [kuɾuɳaːɣɐl]) is a major city in Sri Lanka. It is the capital city of the North Western Province and the Kurunegala District. Kurunegala was an ancient royal capital for 50 years, from the end of the 13th century to the start of the 14th century. It is at the junction of several main roads linking to other important parts of the country. It is about 94 kilometres (58 mi) from Colombo, 42 kilometres (26 mi) from Kandy and  51 kilometres (32 mi) from Matale.
+Located at an altitude of 116 metres (381 ft) above sea level, Kurunegala is surrounded by coconut plantations and rubber estates. There are eight very noticeable large rocks that encircle and dominate the city. Kurunegala's rocks rise from the plain below and have characteristic names, six of which come from the animals that they are imagined to represent. The largest among them is Ethagala or the "Elephant Rock" (though the translation is actually tusker), reaches 325 metres (1,066 ft). The shape of Ethagala resembles an elephant.
+
+_Source: https://en.wikipedia.org/wiki/Kurunegala_
+
+## Quick facts
+- ID: 230
+- Slug: athugala-rock-kurunegala
+- Coordinates: 7.486300, 80.362300
+- District: Kurunegala (id 43)

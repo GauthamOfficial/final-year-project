@@ -1,0 +1,31 @@
+# Kallady Beach
+
+**District:** Batticaloa (Eastern Province)
+**Category:** beach / coastal experience
+**Best months to visit:** Apr, May, Jun, Jul, Aug, Sep
+**District peak season:** Apr, May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Long sandy stretch lined with fishing villages and tamarind trees, near the lagoon mouth.
+
+## Practical tips
+- Reef shoes help on rocky coves; surf currents can be strong, especially May-September on the south coast and December-March on the east.
+
+## How to get there
+Most travellers reach Kallady Beach via Batticaloa town. From Colombo it is roughly 310 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Batticaloa town.
+
+## Background (excerpted from Wikipedia)
+Kalladi or Kallady may refer to:
+
+Kalladi (or Kallady) is a sub-caste within the Scheduled Castes (Dalits), primarily found in the Indian state of Kerala, with smaller populations in Karnataka and Tamil Nadu. Traditionally, members of the Kalladi community have been engaged in occupations such as agricultural labour and animal husbandry. They predominantly speak Malayalam and adhere to Hinduism. Like many Dalit communities in India, the Kalladi continue to face social and economic marginalisation despite constitutional safeguards aimed at promoting equality and social justice. In Kerala, they are classified among the most vulnerable Scheduled Castes, experiencing persistent socio-economic and educational disadvantages, even though they are included in various state welfare schemes. According to the 2011 Census of India, the Kalladi community is most populous in the state of Kerala, with Malappuram district recording 27,115 individuals and Kozhikode district with 11,199. In Karnataka, the community is concentrated in the Chikmagalur district, which reported a population of 1,552. In Tamil Nadu, the Kalladi population is minimal, with Viluppuram district recording 273 individuals.
+Ka
+
+_Source: https://en.wikipedia.org/wiki/Kallady_
+
+## Quick facts
+- ID: 213
+- Slug: kallady-beach-batticaloa
+- Coordinates: 7.717000, 81.700000
+- District: Batticaloa (id 40)

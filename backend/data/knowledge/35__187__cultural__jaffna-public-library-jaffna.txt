@@ -1,0 +1,28 @@
+# Jaffna Public Library
+
+**District:** Jaffna (Northern Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Mughal-style library — burned in 1981, painstakingly rebuilt as a symbol of Tamil resilience.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Jaffna Public Library via Jaffna town. From Colombo it is roughly 400 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Jaffna town.
+
+## Background (excerpted from Wikipedia)
+Jaffna Public Library (Tamil: யாழ் பொது நூலகம்; Sinhala: යාපනය මහජන පුස්තකාලය) is located in Jaffna, Sri Lanka. It is one of Jaffna's landmarks, and is run by the Jaffna Municipal Council. The library was built in 1933 and is Sri Lanka's second main public Library, only rivalled by Colombo Public Library During the early 1980s, it was one of the biggest libraries in Asia, containing over 97,000 books and manuscripts. In 1981, it was burned down in a deliberate mob attack. Over a million books were burned in the 1981 arson attack, and some ancient Tamil books and manuscripts were never recovered. In 2001, the renovation of the library was completed, with new structures being built and new books received, although its old books and manuscripts were not replaced.
+
+_Source: https://en.wikipedia.org/wiki/Jaffna_Public_Library_
+
+## Quick facts
+- ID: 187
+- Slug: jaffna-public-library-jaffna
+- Coordinates: 9.661500, 80.025500
+- District: Jaffna (id 35)

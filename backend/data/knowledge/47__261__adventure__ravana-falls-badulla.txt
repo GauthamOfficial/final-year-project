@@ -1,0 +1,28 @@
+# Ravana Falls
+
+**District:** Badulla (Uva Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Oct, Nov, Dec, Jan, Feb
+**District peak season:** Jan, Feb, Mar, Apr, Aug
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 200.00
+
+## Overview
+25-metre roadside waterfall named after the Ramayana king who allegedly hid Sita in nearby caves.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Ravana Falls via Badulla town. From Colombo it is roughly 220 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Badulla town.
+
+## Background (excerpted from Wikipedia)
+Ravana Ella, also known as Ravama Falls, or Bambaragala Falls (Sinhala: බඹරගල ඇල්ල, romanized: Bambaragala Ella) is a popular sightseeing attraction in Uva province of Sri Lanka. It currently ranks as one of the widest falls in the country.
+
+_Source: https://en.wikipedia.org/wiki/Ravana_Falls_
+
+## Quick facts
+- ID: 261
+- Slug: ravana-falls-badulla
+- Coordinates: 6.993400, 81.055000
+- District: Badulla (id 47)

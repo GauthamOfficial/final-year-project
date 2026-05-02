@@ -1,0 +1,23 @@
+# Bopath Ella Falls
+
+**District:** Ratnapura (Sabaragamuwa Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+30-metre falls shaped like a Bo leaf; popular swimming pool at the base.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Bopath Ella Falls via Ratnapura town. From Colombo it is roughly 100 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Ratnapura town.
+
+## Quick facts
+- ID: 276
+- Slug: bopath-ella-falls-ratnapura
+- Coordinates: 6.682800, 80.399200
+- District: Ratnapura (id 49)

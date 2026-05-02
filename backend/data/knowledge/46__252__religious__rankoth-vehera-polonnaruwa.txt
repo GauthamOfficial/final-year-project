@@ -1,0 +1,28 @@
+# Rankoth Vehera
+
+**District:** Polonnaruwa (North Central Province)
+**Category:** religious site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Largest stupa in Polonnaruwa, modelled on Anuradhapura's Ruwanwelisaya.
+
+## Practical tips
+- Cover shoulders and knees, remove shoes and hats, and refrain from posing with your back to Buddha statues. Many sites do not allow drones.
+
+## How to get there
+Most travellers reach Rankoth Vehera via Polonnaruwa town. From Colombo it is roughly 215 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Polonnaruwa town.
+
+## Background (excerpted from Wikipedia)
+Rankoth Vehera is a stupa located in the ancient city of Polonnaruwa in Sri Lanka. The stupa was built by Nissanka Malla of Polonnaruwa, who ruled the country from 1187 to 1196. The Rankoth Vehera has been built according to the tradition of the stupas of the Anuradhapura Maha Viharaya and bears a close resemblance to Ruwanwelisaya. In fact, a stone inscription situated close to the stupa even identifies it by the name "Ruwanweli". However, it has later come to be known by the currently used name, Rankoth Vehera. In Sinhalese, ran means gold, kotha is the name given to the pinnacle of a stupa, and vehera means stupa or temple. Thus, the name Rankoth Vehera can be roughly translated to English as "Gold Pinnacled Stupa". Along with the Kiri Vehera, it is one of the most revered stupas in Polonnaruwa.
+
+_Source: https://en.wikipedia.org/wiki/Rankoth_Vehera_
+
+## Quick facts
+- ID: 252
+- Slug: rankoth-vehera-polonnaruwa
+- Coordinates: 7.940300, 81.018800
+- District: Polonnaruwa (id 46)

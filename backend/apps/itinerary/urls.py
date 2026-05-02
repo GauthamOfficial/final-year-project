@@ -1,4 +1,4 @@
-"""Routes for the `itinerary` app — Prompt 2C."""
+"""Routes for itinerary generation, listing, PDF export, and day regeneration."""
 
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter

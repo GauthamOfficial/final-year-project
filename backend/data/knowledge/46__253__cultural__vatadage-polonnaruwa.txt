@@ -1,0 +1,29 @@
+# Vatadage
+
+**District:** Polonnaruwa (North Central Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Circular relic house with concentric rings of pillars, four entrance Buddhas and exquisite stonework.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Vatadage via Polonnaruwa town. From Colombo it is roughly 215 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Polonnaruwa town.
+
+## Background (excerpted from Wikipedia)
+The Polonnaruwa Vatadage is an ancient structure dating back to the Kingdom of Polonnaruwa of Sri Lanka. It is believed to have been built during the reign of Parakramabahu I to hold the Relic of the tooth of the Buddha or during the reign of Nissanka Malla of Polonnaruwa to hold the alms bowl used by the Buddha. Both these venerated relics would have given the structure a great significance and importance at the time. Located within the ancient city of Polonnaruwa, it is the best preserved example of a vatadage in the country, and has been described as the "ultimate development" of this type of architecture. Abandoned for several centuries, excavation work at the Polonnaruwa Vatadage began in 1903.
+Built for the protection of a small stupa, the structure has two stone platforms decorated with elaborate stone carvings. The lower platform is entered through a single entrance facing the north, while the second platform can be accessed through four doorways facing the four cardinal points. The upper platform, surrounded by a brick wall, contains the stupa. Four Buddha statues are seated around it, each facing one of the entrances. Three concentric rows of stone columns had also been p
+
+_Source: https://en.wikipedia.org/wiki/Polonnaruwa_Vatadage_
+
+## Quick facts
+- ID: 253
+- Slug: vatadage-polonnaruwa
+- Coordinates: 7.940300, 81.018800
+- District: Polonnaruwa (id 46)

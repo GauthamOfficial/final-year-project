@@ -1,0 +1,28 @@
+# Talaimannar Lighthouse
+
+**District:** Mannar (Northern Province)
+**Category:** cultural / heritage site
+**Best months to visit:** May, Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Whitewashed coastal beacon at the start of the bridge to India; sunset gold.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Talaimannar Lighthouse via Mannar town. From Colombo it is roughly 320 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Mannar town.
+
+## Background (excerpted from Wikipedia)
+Talaimannar (Tamil: தலைமன்னார்; Sinhala: තලෙයිමන්නාරම) is a settlement in Sri Lanka located on the northwestern coast of Mannar Island.
+
+_Source: https://en.wikipedia.org/wiki/Talaimannar_
+
+## Quick facts
+- ID: 196
+- Slug: talaimannar-lighthouse-mannar
+- Coordinates: 8.981000, 79.904700
+- District: Mannar (id 37)

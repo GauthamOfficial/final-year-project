@@ -1,0 +1,28 @@
+# Diyaluma Falls
+
+**District:** Badulla (Uva Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Oct, Nov, Dec, Jan, Feb
+**District peak season:** Jan, Feb, Mar, Apr, Aug
+**Climate zone:** intermediate
+**Entry fee:** Free
+
+## Overview
+220-metre cascade — the country's second-tallest — with infinity-pool plunge pools at the top.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Diyaluma Falls via Badulla town. From Colombo it is roughly 220 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Badulla town.
+
+## Background (excerpted from Wikipedia)
+Diyaluma Falls is 220 m (720 ft) high and the second highest waterfall in Sri Lanka and 619th highest waterfall in the world. It is situated 6 km (3.7 mi) away from Koslanda in Badulla District on Colombo-Badulla highway. The falls are formed by Punagala Oya, a tributary of Kuda Oya which in turn, is a tributary of Kirindi Oya.
+
+_Source: https://en.wikipedia.org/wiki/Diyaluma_Falls_
+
+## Quick facts
+- ID: 265
+- Slug: diyaluma-falls-badulla
+- Coordinates: 6.993400, 81.055000
+- District: Badulla (id 47)

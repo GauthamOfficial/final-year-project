@@ -1,0 +1,28 @@
+# Pasikudah Beach
+
+**District:** Batticaloa (Eastern Province)
+**Category:** beach / coastal experience
+**Best months to visit:** Apr, May, Jun, Jul, Aug, Sep
+**District peak season:** Apr, May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+World-famous shallow reef bay — wade out 100 m and the water still only reaches your waist.
+
+## Practical tips
+- Reef shoes help on rocky coves; surf currents can be strong, especially May-September on the south coast and December-March on the east.
+
+## How to get there
+Most travellers reach Pasikudah Beach via Batticaloa town. From Colombo it is roughly 310 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Batticaloa town.
+
+## Background (excerpted from Wikipedia)
+Pasikudah or Pasikuda (Tamil: பாசிக்குடா; Sinhala: පාසිකුඩා; (Pronounced Paasikkudah - historic Tamil translation "Green-Algae-Bay") is a coastal resort town located 35 kilometers northwest of Batticaloa, Batticaloa District, Sri Lanka. Historically a small Tamil hamlet alongside nearby Kalkudah, it used to be a popular tourist destination, however suffered huge devastation following  the 2004 Indian Ocean tsunami and the Sri Lankan Civil War. Foreign travel to Pasikudah has recently increased due to growth in investment and development. It is home to the Pasikudah Mariamman temple. Pasikudah is easily accessible from the cities of Trincomalee and Batticaloa. The nearest airport to Pasikudah is Batticaloa Airport, which has scheduled flights operating from Colombo Bandaranaike International Airport.
+
+_Source: https://en.wikipedia.org/wiki/Pasikudah_
+
+## Quick facts
+- ID: 210
+- Slug: pasikudah-beach-batticaloa
+- Coordinates: 7.717000, 81.700000
+- District: Batticaloa (id 40)

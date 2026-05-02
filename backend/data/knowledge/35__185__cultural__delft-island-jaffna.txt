@@ -1,0 +1,28 @@
+# Delft Island
+
+**District:** Jaffna (Northern Province)
+**Category:** cultural / heritage site
+**Best months to visit:** May, Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Coral-walled island reached by ferry — wild ponies, baobabs and a Dutch bathhouse.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Delft Island via Jaffna town. From Colombo it is roughly 400 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Jaffna town.
+
+## Background (excerpted from Wikipedia)
+Neduntheevu or Neduntivu (Tamil: நெடுந்தீவு, romanized: Neṭuntīvu; Sinhala: ඩෙල්ෆ්ට්, romanized: Ḍelfṭ) (also known by its Dutch name Delft) is an island in the Palk Strait, northern Sri Lanka. This island is named as Delft in the Admiralty Chart unlike the other islands, whose names are Tamil.
+
+_Source: https://en.wikipedia.org/wiki/Neduntheevu_
+
+## Quick facts
+- ID: 185
+- Slug: delft-island-jaffna
+- Coordinates: 9.661500, 80.025500
+- District: Jaffna (id 35)

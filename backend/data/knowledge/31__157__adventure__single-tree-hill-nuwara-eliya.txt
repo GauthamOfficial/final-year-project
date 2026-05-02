@@ -1,0 +1,32 @@
+# Single Tree Hill
+
+**District:** Nuwara Eliya (Central Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug
+**District peak season:** Jan, Feb, Mar, Apr, Aug
+**Climate zone:** intermediate
+**Entry fee:** Free
+
+## Overview
+Easy 90-minute climb to a 360-degree viewpoint over Nuwara Eliya valley.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Single Tree Hill via Nuwara Eliya town. From Colombo it is roughly 180 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Nuwara Eliya town.
+
+## Background (excerpted from Wikipedia)
+One Tree Hill may refer to:
+
+"One Tree Hill" (song), a 1987 song by U2 referencing One Tree Hill, New Zealand volcanic peak
+One Tree Hill (TV series), a 2003–2012 American drama series named for the U2 song
+One Tree Hill (soundtrack), a 2005 soundtrack album from the series
+
+_Source: https://en.wikipedia.org/wiki/Single_Tree_Hill_
+
+## Quick facts
+- ID: 157
+- Slug: single-tree-hill-nuwara-eliya
+- Coordinates: 6.949700, 80.789100
+- District: Nuwara Eliya (id 31)

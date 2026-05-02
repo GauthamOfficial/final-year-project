@@ -1,0 +1,28 @@
+# Kandy Lake
+
+**District:** Kandy (Central Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Jan, Feb, Mar, Jul, Aug
+**Climate zone:** intermediate
+**Entry fee:** Free
+
+## Overview
+Artificial lake built in 1807 by the last king of Kandy, ringed by an easy walking path with herons and monitor lizards.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Kandy Lake via Kandy town. From Colombo it is roughly 115 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Kandy town.
+
+## Background (excerpted from Wikipedia)
+Kandy Lake (Sinhala: නුවර වැව), also known as Kiri Muhuda or the Sea of Milk, is an artificial lake in the heart of the hill city of Kandy, Sri Lanka, was built in 1807 by King Sri Wickrama Rajasinghe next to the Temple of the Tooth. It is a protected lake, with all fishing prohibited.
+
+_Source: https://en.wikipedia.org/wiki/Kandy_Lake_
+
+## Quick facts
+- ID: 135
+- Slug: kandy-lake-kandy
+- Coordinates: 7.290600, 80.633700
+- District: Kandy (id 29)

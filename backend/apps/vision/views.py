@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 
-from rest_framework import status
+from rest_framework import permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -19,6 +19,7 @@ logger = logging.getLogger("lankaguide.vision.views")
 
 
 class IdentifyView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request):

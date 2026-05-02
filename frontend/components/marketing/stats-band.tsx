@@ -4,10 +4,10 @@
  */
 const ITEMS = [
   ["25", "districts curated"],
-  ["60+", "attractions catalogued"],
+  ["250+", "attractions catalogued"],
   ["3", "languages: EN · සිංහල · தமிழ்"],
-  ["6h", "trend cache (PRD §9.7)"],
-  ["1.5s", "p50 chat response"],
+  ["Live", "weather + drive time"],
+  ["Voice", "speak in any language"],
   ["0", "ads, ever"],
 ];
 

@@ -1,0 +1,28 @@
+# Gangaramaya Temple
+
+**District:** Colombo (Western Province)
+**Category:** religious site
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug, Dec
+**District peak season:** Dec, Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee (LKR, indicative):** 500.00
+
+## Overview
+Eclectic urban temple complex blending Sri Lankan, Thai, Indian and Chinese architecture, with a museum of priceless jade and ivory donations.
+
+## Practical tips
+- Cover shoulders and knees, remove shoes and hats, and refrain from posing with your back to Buddha statues. Many sites do not allow drones.
+
+## How to get there
+Most travellers reach Gangaramaya Temple via Colombo town. From Colombo it is roughly 0 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Colombo town.
+
+## Background (excerpted from Wikipedia)
+Gangaramaya Temple (Sinhala: ශ්‍රී ගංගාරාම මහාවිහාරය śrī gangārāma mahāwihāraya, Tamil: ஸ்ரீ கங்காராம மகாவிகாரம் Srī Gaṅgārāma Makāvikāram) is one of the most important temples in Colombo, Sri Lanka, being a mix of modern architecture and cultural essence. Located on the Beira Lake, it was completed in the late 19th century.
+
+_Source: https://en.wikipedia.org/wiki/Gangaramaya_Temple_
+
+## Quick facts
+- ID: 111
+- Slug: gangaramaya-temple-colombo
+- Coordinates: 6.927100, 79.861200
+- District: Colombo (id 26)

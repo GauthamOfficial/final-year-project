@@ -1,0 +1,30 @@
+# Galle Fort
+
+**District:** Galle (Southern Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Nov, Dec, Jan, Feb, Mar
+**District peak season:** Nov, Dec, Jan, Feb, Mar
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+UNESCO-listed Dutch-built fortified old town, walled, livable and impossibly photogenic.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Galle Fort via Galle town. From Colombo it is roughly 120 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Galle town.
+
+## Background (excerpted from Wikipedia)
+Galle Fort (Sinhala: ගාලු කොටුව Galu Kotuwa; Tamil: காலிக் கோட்டை, romanized: Kālik Kōṭṭai), in the Bay of Galle on the southwest coast of Sri Lanka, was built first in 1588 by the Portuguese, then extensively fortified by the Dutch during the 17th century from 1649 onwards. It is a historical, archaeological and architectural heritage monument, which even after more than 437 years maintains a polished appearance, due to extensive reconstruction work done by the Archaeological Department of Sri Lanka.
+The fort has a colourful history, and today has a multi-ethnic and multi-religious population. The heritage value of the fort has been recognized by UNESCO and the site has been inscribed as a cultural heritage UNESCO World Heritage Site under criteria iv, for its unique exposition of "an urban ensemble which illustrates the interaction of European architecture and South Asian traditions from the 16th to the 19th centuries."
+The Galle Fort, also known as the Dutch Fort or the "Ramparts of Galle", withstood the Boxing Day tsunami of 2004 which damaged part of the coastal Galle town. It has since been restored.
+
+_Source: https://en.wikipedia.org/wiki/Galle_Fort_
+
+## Quick facts
+- ID: 158
+- Slug: galle-fort-galle
+- Coordinates: 6.053500, 80.221000
+- District: Galle (id 32)

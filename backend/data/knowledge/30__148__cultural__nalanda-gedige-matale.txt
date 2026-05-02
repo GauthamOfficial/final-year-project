@@ -1,0 +1,29 @@
+# Nalanda Gedige
+
+**District:** Matale (Central Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** intermediate
+**Entry fee (LKR, indicative):** 500.00
+
+## Overview
+8th-century stone temple combining Hindu and Buddhist motifs; relocated stone-by-stone in the 1980s.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Nalanda Gedige via Matale town. From Colombo it is roughly 140 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matale town.
+
+## Background (excerpted from Wikipedia)
+Nalanda Gedige (Sinhala: නාලන්ද ගෙඩිගේ; Tamil: நாளாந்த கடிகை) is an ancient complete stone temple near Matale, Sri Lanka and its original site is considered the geographical centre of Sri Lanka. The building was constructed between the 8th and 10th centuries with dravidian architecture in (Pallava style) and is believed to have been used by Buddhists. A pillar inscription of the 9-10th century A.D. that was unearthed from the site revealed Nalanda Gedige was a Buddhist monastery. Recorded in the Sinhala language, it includes a code of regulations made for the temple. Also some scholars describe this building as a dravidian architecture dedicated to a Mahayana cult with pronounced Tantric learning and known as an ancient monument of possible Vajrayana (Tantric) Buddhist affinities.
+Nalanda Gedige is designed on the lines of a Hindu temple with a mandapa, an entrance hall (originally roofed), a short passage to a bare cello, and an ambulatory round the holy centre. A limited number of the original Hindu deity statuettes exist within the temple, however, a statue of the God Kubera appears on the south side of the tympanum over the sanctuary, a feature that can only be seen in Sri Lank
+
+_Source: https://en.wikipedia.org/wiki/Nalanda_Gedige_
+
+## Quick facts
+- ID: 148
+- Slug: nalanda-gedige-matale
+- Coordinates: 7.467500, 80.623400
+- District: Matale (id 30)

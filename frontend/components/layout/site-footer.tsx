@@ -10,22 +10,25 @@ const COLUMNS = [
       { href: "/explore?category=cultural", label: "Cultural sites" },
       { href: "/explore?category=wildlife", label: "Wildlife parks" },
       { href: "/explore?category=beach", label: "Beaches & coast" },
+      { href: "/gallery", label: "Photo gallery" },
     ],
   },
   {
     title: "Plan",
     links: [
       { href: "/itinerary", label: "Itinerary builder" },
-      { href: "/chat", label: "Ask the AI guide" },
+      { href: "/chat", label: "AI travel guide" },
+      { href: "/translate", label: "Translator" },
       { href: "/#how", label: "How it works" },
     ],
   },
   {
-    title: "About",
+    title: "Account",
     links: [
-      { href: "/#stories", label: "Stories from the field" },
-      { href: "/#research", label: "Research project" },
-      { href: "https://github.com", label: "GitHub" },
+      { href: "/login", label: "Sign in" },
+      { href: "/signup", label: "Create account" },
+      { href: "/account", label: "My profile" },
+      { href: "/account/history", label: "My history" },
     ],
   },
 ];
@@ -39,9 +42,9 @@ export function SiteFooter() {
         <div className="space-y-5">
           <Logo invert />
           <p className="max-w-sm text-sm leading-relaxed text-jade-100/80">
-            An AI-powered immersive companion for travel across the Pearl of the
-            Indian Ocean. Crafted as a final-year research project at the
-            University of Kelaniya.
+            An AI-powered travel companion for Sri Lanka. Plan trips, ask the
+            local guide, translate on the fly, and explore every district with
+            curated photography and video.
           </p>
           <div className="flex items-center gap-2 text-xs text-jade-100/70">
             <MapPin className="h-3.5 w-3.5 text-saffron-300" />
@@ -70,10 +73,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-jade-800/80">
         <div className="container flex flex-col items-center justify-between gap-3 py-6 text-xs text-jade-100/60 md:flex-row">
-          <p>
-            © {new Date().getFullYear()} LankaGuide AI · Final-year research
-            project · Gautham B.K.
-          </p>
+          <p>© {new Date().getFullYear()} LankaGuide. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <a
               href="mailto:hello@lankaguide.lk"
@@ -82,10 +82,10 @@ export function SiteFooter() {
               <Mail className="h-3.5 w-3.5" /> hello@lankaguide.lk
             </a>
             <a
-              href="https://github.com"
+              href="/admin"
               className="flex items-center gap-1.5 hover:text-saffron-300"
             >
-              <ExternalLink className="h-3.5 w-3.5" /> GitHub
+              <ExternalLink className="h-3.5 w-3.5" /> Admin
             </a>
           </div>
         </div>

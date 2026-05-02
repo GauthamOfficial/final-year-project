@@ -1,0 +1,29 @@
+# Sea Turtle Hatchery, Habaraduwa
+
+**District:** Galle (Southern Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Nov, Dec, Jan, Feb, Mar
+**Climate zone:** wet
+**Entry fee (LKR, indicative):** 1000.00
+
+## Overview
+Conservation centre where injured turtles recover; nightly hatchling releases in season.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Sea Turtle Hatchery, Habaraduwa via Galle town. From Colombo it is roughly 120 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Galle town.
+
+## Background (excerpted from Wikipedia)
+Sea turtles (superfamily Chelonioidea), sometimes called marine turtles, are reptiles of the order Testudines and of the suborder Cryptodira. The seven existing species of sea turtles are the flatback, green, hawksbill, leatherback, loggerhead, Kemp's ridley, and olive ridley. Five of the seven species are listed as threatened with extinction globally on the IUCN Red List of Threatened Species. The remaining two are not considered to be threatened with extinction, one of which, the flatback turtle, is found only in the waters of Australia, Papua New Guinea, and Indonesia. 
+Sea turtles can be categorized as hard-shelled (cheloniid) or leathery-shelled (dermochelyid). The only dermochelyid species of sea turtle is the leatherback.
+
+_Source: https://en.wikipedia.org/wiki/Sea_turtle_
+
+## Quick facts
+- ID: 162
+- Slug: sea-turtle-hatchery-habaraduwa-galle
+- Coordinates: 6.053500, 80.221000
+- District: Galle (id 32)

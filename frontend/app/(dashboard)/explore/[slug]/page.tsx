@@ -8,6 +8,8 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
+import { MapView } from "@/components/maps/map-view";
+import { WeatherCard } from "@/components/weather/weather-card";
 import { cn } from "@/lib/utils";
 
 type AttractionDetail = {
@@ -41,6 +43,13 @@ type AttractionDetail = {
 };
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+function mediaUrl(path: string): string {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  if (path.startsWith("/")) return `${API}${path}`;
+  return `${API}/${path}`;
+}
 
 const MONTHS = [
   "Jan",
@@ -86,8 +95,9 @@ export default async function AttractionPage({
   const attraction = await fetchAttraction(params.slug);
   if (!attraction) notFound();
 
-  const heroImage =
-    attraction.media[0]?.cdn_url || attraction.media[0]?.s3_key || null;
+  const heroImage = attraction.media[0]
+    ? mediaUrl(attraction.media[0].cdn_url || attraction.media[0].s3_key)
+    : null;
   const trendPct = Math.round(Math.min(10, attraction.trend_score) * 10);
 
   return (
@@ -177,7 +187,7 @@ export default async function AttractionPage({
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={m.id}
-                    src={m.cdn_url || m.s3_key}
+                    src={mediaUrl(m.cdn_url || m.s3_key)}
                     alt={m.caption || attraction.name}
                     className={cn(
                       "aspect-[4/3] w-full rounded-2xl object-cover shadow-soft",
@@ -188,10 +198,30 @@ export default async function AttractionPage({
               </div>
             </div>
           )}
+
+          {attraction.lat && attraction.lng && (
+            <div className="space-y-4">
+              <span className="kicker">On the map</span>
+              <MapView
+                stops={[
+                  {
+                    id: attraction.id,
+                    name: attraction.name,
+                    lat: Number(attraction.lat),
+                    lng: Number(attraction.lng),
+                  },
+                ]}
+                height={320}
+                zoom={11}
+                showLine={false}
+              />
+            </div>
+          )}
         </div>
 
         {/* Side rail */}
         <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+          <WeatherCard districtId={attraction.district.id} />
           <div className="rounded-3xl border border-border bg-white p-6 shadow-soft">
             <span className="kicker">At a glance</span>
             <dl className="mt-5 space-y-4 text-sm">

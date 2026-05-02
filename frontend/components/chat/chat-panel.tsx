@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useReducer, useRef, useState } from "react";
 import {
   ArrowUp,
@@ -8,12 +10,18 @@ import {
   Globe2,
   Loader2,
   MapPin,
+  Mic,
+  MicOff,
   RefreshCw,
   Sparkles,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { api, toApiError } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { useSpeechRecognition, useSpeechSynthesis } from "@/lib/voice";
 
 // ─────────────────────────── Types ─────────────────────────────────────
 type Source = {
@@ -68,18 +76,67 @@ const LANGS = [
 
 // ─────────────────────────── Component ─────────────────────────────────
 export function ChatPanel() {
+  const router = useRouter();
+  const params = useSearchParams();
+  const { user, hydrated } = useAuth();
+  const seedQuestion = params.get("seed") || "";
+  const sessionParam = params.get("session");
+
   const [messages, dispatch] = useReducer(reducer, []);
-  const [input, setInput] = useState("");
-  const [language, setLanguage] = useState<"en" | "si" | "ta">("en");
-  const [sessionId, setSessionId] = useState<number | null>(null);
+  const [input, setInput] = useState(seedQuestion);
+  const [language, setLanguage] = useState<"en" | "si" | "ta">(
+    (user?.language as "en" | "si" | "ta") ?? "en"
+  );
+  const [sessionId, setSessionId] = useState<number | null>(
+    sessionParam ? Number(sessionParam) : null
+  );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [autoSpeak, setAutoSpeak] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const speech = useSpeechSynthesis();
+  const recog = useSpeechRecognition({
+    lang: language === "si" ? "si-LK" : language === "ta" ? "ta-IN" : "en-US",
+    onResult: (text) => setInput((prev) => (prev ? prev + " " + text : text)),
+  });
 
   useEffect(() => {
-    const stored = localStorage.getItem("lankaguide.chat_session_id");
-    if (stored) setSessionId(Number(stored));
-  }, []);
+    if (hydrated && !user) {
+      router.replace("/login?next=/chat");
+    }
+  }, [hydrated, user, router]);
+
+  useEffect(() => {
+    if (user && language !== user.language) {
+      // Don't override the user's manual change later — only sync once on load.
+    }
+  }, [user, language]);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    let cancelled = false;
+    api
+      .get(`/api/v1/chat/sessions/${sessionId}/`)
+      .then(({ data }) => {
+        if (cancelled) return;
+        const seeded: Message[] = (data?.messages ?? []).map(
+          (m: { id: number; role: "user" | "assistant"; content: string; retrieved_docs?: Source[] }) => ({
+            id: `s-${m.id}`,
+            role: m.role,
+            content: m.content,
+            sources: m.retrieved_docs ?? [],
+          })
+        );
+        dispatch({ type: "reset" });
+        seeded.forEach((m) => dispatch({ type: "append", message: m }));
+      })
+      .catch(() => {
+        // Silently ignore — they'll start a new session on send.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -107,7 +164,6 @@ export function ChatPanel() {
       });
       if (data.session_id && data.session_id !== sessionId) {
         setSessionId(data.session_id);
-        localStorage.setItem("lankaguide.chat_session_id", String(data.session_id));
       }
       dispatch({
         type: "patch",
@@ -118,6 +174,9 @@ export function ChatPanel() {
           pending: false,
         },
       });
+      if (autoSpeak && data.response) {
+        speech.speak(data.response, language);
+      }
     } catch (err) {
       const apiErr = toApiError(err);
       dispatch({
@@ -137,8 +196,22 @@ export function ChatPanel() {
 
   function newSession() {
     setSessionId(null);
-    localStorage.removeItem("lankaguide.chat_session_id");
     dispatch({ type: "reset" });
+    router.replace("/chat");
+  }
+
+  if (!hydrated || !user) {
+    return (
+      <div className="container py-24 text-center text-sm text-ink-500">
+        <p>Sign in to chat with the LankaGuide AI.</p>
+        <Link
+          href="/login?next=/chat"
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-jade-700 px-5 py-2.5 text-sm font-semibold text-white"
+        >
+          Sign in
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -161,6 +234,23 @@ export function ChatPanel() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <LanguagePicker value={language} onChange={setLanguage} />
+          <button
+            onClick={() => setAutoSpeak((s) => !s)}
+            title={autoSpeak ? "Mute responses" : "Read responses aloud"}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium shadow-soft transition-colors",
+              autoSpeak
+                ? "border-jade-600 bg-jade-600 text-white"
+                : "border-border bg-white text-ink-700 hover:border-jade-300"
+            )}
+          >
+            {autoSpeak ? (
+              <Volume2 className="h-3.5 w-3.5" />
+            ) : (
+              <VolumeX className="h-3.5 w-3.5" />
+            )}
+            <span className="hidden sm:inline">{autoSpeak ? "Speaking" : "Silent"}</span>
+          </button>
           <button
             onClick={newSession}
             className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-ink-700 shadow-soft transition-colors hover:border-jade-300 hover:text-jade-700"
@@ -198,13 +288,16 @@ export function ChatPanel() {
               onChange={setInput}
               onSend={() => send(input)}
               busy={busy}
+              listening={recog.listening}
+              voiceSupported={recog.supported}
+              onToggleVoice={recog.toggle}
             />
           </div>
         </section>
 
         {/* ── Side rail ── */}
         <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-          <PromptDeck onPick={send} />
+          <StarterDeck onPick={send} />
           <TipCard />
         </aside>
       </div>
@@ -331,11 +424,17 @@ function Composer({
   onChange,
   onSend,
   busy,
+  listening,
+  voiceSupported,
+  onToggleVoice,
 }: {
   value: string;
   onChange: (v: string) => void;
   onSend: () => void;
   busy: boolean;
+  listening: boolean;
+  voiceSupported: boolean;
+  onToggleVoice: () => void;
 }) {
   return (
     <form
@@ -354,11 +453,34 @@ function Composer({
             onSend();
           }
         }}
-        placeholder="Type your question — Enter to send · Shift + Enter for newline"
+        placeholder={
+          listening
+            ? "Listening… speak now"
+            : "Type your question — Enter to send · Shift + Enter for newline"
+        }
         rows={2}
         disabled={busy}
         className="min-h-[60px] flex-1 resize-none bg-transparent px-3 py-2 text-sm text-ink-900 placeholder:text-ink-500 focus:outline-none"
       />
+      {voiceSupported && (
+        <button
+          type="button"
+          onClick={onToggleVoice}
+          title={listening ? "Stop listening" : "Speak your question"}
+          className={cn(
+            "grid h-11 w-11 place-items-center rounded-xl shadow-soft transition-colors",
+            listening
+              ? "bg-red-600 text-white"
+              : "bg-saffron-300 text-jade-900 hover:bg-saffron-400"
+          )}
+        >
+          {listening ? (
+            <MicOff className="h-4 w-4" />
+          ) : (
+            <Mic className="h-4 w-4" />
+          )}
+        </button>
+      )}
       <button
         type="submit"
         disabled={busy || !value.trim()}
@@ -402,7 +524,7 @@ function LanguagePicker({
   );
 }
 
-function PromptDeck({ onPick }: { onPick: (q: string) => void }) {
+function StarterDeck({ onPick }: { onPick: (q: string) => void }) {
   return (
     <div className="rounded-3xl border border-border bg-white/80 p-5 shadow-soft backdrop-blur">
       <span className="kicker">

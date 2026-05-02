@@ -1,0 +1,29 @@
+# Gal Vihara
+
+**District:** Polonnaruwa (North Central Province)
+**Category:** religious site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Four colossal Buddhas carved from a single granite cliff in the 12th century — the artistic high point of medieval Sri Lanka.
+
+## Practical tips
+- Cover shoulders and knees, remove shoes and hats, and refrain from posing with your back to Buddha statues. Many sites do not allow drones.
+
+## How to get there
+Most travellers reach Gal Vihara via Polonnaruwa town. From Colombo it is roughly 215 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Polonnaruwa town.
+
+## Background (excerpted from Wikipedia)
+The Gal Vihara (Sinhala: ගල් විහාරය, lit. 'rock monastery'), and known originally as the Uttararama (Sinhala: උත්තරාරාමය, lit. 'the great monastery'), is a rock temple of the Buddha situated in the ancient city Polonnaruwa, the capital of the ancient Kingdom of Polonnaruwa, now present-day Polonnaruwa, in North Central Province, Sri Lanka. It was fashioned in the 12th century by King Parakramabahu I. The central feature of the temple is four rock relief statues of the Buddha, which have been carved into the face of a large granite gneiss rock. The images consist of a large seated figure, another smaller seated figure inside an artificial cavern, a standing figure, and a reclining figure. These are considered to be some of the best examples of ancient Sinhalese sculpting and carving arts, and have made the Gal Vihara the most visited monument at Polonnaruwa.
+The images of Uttararama follow a different style from the images of the previous Anuradhapura period, and show some significant differences. The identity of the standing image is subject to a certain amount of dispute among historians and archaeologists, some of whom argue that it depicts the monk Ananda rather than the Buddha.
+
+_Source: https://en.wikipedia.org/wiki/Gal_Vihara_
+
+## Quick facts
+- ID: 250
+- Slug: gal-vihara-polonnaruwa
+- Coordinates: 7.940300, 81.018800
+- District: Polonnaruwa (id 46)

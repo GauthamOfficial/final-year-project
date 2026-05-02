@@ -1,0 +1,23 @@
+# Riverston Mini World's End
+
+**District:** Matale (Central Province)
+**Category:** adventure / outdoor activity
+**Best months to visit:** Jan, Feb, Mar, Jul, Aug
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** intermediate
+**Entry fee:** Free
+
+## Overview
+Cliff-edge plateau in the Knuckles range with a sheer 1,000-metre drop and 360-degree views.
+
+## Practical tips
+- Tell someone your route, pack a head torch and starting before dawn beats both heat and the after-school crowds.
+
+## How to get there
+Most travellers reach Riverston Mini World's End via Matale town. From Colombo it is roughly 140 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Matale town.
+
+## Quick facts
+- ID: 150
+- Slug: riverston-mini-worlds-end-matale
+- Coordinates: 7.467500, 80.623400
+- District: Matale (id 30)

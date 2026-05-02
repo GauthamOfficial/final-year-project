@@ -1,0 +1,30 @@
+# Independence Memorial Hall
+
+**District:** Colombo (Western Province)
+**Category:** cultural / heritage site
+**Best months to visit:** Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+**District peak season:** Dec, Jan, Feb, Mar, Jul, Aug
+**Climate zone:** wet
+**Entry fee:** Free
+
+## Overview
+Granite open-air assembly modelled on the Royal Audience Hall of Kandy, marking 1948 independence.
+
+## Practical tips
+- Bring water and a wide-brimmed hat; ancient cities offer little shade. Most sites accept photography for personal use without a fee.
+
+## How to get there
+Most travellers reach Independence Memorial Hall via Colombo town. From Colombo it is roughly 0 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Colombo town.
+
+## Background (excerpted from Wikipedia)
+Independence Memorial Hall (also known as Independence Commemoration Hall) is a national monument in Sri Lanka built for the commemoration of the independence of Sri Lanka from British rule, with the restoration of full governing responsibility to a Ceylonese-elected legislature on 4 February 1948. It is located in Independence Square (formerly Torrington Square) in the Cinnamon Gardens, Colombo. It also houses the Independence Memorial Museum.
+The monument was built at the location where the formal ceremony marking the start of self-rule, with the opening of the first parliament by Prince Henry, Duke of Gloucester occurred at a special podium on 4 February 1948.
+Located at the head of the monument is the statue of the first prime minister of the country Rt. Hon. Don Stephen Senanayake "The Father of the Nation". Most of the annual National Independence Day celebrations have been held here. Apart from being a monument, it served  as the ceremonial assembly hall for the Senate of Ceylon and the House of Representatives of Ceylon until the parliament was moved to the new parliament complex. Currently it is the venue for religious events and annual national day celebrations.
+
+_Source: https://en.wikipedia.org/wiki/Independence_Memorial_Hall_
+
+## Quick facts
+- ID: 117
+- Slug: independence-memorial-hall-colombo
+- Coordinates: 6.927100, 79.861200
+- District: Colombo (id 26)

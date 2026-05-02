@@ -1,0 +1,29 @@
+# Nanthikadal Lagoon
+
+**District:** Mullaitivu (Northern Province)
+**Category:** wildlife / safari experience
+**Best months to visit:** May, Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Long brackish lagoon ringed by palmyra; shallow water and a haunting recent history.
+
+## Practical tips
+- Book a 4WD safari with a registered tracker. Mornings (06:00-09:30) and late afternoons (15:30-18:00) give the best wildlife viewing; midday is hot and animals retreat to shade.
+
+## How to get there
+Most travellers reach Nanthikadal Lagoon via Mullaitivu town. From Colombo it is roughly 335 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Mullaitivu town.
+
+## Background (excerpted from Wikipedia)
+Nanthi Kadal (Tamil: நந்திக்கடல், romanized: Nantikkaṭal, Sinhala: නන්ති කඩාල්, romanized: nanti kaḍāl) is a lagoon in Mullaitivu District, north-east Sri Lanka. The English translation of Nanthi Kadal is "the sea of conches". Fed by a number of small rivers including Per Aru, the town of Mullaitivu is located on land sandwiched between it and the Indian Ocean. Nanthi Kadal is thus sometimes referred to as Mullaitivu lagoon.
+The lagoon is notable for being the location of the military defeat of the LTTE and death of its leader Vellupillai Prabhakaran.
+
+_Source: https://en.wikipedia.org/wiki/Nanthikadal_
+
+## Quick facts
+- ID: 206
+- Slug: nanthikadal-lagoon-mullaitivu
+- Coordinates: 9.267100, 80.814200
+- District: Mullaitivu (id 39)

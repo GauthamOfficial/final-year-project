@@ -1,4 +1,4 @@
-"""Routes for the `chat` app — Prompt 2B."""
+"""Routes for the chat app (messages + session history)."""
 
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter

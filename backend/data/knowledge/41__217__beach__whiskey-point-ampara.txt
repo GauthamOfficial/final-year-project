@@ -1,0 +1,28 @@
+# Whiskey Point
+
+**District:** Ampara (Eastern Province)
+**Category:** beach / coastal experience
+**Best months to visit:** May, Jun, Jul, Aug, Sep
+**District peak season:** May, Jun, Jul, Aug, Sep
+**Climate zone:** dry
+**Entry fee:** Free
+
+## Overview
+Mellow beach break 10 minutes north of Arugam Bay — the local longboard hangout.
+
+## Practical tips
+- Reef shoes help on rocky coves; surf currents can be strong, especially May-September on the south coast and December-March on the east.
+
+## How to get there
+Most travellers reach Whiskey Point via Ampara town. From Colombo it is roughly 330 km by road; public buses run daily from Pettah, and intercity trains serve the major hill-country and coastal districts. Tuk-tuks cover the last mile from Ampara town.
+
+## Background (excerpted from Wikipedia)
+Arugam Bay (Tamil: அறுகம் குடா, romanized: Aṟukam kuṭā; Sinhala: ආරුගම් බොක්ක, romanized: ārugam bokka), known locally as "Arugam Kudah", is situated on the Indian Ocean in the dry zone of Sri Lanka's southeast coast, and a historic settlement of the ancient Batticaloa Territory (Mattakallappu Desam). Arugam Kudah's literal Tamil translation is "Bay of Cynodon dactylon".
+
+_Source: https://en.wikipedia.org/wiki/Arugam_Bay_
+
+## Quick facts
+- ID: 217
+- Slug: whiskey-point-ampara
+- Coordinates: 7.291600, 81.674700
+- District: Ampara (id 41)
