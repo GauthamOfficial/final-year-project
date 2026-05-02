@@ -14,8 +14,9 @@
 # ──────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
-REPO_URL="${FRONTEND_REPO_URL:-https://github.com/your-org/lankaguide-frontend.git}"
-APP_DIR="/var/www/lankaguide-frontend"
+REPO_URL="${REPO_URL:-https://github.com/your-org/lankaguide.git}"
+REPO_DIR="/var/www/lankaguide"
+APP_DIR="$REPO_DIR/frontend"     # Next.js project root
 APP_USER="ubuntu"
 SERVICE_NAME="lankaguide-web"
 NODE_VERSION="20"
@@ -48,13 +49,13 @@ install_node() {
 }
 
 prepare_app_dir() {
-    mkdir -p "$APP_DIR"
-    chown -R "$APP_USER:$APP_USER" "$APP_DIR"
-    if [[ ! -d "$APP_DIR/.git" ]]; then
-        sudo -u "$APP_USER" git clone "$REPO_URL" "$APP_DIR"
+    mkdir -p "$REPO_DIR"
+    chown -R "$APP_USER:$APP_USER" "$REPO_DIR"
+    if [[ ! -d "$REPO_DIR/.git" ]]; then
+        sudo -u "$APP_USER" git clone "$REPO_URL" "$REPO_DIR"
     else
-        sudo -u "$APP_USER" git -C "$APP_DIR" fetch --all
-        sudo -u "$APP_USER" git -C "$APP_DIR" reset --hard origin/main
+        sudo -u "$APP_USER" git -C "$REPO_DIR" fetch --all
+        sudo -u "$APP_USER" git -C "$REPO_DIR" reset --hard origin/main
     fi
 }
 

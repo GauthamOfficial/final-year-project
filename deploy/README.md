@@ -18,22 +18,26 @@ PRD reference: §13 Deployment Architecture, §14 Risks & Mitigations.
 
 ## Bring-up sequence
 
+The repo is a mono-repo with `backend/` (Django), `frontend/` (Next.js) and
+`deploy/` (these scripts). Both install scripts target the same checkout
+under `/var/www/lankaguide`.
+
 ```bash
 ssh ubuntu@<ec2-host>
 sudo apt-get update -y
 sudo apt-get install -y git
-git clone https://github.com/your-org/lankaguide-backend.git /tmp/repo
+git clone https://github.com/your-org/lankaguide.git /tmp/repo
 cd /tmp/repo
 
 # 1) Backend, Nginx, Redis, systemd units
 sudo bash deploy/install_backend.sh
 
-# 2) Edit /var/www/lankaguide/.env with real secrets, then:
+# 2) Edit /var/www/lankaguide/backend/.env with real secrets, then:
 sudo systemctl restart lankaguide
 
 # 3) Populate the curated knowledge + DB:
 sudo -u ubuntu bash -lc '
-  cd /var/www/lankaguide
+  cd /var/www/lankaguide/backend
   source venv/bin/activate
   python manage.py seed_database
   python manage.py ingest_knowledge_base

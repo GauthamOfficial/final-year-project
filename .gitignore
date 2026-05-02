@@ -49,8 +49,16 @@ Thumbs.db
 desktop.ini
 
 # ─── Project artefacts ─────────────────────────────────────────────────
-var/chroma/
+backend/var/chroma/
+backend/staticfiles/
+backend/media/
+backend/db.sqlite3
+backend/db.sqlite3-journal
 *.pid
 *.sock
-node_modules/
-.next/
+
+# ─── Frontend ──────────────────────────────────────────────────────────
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/

@@ -17,8 +17,9 @@
 # ──────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/your-org/lankaguide-backend.git}"
-APP_DIR="/var/www/lankaguide"
+REPO_URL="${REPO_URL:-https://github.com/your-org/lankaguide.git}"
+REPO_DIR="/var/www/lankaguide"
+APP_DIR="$REPO_DIR/backend"     # Django project root
 APP_USER="ubuntu"
 SERVICE_NAME="lankaguide"
 WORKER_SERVICE="lankaguide-sentiment"
@@ -54,14 +55,14 @@ install_system_packages() {
 }
 
 prepare_app_dir() {
-    echo "==> Preparing $APP_DIR"
-    mkdir -p "$APP_DIR" /var/data/chroma
-    chown -R "$APP_USER:$APP_USER" "$APP_DIR" /var/data/chroma
-    if [[ ! -d "$APP_DIR/.git" ]]; then
-        sudo -u "$APP_USER" git clone "$REPO_URL" "$APP_DIR"
+    echo "==> Preparing $REPO_DIR (mono-repo with backend/ + frontend/)"
+    mkdir -p "$REPO_DIR" /var/data/chroma
+    chown -R "$APP_USER:$APP_USER" "$REPO_DIR" /var/data/chroma
+    if [[ ! -d "$REPO_DIR/.git" ]]; then
+        sudo -u "$APP_USER" git clone "$REPO_URL" "$REPO_DIR"
     else
-        sudo -u "$APP_USER" git -C "$APP_DIR" fetch --all
-        sudo -u "$APP_USER" git -C "$APP_DIR" reset --hard origin/main
+        sudo -u "$APP_USER" git -C "$REPO_DIR" fetch --all
+        sudo -u "$APP_USER" git -C "$REPO_DIR" reset --hard origin/main
     fi
 }
 
@@ -185,7 +186,7 @@ EOF
 
 write_nginx_config() {
     echo "==> Writing /etc/nginx/sites-available/lankaguide"
-    install -m 0644 "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/lankaguide
+    install -m 0644 "$REPO_DIR/deploy/nginx.conf" /etc/nginx/sites-available/lankaguide
     ln -sf /etc/nginx/sites-available/lankaguide /etc/nginx/sites-enabled/lankaguide
     rm -f /etc/nginx/sites-enabled/default
     nginx -t
