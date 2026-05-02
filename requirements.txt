@@ -27,8 +27,11 @@ pillow>=10.4.0
 google-generativeai>=0.7.2
 chromadb>=0.5.5
 
-# ─── ML — Sentiment + Forecasting ─────────────────────────────────────
-# torch wheels from PyPI default to CPU on Windows (no CUDA).
+# ─── ML — Sentiment + Vision + Forecasting ────────────────────────────
+# torch wheels from PyPI default to CPU on Windows (no CUDA). On Linux/macOS
+# install via the official PyTorch CPU index for the smallest footprint:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 torch>=2.2.2
+torchvision>=0.17.2
 transformers>=4.43.3
 prophet>=1.1.5
