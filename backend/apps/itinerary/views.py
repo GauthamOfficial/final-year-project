@@ -48,7 +48,7 @@ class GenerateItineraryView(APIView):
 
             itinerary = ItineraryService().generate(user=request.user, preferences=prefs)
         except RuntimeError as exc:
-            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+            return _service_unavailable(str(exc))
         except Exception as exc:  # noqa: BLE001
             logger.exception("Itinerary generation failed: %s", exc)
             return _service_unavailable(

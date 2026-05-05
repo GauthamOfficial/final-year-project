@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, True),
     DJANGO_ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
-    USE_SQLITE_FALLBACK=(bool, True),
+    USE_SQLITE_FALLBACK=(bool, False),
     CORS_ALLOWED_ORIGINS=(
         list,
         ["http://localhost:3000", "http://127.0.0.1:3000"],

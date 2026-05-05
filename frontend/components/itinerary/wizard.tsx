@@ -875,7 +875,7 @@ function ItineraryResult({
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <a
-            href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/api/v1/itinerary/${itinerary.id}/pdf/`}
+            href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/api/v1/itinerary/${itinerary.id}/pdf/?token=${encodeURIComponent(itinerary.share_token)}`}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-saffron-400 px-5 py-2.5 text-sm font-semibold text-jade-900 transition-colors hover:bg-saffron-300"

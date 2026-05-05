@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Calendar, Compass, FileDown, Loader2, Trash2 } from "lucide-react";
+import { Calendar, Compass, Eye, FileDown, Loader2, Trash2 } from "lucide-react";
 import { api, toApiError } from "@/lib/api";
 
 type Itinerary = {
@@ -12,6 +12,7 @@ type Itinerary = {
   end_date: string;
   status: string;
   created_at: string;
+  share_token: string;
   days: { id: number; day_number: number }[];
 };
 
@@ -43,8 +44,9 @@ export default function ItinerariesPage() {
     }
   }
 
-  function pdfUrl(id: number) {
-    return `${api.defaults.baseURL}/api/v1/itinerary/${id}/pdf/`;
+  function pdfUrl(id: number, shareToken?: string) {
+    const token = shareToken ? `?token=${encodeURIComponent(shareToken)}` : "";
+    return `${api.defaults.baseURL}/api/v1/itinerary/${id}/pdf/${token}`;
   }
 
   return (
@@ -100,8 +102,14 @@ export default function ItinerariesPage() {
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-1">
+                <Link
+                  href={`/account/itineraries/${it.id}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-semibold text-ink-700 transition-colors hover:bg-jade-50"
+                >
+                  <Eye className="h-3.5 w-3.5" /> View
+                </Link>
                 <a
-                  href={pdfUrl(it.id)}
+                  href={pdfUrl(it.id, it.share_token)}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-semibold text-ink-700 transition-colors hover:bg-jade-50"
