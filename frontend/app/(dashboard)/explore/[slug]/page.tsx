@@ -150,7 +150,7 @@ export default async function AttractionPage({
       </section>
 
       {/* ── Body ── */}
-      <section className="container -mt-16 grid gap-10 pb-24 lg:grid-cols-[1fr_320px]">
+      <section className="relative z-10 container -mt-16 grid gap-10 pb-24 lg:grid-cols-[1fr_320px]">
         {/* Main column */}
         <div className="space-y-10">
           <div className="rounded-3xl border border-border bg-white p-8 shadow-lift md:p-12">

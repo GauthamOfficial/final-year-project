@@ -84,7 +84,7 @@ class AttractionDetailSerializer(serializers.ModelSerializer):
     """Full payload for `/api/v1/attractions/<slug>/` (PRD §8.2)."""
 
     district = DistrictSerializer(read_only=True)
-    media = MediaAssetSerializer(many=True, read_only=True)
+    media = serializers.SerializerMethodField()
 
     class Meta:
         model = Attraction
@@ -107,3 +107,81 @@ class AttractionDetailSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = fields
+
+    def get_media(self, obj: Attraction):
+        """
+        Return only media that appears relevant to this attraction.
+        This guards against noisy Wikimedia gallery pulls that can include
+        nearby-but-different landmarks.
+        """
+        media_list = list(obj.media.all())
+        if not media_list:
+            return []
+
+        def _tokens(text: str) -> set[str]:
+            stop = {
+                "the",
+                "and",
+                "with",
+                "from",
+                "near",
+                "fort",
+                "beach",
+                "temple",
+                "museum",
+                "park",
+                "lake",
+                "river",
+                "old",
+                "new",
+                "sri",
+                "lanka",
+                "city",
+            }
+            cleaned = "".join(ch.lower() if ch.isalnum() else " " for ch in (text or ""))
+            return {
+                token
+                for token in cleaned.split()
+                if len(token) >= 4 and token not in stop
+            }
+
+        def _has_non_photo_keywords(text: str) -> bool:
+            bad = {
+                "map",
+                "maps",
+                "plan",
+                "layout",
+                "diagram",
+                "sketch",
+                "drawing",
+                "locator",
+                "topographic",
+                "topography",
+            }
+            text_tokens = _tokens(text)
+            return bool(text_tokens.intersection(bad))
+
+        attraction_tokens = _tokens(obj.name) | _tokens(obj.wikipedia_title or "")
+        if not attraction_tokens:
+            return MediaAssetSerializer(media_list, many=True).data
+
+        filtered: list[MediaAsset] = []
+        for media in media_list:
+            haystack = " ".join(
+                [
+                    media.caption or "",
+                    media.source_url or "",
+                ]
+            )
+            if _has_non_photo_keywords(haystack):
+                continue
+            haystack_tokens = _tokens(haystack)
+            if attraction_tokens.intersection(haystack_tokens):
+                filtered.append(media)
+
+        # Keep at least the featured image when metadata is sparse.
+        if not filtered:
+            featured = next((m for m in media_list if m.is_featured), None)
+            filtered = [featured] if featured else media_list[:1]
+
+        return MediaAssetSerializer(filtered, many=True).data
