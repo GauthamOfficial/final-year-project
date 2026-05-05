@@ -76,13 +76,15 @@ def render_itinerary_pdf(itinerary) -> bytes:
         for stop in day.stops.all():
             time_str = stop.arrival_time.strftime("%H:%M") if stop.arrival_time else "—"
             duration = f"{stop.duration_mins or '—'} min" if stop.duration_mins else "—"
-            rows.append([
-                str(stop.stop_order),
-                stop.attraction.name,
-                time_str,
-                duration,
-                stop.tip or "",
-            ])
+            rows.append(
+                [
+                    Paragraph(str(stop.stop_order), styles["table_cell"]),
+                    Paragraph(stop.attraction.name, styles["table_cell"]),
+                    Paragraph(time_str, styles["table_cell"]),
+                    Paragraph(duration, styles["table_cell"]),
+                    Paragraph(stop.tip or "—", styles["table_cell"]),
+                ]
+            )
 
         if len(rows) > 1:
             tbl = Table(
@@ -98,6 +100,7 @@ def render_itinerary_pdf(itinerary) -> bytes:
                         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
                         ("FONTSIZE", (0, 0), (-1, -1), 9),
                         ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                        ("ALIGN", (0, 0), (0, -1), "CENTER"),
                         (
                             "ROWBACKGROUNDS",
                             (0, 1),
@@ -105,6 +108,8 @@ def render_itinerary_pdf(itinerary) -> bytes:
                             [colors.whitesmoke, colors.white],
                         ),
                         ("LINEBELOW", (0, 0), (-1, 0), 0.6, JADE),
+                        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
                         ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
                         ("TOPPADDING", (0, 0), (-1, -1), 5),
                     ]
@@ -182,5 +187,15 @@ def _styles() -> dict:
             fontSize=8,
             leading=11,
             textColor=INK,
+        ),
+        "table_cell": ParagraphStyle(
+            "table_cell",
+            parent=base["Normal"],
+            fontName="Helvetica",
+            fontSize=9,
+            leading=11,
+            textColor=INK,
+            wordWrap="CJK",
+            splitLongWords=True,
         ),
     }
