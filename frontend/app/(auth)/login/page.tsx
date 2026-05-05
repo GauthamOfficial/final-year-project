@@ -21,8 +21,10 @@ function LoginInner() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next") || "/account";
+  const adminMode = params.get("admin") === "1";
   const setSession = useAuth((s) => s.setSession);
 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -34,7 +36,9 @@ function LoginInner() {
     setErr(null);
     try {
       const { data } = await api.post("/api/v1/auth/login/", {
-        email: email.trim().toLowerCase(),
+        ...(adminMode
+          ? { username: username.trim() }
+          : { email: email.trim().toLowerCase() }),
         password,
       });
       setSession(data);
@@ -65,7 +69,11 @@ function LoginInner() {
   return (
     <AuthCard
       title="Welcome back"
-      subtitle="Sign in to access your itineraries, chat history, and saved places."
+      subtitle={
+        adminMode
+          ? "Admin sign-in requires username and password."
+          : "Sign in to access your itineraries, chat history, and saved places."
+      }
       footer={
         <p>
           New here?{" "}
@@ -79,17 +87,31 @@ function LoginInner() {
       }
     >
       <form onSubmit={onSubmit} className="space-y-4">
-        <Field label="Email" icon={Mail}>
-          <input
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm focus:border-jade-500 focus:outline-none"
-            placeholder="you@example.com"
-          />
-        </Field>
+        {adminMode ? (
+          <Field label="Username" icon={Mail}>
+            <input
+              type="text"
+              required
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm focus:border-jade-500 focus:outline-none"
+              placeholder="admin"
+            />
+          </Field>
+        ) : (
+          <Field label="Email" icon={Mail}>
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm focus:border-jade-500 focus:outline-none"
+              placeholder="you@example.com"
+            />
+          </Field>
+        )}
         <Field label="Password" icon={Lock}>
           <input
             type="password"
@@ -124,16 +146,20 @@ function LoginInner() {
         </button>
       </form>
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-border" />
-        </div>
-        <span className="relative flex justify-center text-[10px] font-semibold uppercase tracking-kicker text-ink-500">
-          <span className="bg-white px-3">or</span>
-        </span>
-      </div>
+      {!adminMode && (
+        <>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-border" />
+            </div>
+            <span className="relative flex justify-center text-[10px] font-semibold uppercase tracking-kicker text-ink-500">
+              <span className="bg-white px-3">or</span>
+            </span>
+          </div>
 
-      <GoogleButton onCredential={onGoogleCredential} />
+          <GoogleButton onCredential={onGoogleCredential} />
+        </>
+      )}
     </AuthCard>
   );
 }

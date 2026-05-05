@@ -53,16 +53,29 @@ class LoginView(APIView):
 
     def post(self, request):
         email = (request.data.get("email") or "").strip().lower()
+        username = (request.data.get("username") or "").strip()
         password = request.data.get("password") or ""
-        if not email or not password:
+        if not password or (not email and not username):
             return Response(
-                {"detail": "Email and password are required."},
+                {"detail": "Username/email and password are required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        user = authenticate(request, username=email, password=password)
+        identifier = email or username
+        if username and not email:
+            try:
+                looked_up = (
+                    User.objects.filter(username__iexact=username).only("email").first()
+                )
+                if looked_up:
+                    identifier = looked_up.email
+            except Exception:  # noqa: BLE001
+                # If the DB schema is behind and lacks `username`, fall back
+                # to direct identifier auth.
+                identifier = username
+        user = authenticate(request, username=identifier, password=password)
         if user is None:
             return Response(
-                {"detail": "Invalid email or password."},
+                {"detail": "Invalid username/email or password."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
         return Response(TokenPairSerializer.for_user(user))
@@ -155,6 +168,12 @@ class GoogleAuthView(APIView):
             user.full_name = profile.get("name")
             user.avatar_url = profile.get("picture") or user.avatar_url
             user.save(update_fields=["full_name", "avatar_url", "updated_at"])
+
+        if user.is_staff or user.is_superuser or getattr(user, "role", "") == "admin":
+            return Response(
+                {"detail": "Admin accounts must sign in with username and password."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         return Response(TokenPairSerializer.for_user(user))
 

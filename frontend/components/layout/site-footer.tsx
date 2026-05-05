@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
-import { ExternalLink, Mail, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 
 const COLUMNS = [
   {
@@ -80,12 +80,6 @@ export function SiteFooter() {
               className="flex items-center gap-1.5 hover:text-saffron-300"
             >
               <Mail className="h-3.5 w-3.5" /> hello@lankaguide.lk
-            </a>
-            <a
-              href="/admin"
-              className="flex items-center gap-1.5 hover:text-saffron-300"
-            >
-              <ExternalLink className="h-3.5 w-3.5" /> Admin
             </a>
           </div>
         </div>
