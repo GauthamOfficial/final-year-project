@@ -185,7 +185,7 @@ export function ChatPanel() {
         patch: {
           pending: false,
           content:
-            "Sorry — the AI service is unavailable right now. Please try again in a moment.",
+            "Sorry, the AI service is unavailable right now. Please try again in a moment.",
         },
       });
       setError(apiErr.message);

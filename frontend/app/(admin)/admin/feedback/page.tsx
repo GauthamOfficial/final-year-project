@@ -68,7 +68,7 @@ export default function AdminFeedbackPage() {
                 </td>
                 <td className="hidden px-4 py-3 text-slate-400 sm:table-cell">{r.source}</td>
                 <td className="px-4 py-3 text-slate-400">
-                  {r.sentiment_label || "—"}
+                  {r.sentiment_label || "N/A"}
                   {r.sentiment_score != null && (
                     <span className="ml-1 text-xs">
                       ({r.sentiment_score.toFixed(2)})

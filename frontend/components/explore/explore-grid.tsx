@@ -136,7 +136,7 @@ export function ExploreGrid() {
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-600">
               {attractions.length || "60+"} attractions across{" "}
-              {districts.length || "25"} districts — sortable by category,
+              {districts.length || "25"} districts, sortable by category,
               season, and crowd index. The data behind every itinerary.
             </p>
           </div>

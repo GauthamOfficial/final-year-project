@@ -21,7 +21,7 @@ export function ClosingCta() {
               Open · free · no signup
             </span>
             <h2 className="display mt-5 text-4xl font-medium tracking-tightest text-white md:text-6xl">
-              Plan a trip you&apos;ll <em className="text-saffron-200 not-italic">remember</em> —
+              Plan a trip you&apos;ll <em className="text-saffron-200 not-italic">remember</em>,
               not just one you booked.
             </h2>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-white/80">

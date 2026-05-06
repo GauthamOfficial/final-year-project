@@ -746,7 +746,7 @@ function SummaryCard({
             {districtNames.length
               ? districtNames.slice(0, 3).join(", ") +
                 (districtNames.length > 3 ? ` + ${districtNames.length - 3}` : "")
-              : "—"}
+              : "N/A"}
           </Row>
           <Row label="Themes">
             {interests.size
@@ -997,7 +997,7 @@ function ItineraryResult({
                   >
                     <div className="flex flex-col items-center">
                       <span className="display text-xl font-medium text-jade-700">
-                        {stop.arrival_time?.slice(0, 5) ?? "—"}
+                        {stop.arrival_time?.slice(0, 5) ?? "N/A"}
                       </span>
                       <span className="my-1 h-full w-px flex-1 bg-jade-100" />
                     </div>

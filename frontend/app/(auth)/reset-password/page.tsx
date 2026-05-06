@@ -48,7 +48,7 @@ function ResetPasswordInner() {
       subtitle={
         invalidLink
           ? "This link is incomplete. Open the link from your email again."
-          : "Use at least 8 characters — mix letters and numbers."
+          : "Use at least 8 characters, and mix letters and numbers."
       }
       footer={
         <p>

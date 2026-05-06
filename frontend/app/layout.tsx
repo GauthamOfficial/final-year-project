@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "LankaGuide",
     description:
-      "Plan smarter trips across the Pearl of the Indian Ocean — chat, build itineraries, discover hidden gems.",
+      "Plan smarter trips across the Pearl of the Indian Ocean, chat, build itineraries, and discover hidden gems.",
   },
 };
 
