@@ -19,15 +19,15 @@ const display = Fraunces({
 
 export const metadata: Metadata = {
   title: {
-    default: "LankaGuide AI · Your AI travel companion for Sri Lanka",
-    template: "%s · LankaGuide AI",
+    default: "LankaGuide · Your travel companion for Sri Lanka",
+    template: "%s · LankaGuide",
   },
   description:
     "Plan smarter trips across the Pearl of the Indian Ocean. RAG-grounded answers, day-by-day itineraries, and a curated atlas of 25 Sri Lankan districts.",
   metadataBase: new URL("http://localhost:3000"),
   openGraph: {
     type: "website",
-    title: "LankaGuide AI",
+    title: "LankaGuide",
     description:
       "Plan smarter trips across the Pearl of the Indian Ocean — chat, build itineraries, discover hidden gems.",
   },

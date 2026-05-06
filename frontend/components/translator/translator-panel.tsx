@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRightLeft, Languages, Loader2 } from "lucide-react";
+import { useCallback, useState } from "react";
+import { ArrowRightLeft, Languages, Loader2, Mic, MicOff, Volume2 } from "lucide-react";
 import { api, toApiError } from "@/lib/api";
-import { useSpeechSynthesis } from "@/lib/voice";
+import { useSpeechRecognition, useSpeechSynthesis } from "@/lib/voice";
 import { cn } from "@/lib/utils";
 
 type Lang = "en" | "si" | "ta";
@@ -21,26 +21,39 @@ export function TranslatorPanel() {
   const [output, setOutput] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [voiceMode, setVoiceMode] = useState(true);
   const speech = useSpeechSynthesis();
 
-  async function translate() {
-    if (!input.trim()) return;
+  const translate = useCallback(async (text: string) => {
+    if (!text.trim()) return;
     setBusy(true);
     setErr(null);
     setOutput("");
     try {
       const { data } = await api.post("/api/v1/translate/", {
-        text: input,
+        text,
         source,
         target,
       });
-      setOutput(data?.translation ?? "");
+      const translated = data?.translation ?? "";
+      setOutput(translated);
+      if (voiceMode && translated) {
+        speech.speak(translated, target);
+      }
     } catch (e) {
       setErr(toApiError(e).message || "Translation failed.");
     } finally {
       setBusy(false);
     }
-  }
+  }, [source, target, voiceMode, speech]);
+
+  const recog = useSpeechRecognition({
+    lang: source === "si" ? "si-LK" : source === "ta" ? "ta-IN" : "en-US",
+    onResult: (text) => {
+      setInput(text);
+      void translate(text);
+    },
+  });
 
   function swap() {
     setSource(target);
@@ -57,11 +70,11 @@ export function TranslatorPanel() {
           Translator
         </span>
         <h1 className="display mt-3 text-4xl font-medium tracking-tightest text-ink-900 md:text-5xl">
-          Translate any phrase across <em className="text-jade-700 not-italic">English, Sinhala, Tamil</em>.
+          Real-time voice translation for <em className="text-jade-700 not-italic">English, Sinhala, Tamil</em>.
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-ink-600">
-          Powered by the same model that grounds the AI guide. Names, numbers,
-          and Markdown formatting are preserved.
+          Speak naturally and get instant translation with optional playback.
+          You can still type or paste text when needed.
         </p>
       </header>
 
@@ -73,6 +86,10 @@ export function TranslatorPanel() {
           onChange={setInput}
           editable
           onSpeak={() => speech.speak(input, source)}
+          voiceSupported={recog.supported}
+          listening={recog.listening}
+          onToggleVoice={recog.toggle}
+          busy={busy}
         />
         <button
           onClick={swap}
@@ -88,12 +105,16 @@ export function TranslatorPanel() {
           onChange={() => {}}
           editable={false}
           onSpeak={() => speech.speak(output, target)}
+          voiceSupported={false}
+          listening={false}
+          onToggleVoice={() => {}}
+          busy={busy}
         />
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <button
-          onClick={translate}
+          onClick={() => void translate(input)}
           disabled={busy || !input.trim()}
           className="inline-flex items-center gap-2 rounded-full bg-jade-700 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-jade-800 disabled:opacity-60"
         >
@@ -103,6 +124,18 @@ export function TranslatorPanel() {
             <Languages className="h-4 w-4" />
           )}
           Translate
+        </button>
+        <button
+          onClick={() => setVoiceMode((v) => !v)}
+          className={cn(
+            "inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors",
+            voiceMode
+              ? "border-jade-700 bg-jade-50 text-jade-700"
+              : "border-border bg-white text-ink-700 hover:border-jade-300"
+          )}
+        >
+          <Volume2 className="h-4 w-4" />
+          {voiceMode ? "Voice playback on" : "Voice playback off"}
         </button>
         {err && <p className="text-sm text-red-700">{err}</p>}
       </div>
@@ -117,6 +150,10 @@ function Pane({
   onChange,
   editable,
   onSpeak,
+  voiceSupported,
+  listening,
+  onToggleVoice,
+  busy,
 }: {
   lang: Lang;
   onLang: (v: Lang) => void;
@@ -124,6 +161,10 @@ function Pane({
   onChange: (v: string) => void;
   editable: boolean;
   onSpeak: () => void;
+  voiceSupported: boolean;
+  listening: boolean;
+  onToggleVoice: () => void;
+  busy: boolean;
 }) {
   return (
     <div className="flex flex-col rounded-3xl border border-border bg-white p-4 shadow-soft">
@@ -152,12 +193,36 @@ function Pane({
           Read aloud
         </button>
       </div>
+      {editable && voiceSupported && (
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={onToggleVoice}
+            disabled={busy}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+              listening
+                ? "bg-red-600 text-white"
+                : "bg-saffron-300 text-jade-900 hover:bg-saffron-400"
+            )}
+          >
+            {listening ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
+            {listening ? "Listening..." : "Speak now"}
+          </button>
+        </div>
+      )}
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         readOnly={!editable}
         rows={10}
-        placeholder={editable ? "Type or paste text…" : "Translation will appear here…"}
+        placeholder={
+          editable
+            ? listening
+              ? "Listening... speak your phrase"
+              : "Speak, type, or paste text..."
+            : "Translation will appear here..."
+        }
         className={cn(
           "mt-3 min-h-[200px] resize-none rounded-2xl border border-border bg-white px-3 py-3 text-sm text-ink-900 focus:border-jade-500 focus:outline-none",
           !editable && "bg-jade-50/30"

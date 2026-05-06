@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import { ChatPanel } from "@/components/chat/chat-panel";
 
 export const metadata = {
-  title: "AI travel guide · LankaGuide",
+  title: "Travel guide · LankaGuide",
   description:
-    "Get grounded, sourced answers about Sri Lanka travel — culture, wildlife, monsoons, train routes — from the LankaGuide AI assistant.",
+    "Get grounded, sourced answers about Sri Lanka travel — culture, wildlife, monsoons, train routes — from the LankaGuide assistant.",
 };
 
 export default function ChatPage() {

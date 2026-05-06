@@ -29,7 +29,7 @@ export function Hero() {
         <div className="max-w-3xl reveal">
           <span className="kicker text-saffron-300 before:bg-saffron-300/60">
             <Sparkles className="h-3 w-3" />
-            AI travel companion · Pearl of the Indian Ocean
+            Travel companion · Pearl of the Indian Ocean
           </span>
 
           <h1 className="display mt-6 text-[clamp(2.75rem,7vw,5.75rem)] font-medium leading-[0.95] text-white">

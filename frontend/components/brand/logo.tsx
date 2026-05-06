@@ -2,8 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
- * LankaGuide wordmark — a stylised SVG mark (jade leaf + saffron sun)
- * paired with a Fraunces wordmark. Use everywhere the brand appears.
+ * LankaGuide wordmark with a Sri Lanka-inspired island mark.
  */
 export function Logo({
   href = "/",
@@ -34,9 +33,13 @@ export function Logo({
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M12 2C7 6 5 10 5 13a7 7 0 0 0 14 0c0-3-2-7-7-11Z" fill="currentColor" fillOpacity="0.12" />
-          <path d="M12 2C7 6 5 10 5 13a7 7 0 0 0 14 0c0-3-2-7-7-11Z" />
-          <path d="M12 22V11" />
+          <path
+            d="M11 2.4c1.1.3 2.1 1.1 2.5 2.1.5 1.1.4 2.4 1 3.5.7 1.2 2 2 2.4 3.4.3 1-.1 1.9-.5 2.8-.4 1.1-.7 2.2-.6 3.4.1 1.1-.3 2.2-1.2 2.9-.8.7-1.9 1-2.9.9-1.1-.1-2.2.1-3.2.6-.9.4-1.9.6-2.9.3-1.2-.3-2.1-1.2-2.6-2.3-.5-1-.5-2.2-.2-3.3.3-1 .8-1.9 1.3-2.8.5-.8.8-1.8.8-2.8 0-1.1.3-2.1.9-2.9.6-.9 1.5-1.5 2.4-2 .8-.4 1.6-.8 2.2-1.8.5-.7 1.4-1.2 2.6-1Z"
+            fill="currentColor"
+            fillOpacity="0.14"
+          />
+          <path d="M11 2.4c1.1.3 2.1 1.1 2.5 2.1.5 1.1.4 2.4 1 3.5.7 1.2 2 2 2.4 3.4.3 1-.1 1.9-.5 2.8-.4 1.1-.7 2.2-.6 3.4.1 1.1-.3 2.2-1.2 2.9-.8.7-1.9 1-2.9.9-1.1-.1-2.2.1-3.2.6-.9.4-1.9.6-2.9.3-1.2-.3-2.1-1.2-2.6-2.3-.5-1-.5-2.2-.2-3.3.3-1 .8-1.9 1.3-2.8.5-.8.8-1.8.8-2.8 0-1.1.3-2.1.9-2.9.6-.9 1.5-1.5 2.4-2 .8-.4 1.6-.8 2.2-1.8.5-.7 1.4-1.2 2.6-1Z" />
+          <path d="M11.5 8.5c-.9 2.1-1.3 4.2-1 6.4.2 1.2.6 2.4 1.2 3.5" />
         </svg>
         <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-saffron-400 ring-2 ring-white" />
       </span>
@@ -48,14 +51,6 @@ export function Logo({
           )}
         >
           LankaGuide
-        </span>
-        <span
-          className={cn(
-            "mt-0.5 text-[10px] font-semibold uppercase tracking-kicker",
-            invert ? "text-saffron-300" : "text-saffron-600"
-          )}
-        >
-          AI · Sri Lanka
         </span>
       </span>
     </span>

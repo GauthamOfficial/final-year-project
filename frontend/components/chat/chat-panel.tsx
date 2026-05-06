@@ -203,7 +203,7 @@ export function ChatPanel() {
   if (!hydrated || !user) {
     return (
       <div className="container py-24 text-center text-sm text-ink-500">
-        <p>Sign in to chat with the LankaGuide AI.</p>
+        <p>Sign in to chat with LankaGuide.</p>
         <Link
           href="/login?next=/chat"
           className="mt-4 inline-flex items-center gap-2 rounded-full bg-jade-700 px-5 py-2.5 text-sm font-semibold text-white"

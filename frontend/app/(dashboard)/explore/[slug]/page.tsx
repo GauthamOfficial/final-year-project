@@ -78,8 +78,13 @@ async function fetchAttraction(slug: string): Promise<AttractionDetail | null> {
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const attraction = await fetchAttraction(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const attraction = await fetchAttraction(slug);
   if (!attraction) return { title: "Not found" };
   return {
     title: attraction.name,
@@ -90,9 +95,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function AttractionPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const attraction = await fetchAttraction(params.slug);
+  const { slug } = await params;
+  const attraction = await fetchAttraction(slug);
   if (!attraction) notFound();
 
   const heroImage = attraction.media[0]

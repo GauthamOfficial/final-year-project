@@ -57,9 +57,10 @@ async function fetchGallery(slug: string): Promise<GalleryPayload | null> {
 export async function generateMetadata({
   params,
 }: {
-  params: { district: string };
+  params: Promise<{ district: string }>;
 }) {
-  const data = await fetchGallery(params.district);
+  const { district: districtSlug } = await params;
+  const data = await fetchGallery(districtSlug);
   if (!data) return { title: "Gallery" };
   return {
     title: `${data.district.name} gallery · LankaGuide`,
@@ -70,9 +71,10 @@ export async function generateMetadata({
 export default async function DistrictGalleryPage({
   params,
 }: {
-  params: { district: string };
+  params: Promise<{ district: string }>;
 }) {
-  const data = await fetchGallery(params.district);
+  const { district: districtSlug } = await params;
+  const data = await fetchGallery(districtSlug);
   if (!data) notFound();
 
   const { district, attractions, media } = data;
