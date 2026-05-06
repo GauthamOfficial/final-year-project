@@ -3,7 +3,11 @@
 import { useCallback, useState } from "react";
 import { ArrowRightLeft, Languages, Loader2, Mic, MicOff, Volume2 } from "lucide-react";
 import { api, toApiError } from "@/lib/api";
-import { useSpeechRecognition, useSpeechSynthesis } from "@/lib/voice";
+import {
+  useSpeechRecognition,
+  useSpeechSynthesis,
+  type VoiceRecognitionErrorCode,
+} from "@/lib/voice";
 import { cn } from "@/lib/utils";
 
 type Lang = "en" | "si" | "ta";
@@ -21,6 +25,7 @@ export function TranslatorPanel() {
   const [output, setOutput] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [voiceErr, setVoiceErr] = useState<string | null>(null);
   const [voiceMode, setVoiceMode] = useState(true);
   const speech = useSpeechSynthesis();
 
@@ -53,13 +58,30 @@ export function TranslatorPanel() {
       setInput(text);
       void translate(text);
     },
+    onError: (message, code: VoiceRecognitionErrorCode) => {
+      if (code === "network") {
+        setVoiceErr("Temporary voice service issue. Please tap Speak now and try again.");
+        return;
+      }
+      if (code === "no-speech" || code === "aborted") {
+        setVoiceErr(null);
+        return;
+      }
+      setVoiceErr(message);
+    },
   });
+
+  function onSourceLang(v: Lang) {
+    setSource(v);
+    setVoiceErr(null);
+  }
 
   function swap() {
     setSource(target);
     setTarget(source);
     setInput(output);
     setOutput(input);
+    setVoiceErr(null);
   }
 
   return (
@@ -81,7 +103,7 @@ export function TranslatorPanel() {
       <div className="grid gap-4 lg:grid-cols-[1fr_auto_1fr]">
         <Pane
           lang={source}
-          onLang={setSource}
+          onLang={onSourceLang}
           value={input}
           onChange={setInput}
           editable
@@ -138,6 +160,12 @@ export function TranslatorPanel() {
           {voiceMode ? "Voice playback on" : "Voice playback off"}
         </button>
         {err && <p className="text-sm text-red-700">{err}</p>}
+        {!recog.supported && (
+          <p className="text-sm text-amber-700">
+            Voice input is not supported in this browser. Try Chrome or Edge.
+          </p>
+        )}
+        {voiceErr && <p className="text-sm text-red-700">{voiceErr}</p>}
       </div>
     </div>
   );
@@ -198,12 +226,14 @@ function Pane({
           <button
             type="button"
             onClick={onToggleVoice}
-            disabled={busy}
+            disabled={busy || !voiceSupported}
             className={cn(
               "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
               listening
                 ? "bg-red-600 text-white"
-                : "bg-saffron-300 text-jade-900 hover:bg-saffron-400"
+                : voiceSupported
+                  ? "bg-saffron-300 text-jade-900 hover:bg-saffron-400"
+                  : "bg-muted text-ink-400"
             )}
           >
             {listening ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
