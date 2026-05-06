@@ -229,7 +229,7 @@ export function ChatPanel() {
               className="flex-1 px-5 py-8 md:px-10 md:py-12"
             >
               {messages.length === 0 ? (
-                <EmptyState onPick={send} />
+                <EmptyState />
               ) : (
                 <div className="mx-auto flex max-w-3xl flex-col gap-8">
                   {messages.map((m) => (
@@ -263,7 +263,7 @@ export function ChatPanel() {
 }
 
 // ─────────────────────────── Sub-components ────────────────────────────
-function EmptyState({ onPick }: { onPick: (q: string) => void }) {
+function EmptyState() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center justify-center py-16 text-center">
       <div className="grid h-14 w-14 place-items-center rounded-2xl bg-jade-600 text-white shadow-glow">

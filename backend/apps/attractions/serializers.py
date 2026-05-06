@@ -68,9 +68,10 @@ class AttractionListSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
     def get_featured_media(self, obj: Attraction) -> dict | None:
-        media = next(
-            (m for m in obj.media.all() if m.is_featured), None
-        )
+        media_list = list(obj.media.all())
+        media = next((m for m in media_list if m.is_featured), None)
+        if media is None and media_list:
+            media = media_list[0]
         if media is None:
             return None
         return {

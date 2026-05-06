@@ -30,13 +30,13 @@ type Attraction = {
 };
 
 const CATEGORIES = [
-  { id: "", label: "All", icon: "✦" },
-  { id: "cultural", label: "Cultural", icon: "▲" },
-  { id: "wildlife", label: "Wildlife", icon: "✿" },
-  { id: "beach", label: "Beach", icon: "≈" },
-  { id: "religious", label: "Religious", icon: "❋" },
-  { id: "adventure", label: "Adventure", icon: "↗" },
-  { id: "food", label: "Food", icon: "♨" },
+  { id: "", label: "All" },
+  { id: "cultural", label: "Cultural" },
+  { id: "wildlife", label: "Wildlife" },
+  { id: "beach", label: "Beach" },
+  { id: "religious", label: "Religious" },
+  { id: "adventure", label: "Adventure" },
+  { id: "food", label: "Food" },
 ] as const;
 
 const CATEGORY_TINTS: Record<string, string> = {
@@ -47,6 +47,14 @@ const CATEGORY_TINTS: Record<string, string> = {
   adventure: "from-rose-900/85 via-rose-700/30 to-transparent",
   food: "from-orange-900/85 via-orange-700/30 to-transparent",
 };
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+function mediaUrl(path?: string): string {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  if (path.startsWith("/")) return `${API_BASE}${path}`;
+  return `${API_BASE}/${path}`;
+}
 
 // ─────────────────────────── Component ──────────────────────────────────
 export function ExploreGrid() {
@@ -209,7 +217,6 @@ export function ExploreGrid() {
                       : "border-border bg-white text-ink-700 hover:border-jade-300 hover:text-jade-700"
                   )}
                 >
-                  <span className="text-sm leading-none">{c.icon}</span>
                   {c.label}
                 </button>
               );
@@ -352,6 +359,8 @@ function AttractionCard({
     CATEGORY_TINTS[attraction.category] ??
     "from-jade-900/85 via-jade-700/30 to-transparent";
   const trendPct = Math.round(Math.min(10, attraction.trend_score) * 10);
+  const featuredUrl = mediaUrl(attraction.featured_media?.url);
+  const imageUrl = featuredUrl || "";
 
   return (
     <Link
@@ -359,11 +368,11 @@ function AttractionCard({
       className="group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-3xl bg-jade-900 shadow-soft lift reveal"
       style={{ animationDelay: `${stagger * 40}ms` }}
     >
-      {attraction.featured_media?.url ? (
+      {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={attraction.featured_media.url}
-          alt={attraction.featured_media.caption || attraction.name}
+          src={imageUrl}
+          alt={attraction.featured_media?.caption || attraction.name}
           className="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
       ) : (
