@@ -7,21 +7,18 @@ import {
   ArrowUp,
   Bot,
   Compass,
-  Globe2,
   Loader2,
   MapPin,
   Mic,
   MicOff,
   RefreshCw,
   Sparkles,
-  Volume2,
-  VolumeX,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { api, toApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
-import { useSpeechRecognition, useSpeechSynthesis } from "@/lib/voice";
+import { useSpeechRecognition } from "@/lib/voice";
 
 // ─────────────────────────── Types ─────────────────────────────────────
 type Source = {
@@ -68,12 +65,6 @@ const STARTERS: Array<{ q: string; tag: string }> = [
   { q: "What's the train route from Kandy to Ella like?", tag: "Travel" },
 ];
 
-const LANGS = [
-  { id: "en", label: "English" },
-  { id: "si", label: "සිංහල" },
-  { id: "ta", label: "தமிழ்" },
-];
-
 // ─────────────────────────── Component ─────────────────────────────────
 export function ChatPanel() {
   const router = useRouter();
@@ -84,17 +75,13 @@ export function ChatPanel() {
 
   const [messages, dispatch] = useReducer(reducer, []);
   const [input, setInput] = useState(seedQuestion);
-  const [language, setLanguage] = useState<"en" | "si" | "ta">(
-    (user?.language as "en" | "si" | "ta") ?? "en"
-  );
+  const language = (user?.language as "en" | "si" | "ta") ?? "en";
   const [sessionId, setSessionId] = useState<number | null>(
     sessionParam ? Number(sessionParam) : null
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [autoSpeak, setAutoSpeak] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const speech = useSpeechSynthesis();
   const recog = useSpeechRecognition({
     lang: language === "si" ? "si-LK" : language === "ta" ? "ta-IN" : "en-US",
     onResult: (text) => setInput((prev) => (prev ? prev + " " + text : text)),
@@ -105,12 +92,6 @@ export function ChatPanel() {
       router.replace("/login?next=/chat");
     }
   }, [hydrated, user, router]);
-
-  useEffect(() => {
-    if (user && language !== user.language) {
-      // Don't override the user's manual change later — only sync once on load.
-    }
-  }, [user, language]);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -174,9 +155,6 @@ export function ChatPanel() {
           pending: false,
         },
       });
-      if (autoSpeak && data.response) {
-        speech.speak(data.response, language);
-      }
     } catch (err) {
       const apiErr = toApiError(err);
       dispatch({
@@ -216,13 +194,13 @@ export function ChatPanel() {
 
   return (
     <div className="container py-10 md:py-14">
-      <header className="mb-8 flex flex-col gap-6 md:mb-12 md:flex-row md:items-end md:justify-between">
+      <header className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-start md:justify-between">
         <div className="max-w-2xl reveal">
           <span className="kicker">
             <Bot className="h-3 w-3" />
             The AI guide
           </span>
-          <h1 className="display mt-3 text-4xl font-medium tracking-tightest text-ink-900 md:text-6xl">
+          <h1 className="display mt-3 text-3xl font-medium tracking-tightest text-ink-900 md:whitespace-nowrap md:text-5xl">
             Ask anything about{" "}
             <em className="text-jade-700 not-italic">Sri Lanka</em>.
           </h1>
@@ -231,28 +209,10 @@ export function ChatPanel() {
 
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <LanguagePicker value={language} onChange={setLanguage} />
-          <button
-            onClick={() => setAutoSpeak((s) => !s)}
-            title={autoSpeak ? "Mute responses" : "Read responses aloud"}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium shadow-soft transition-colors",
-              autoSpeak
-                ? "border-jade-600 bg-jade-600 text-white"
-                : "border-border bg-white text-ink-700 hover:border-jade-300"
-            )}
-          >
-            {autoSpeak ? (
-              <Volume2 className="h-3.5 w-3.5" />
-            ) : (
-              <VolumeX className="h-3.5 w-3.5" />
-            )}
-            <span className="hidden sm:inline">{autoSpeak ? "Speaking" : "Silent"}</span>
-          </button>
+        <div className="flex items-center gap-2 self-start">
           <button
             onClick={newSession}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-ink-700 shadow-soft transition-colors hover:border-jade-300 hover:text-jade-700"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-ink-700 shadow-soft transition-colors hover:border-jade-300 hover:text-jade-700"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             New chat
@@ -260,45 +220,43 @@ export function ChatPanel() {
         </div>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
-        {/* ── Chat thread ── */}
-        <section className="relative isolate flex min-h-[60svh] max-h-[75svh] flex-col overflow-hidden rounded-3xl border border-border bg-white/60 shadow-soft backdrop-blur md:min-h-[72svh] md:max-h-[72svh]">
-          <div
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto px-5 py-8 md:px-10 md:py-12"
-          >
-            {messages.length === 0 ? (
-              <EmptyState onPick={send} />
-            ) : (
-              <div className="mx-auto flex max-w-3xl flex-col gap-8">
-                {messages.map((m) => (
-                  <MessageBubble key={m.id} message={m} />
-                ))}
-              </div>
-            )}
-          </div>
+      <div className="space-y-5">
+        <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
+          {/* ── Chat thread ── */}
+          <section className="relative isolate flex min-h-[68svh] flex-col overflow-hidden rounded-3xl border border-border bg-white/60 shadow-soft backdrop-blur md:min-h-[72svh]">
+            <div
+              ref={scrollRef}
+              className="flex-1 px-5 py-8 md:px-10 md:py-12"
+            >
+              {messages.length === 0 ? (
+                <EmptyState onPick={send} />
+              ) : (
+                <div className="mx-auto flex max-w-3xl flex-col gap-8">
+                  {messages.map((m) => (
+                    <MessageBubble key={m.id} message={m} />
+                  ))}
+                </div>
+              )}
+            </div>
 
-          <div className="border-t border-border/70 bg-white/80 px-5 py-4 md:px-10 md:py-5">
-            {error && (
-              <p className="mb-2 text-xs text-destructive">{error}</p>
-            )}
-            <Composer
-              value={input}
-              onChange={setInput}
-              onSend={() => send(input)}
-              busy={busy}
-              listening={recog.listening}
-              voiceSupported={recog.supported}
-              onToggleVoice={recog.toggle}
-            />
-          </div>
-        </section>
-
-        {/* ── Side rail ── */}
-        <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+            <div className="border-t border-border/70 bg-white/80 px-5 py-4 md:px-10 md:py-5">
+              {error && (
+                <p className="mb-2 text-xs text-destructive">{error}</p>
+              )}
+              <Composer
+                value={input}
+                onChange={setInput}
+                onSend={() => send(input)}
+                busy={busy}
+                listening={recog.listening}
+                voiceSupported={recog.supported}
+                onToggleVoice={recog.toggle}
+              />
+            </div>
+          </section>
           <StarterDeck onPick={send} />
-          <TipCard />
-        </aside>
+        </div>
+        <TipCard />
       </div>
     </div>
   );
@@ -318,24 +276,6 @@ function EmptyState({ onPick }: { onPick: (q: string) => void }) {
         Ask about cultural sites, monsoons, food, train routes or have
         the guide draft a full itinerary for you.
       </p>
-      <div className="mt-8 grid w-full max-w-xl gap-2 sm:grid-cols-2">
-        {STARTERS.map((s, i) => (
-          <button
-            key={s.q}
-            type="button"
-            onClick={() => onPick(s.q)}
-            className="group reveal flex flex-col gap-2 rounded-2xl border border-border bg-white px-5 py-4 text-left text-sm text-ink-700 shadow-soft transition-all hover:border-jade-300 hover:shadow-lift"
-            style={{ animationDelay: `${i * 70}ms` }}
-          >
-            <span className="text-[10px] font-semibold uppercase tracking-kicker text-saffron-600">
-              {s.tag}
-            </span>
-            <span className="leading-snug text-ink-900 group-hover:text-jade-700">
-              {s.q}
-            </span>
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
@@ -495,40 +435,28 @@ function Composer({
   );
 }
 
-function LanguagePicker({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: "en" | "si" | "ta") => void;
-}) {
+function TipCard() {
   return (
-    <div className="inline-flex items-center gap-1 rounded-full border border-border bg-white p-1 shadow-soft">
-      <Globe2 className="ml-2 h-3.5 w-3.5 text-ink-500" />
-      {LANGS.map((l) => (
-        <button
-          key={l.id}
-          onClick={() => onChange(l.id as "en" | "si" | "ta")}
-          className={cn(
-            "rounded-full px-3 py-1 text-xs font-medium transition-colors",
-            value === l.id
-              ? "bg-jade-600 text-white shadow-soft"
-              : "text-ink-600 hover:text-ink-900"
-          )}
-        >
-          {l.label}
-        </button>
-      ))}
+    <div className="rounded-3xl border border-jade-700 bg-jade-900 p-5 text-jade-50 shadow-glow">
+      <span className="kicker text-saffron-300 before:bg-saffron-300/60">
+        <MapPin className="h-3 w-3" />
+        Pro tip
+      </span>
+      <p className="mt-3 text-sm leading-relaxed text-jade-100/90">
+        After a great answer, jump straight to the{" "}
+        <span className="font-semibold text-saffron-300">Itinerary</span>{" "}
+        builder, your conversation context will inform the trip plan.
+      </p>
     </div>
   );
 }
 
 function StarterDeck({ onPick }: { onPick: (q: string) => void }) {
   return (
-    <div className="rounded-3xl border border-border bg-white/80 p-5 shadow-soft backdrop-blur">
+    <aside className="h-fit rounded-3xl border border-border bg-white/80 p-5 shadow-soft backdrop-blur lg:sticky lg:top-28">
       <span className="kicker">
         <Compass className="h-3 w-3" />
-        Try one of these
+        Quick questions
       </span>
       <div className="mt-4 flex flex-col gap-2">
         {STARTERS.map((s) => (
@@ -546,22 +474,6 @@ function StarterDeck({ onPick }: { onPick: (q: string) => void }) {
           </button>
         ))}
       </div>
-    </div>
-  );
-}
-
-function TipCard() {
-  return (
-    <div className="rounded-3xl border border-jade-700 bg-jade-900 p-5 text-jade-50 shadow-glow">
-      <span className="kicker text-saffron-300 before:bg-saffron-300/60">
-        <MapPin className="h-3 w-3" />
-        Pro tip
-      </span>
-      <p className="mt-3 text-sm leading-relaxed text-jade-100/90">
-        After a great answer, jump straight to the{" "}
-        <span className="font-semibold text-saffron-300">Itinerary</span>{" "}
-        builder, your conversation context will inform the trip plan.
-      </p>
-    </div>
+    </aside>
   );
 }
