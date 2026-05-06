@@ -143,7 +143,7 @@ export default async function AttractionPage({
             </span>
           </div>
 
-          <h1 className="display mt-6 max-w-4xl text-[clamp(3rem,8vw,6rem)] font-medium leading-[0.95] tracking-tightest text-white">
+          <h1 className="display mt-6 max-w-4xl text-[clamp(2.25rem,8vw,6rem)] font-medium leading-[0.95] tracking-tightest text-white">
             {attraction.name}
           </h1>
 

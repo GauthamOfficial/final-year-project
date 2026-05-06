@@ -263,7 +263,7 @@ export function ChatPanel() {
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         {/* ── Chat thread ── */}
-        <section className="relative isolate flex h-[72vh] flex-col overflow-hidden rounded-3xl border border-border bg-white/60 shadow-soft backdrop-blur">
+        <section className="relative isolate flex min-h-[60svh] max-h-[75svh] flex-col overflow-hidden rounded-3xl border border-border bg-white/60 shadow-soft backdrop-blur md:min-h-[72svh] md:max-h-[72svh]">
           <div
             ref={scrollRef}
             className="flex-1 overflow-y-auto px-5 py-8 md:px-10 md:py-12"

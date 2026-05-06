@@ -128,7 +128,7 @@ export function ExploreGrid() {
               <Sparkles className="h-3 w-3" />
               The atlas
             </span>
-            <h1 className="display mt-4 text-5xl font-medium tracking-tightest text-ink-900 md:text-7xl">
+            <h1 className="display mt-4 text-4xl font-medium tracking-tightest text-ink-900 sm:text-5xl md:text-7xl">
               Every corner of the{" "}
               <em className="text-jade-700 not-italic">island</em>,
               <br />

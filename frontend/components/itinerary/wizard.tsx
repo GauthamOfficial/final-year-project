@@ -216,7 +216,7 @@ export function ItineraryWizard() {
           <Compass className="h-3 w-3" />
           Itinerary studio
         </span>
-        <h1 className="display mt-4 text-5xl font-medium tracking-tightest text-ink-900 md:text-7xl">
+        <h1 className="display mt-4 text-4xl font-medium tracking-tightest text-ink-900 sm:text-5xl md:text-7xl">
           Let&apos;s draft your{" "}
           <em className="text-jade-700 not-italic">trip</em>.
         </h1>
@@ -226,7 +226,7 @@ export function ItineraryWizard() {
         </p>
       </header>
 
-      <div className="grid gap-8 lg:grid-cols-[280px_1fr_320px]">
+      <div className="grid gap-8 xl:grid-cols-[280px_1fr_320px]">
         {/* ── Vertical stepper ── */}
         <nav className="lg:sticky lg:top-28 lg:self-start">
           <ol className="flex flex-row gap-2 overflow-x-auto lg:flex-col lg:gap-1">
@@ -556,8 +556,8 @@ function StepBudget({
       <h2 className="display text-3xl font-medium tracking-tightest text-ink-900">
         Daily budget
       </h2>
-      <div className="rounded-3xl border border-jade-100 bg-jade-50/50 p-8 text-center">
-        <div className="display text-6xl font-medium leading-none tracking-tightest text-jade-700 md:text-7xl">
+      <div className="rounded-3xl border border-jade-100 bg-jade-50/50 p-6 text-center sm:p-8">
+        <div className="display text-4xl font-medium leading-none tracking-tightest text-jade-700 sm:text-6xl md:text-7xl">
           LKR {value.toLocaleString()}
         </div>
         <p className="mt-3 text-xs uppercase tracking-kicker text-ink-500">
@@ -573,7 +573,7 @@ function StepBudget({
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full accent-jade-700"
       />
-      <div className="grid grid-cols-3 gap-2 text-center text-xs text-ink-500">
+      <div className="grid grid-cols-1 gap-2 text-center text-xs text-ink-500 sm:grid-cols-3">
         <BudgetTier label="Backpacker" range="< 25k" active={value < 25000} />
         <BudgetTier
           label="Mid-range"
@@ -657,7 +657,7 @@ function StepGroup({
           >
             −
           </button>
-          <div className="display flex-1 text-center text-5xl font-medium tracking-tightest text-jade-700">
+          <div className="display flex-1 text-center text-4xl font-medium tracking-tightest text-jade-700 sm:text-5xl">
             {groupSize}
           </div>
           <button
@@ -730,7 +730,7 @@ function SummaryCard({
         <p className="display mt-3 text-3xl font-medium leading-tight text-white">
           {days}-day {Array.from(interests).join(", ") || "Sri Lanka"} trip
         </p>
-        <div className="mt-5 grid grid-cols-3 gap-3 text-center">
+        <div className="mt-5 grid grid-cols-2 gap-3 text-center sm:grid-cols-3">
           <Stat number={String(days)} label="days" />
           <Stat number={String(districtIds.size)} label="districts" />
           <Stat number={String(groupSize)} label={groupType} />

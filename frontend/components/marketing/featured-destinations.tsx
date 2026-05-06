@@ -57,7 +57,7 @@ export function FeaturedDestinations() {
         ))}
         {/* Three small cards across the bottom (new full-width row) */}
         {sm.map((d) => (
-          <DestinationCard key={d.slug} dest={d} className="h-[320px] md:h-auto md:min-h-[260px]" />
+          <DestinationCard key={d.slug} dest={d} className="aspect-[4/3] md:h-auto md:min-h-[260px]" />
         ))}
       </div>
     </section>

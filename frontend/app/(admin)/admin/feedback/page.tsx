@@ -51,11 +51,11 @@ export default function AdminFeedbackPage() {
       )}
 
       <div className="overflow-x-auto rounded-2xl border border-slate-800">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full min-w-[620px] text-left text-sm md:min-w-[720px]">
           <thead className="border-b border-slate-800 bg-slate-900/80 text-xs uppercase text-slate-500">
             <tr>
               <th className="px-4 py-3">Attraction</th>
-              <th className="px-4 py-3">Source</th>
+              <th className="hidden px-4 py-3 sm:table-cell">Source</th>
               <th className="px-4 py-3">Sentiment</th>
               <th className="px-4 py-3">Snippet</th>
             </tr>
@@ -66,7 +66,7 @@ export default function AdminFeedbackPage() {
                 <td className="px-4 py-3 font-medium text-slate-200">
                   {r.attraction_name}
                 </td>
-                <td className="px-4 py-3 text-slate-400">{r.source}</td>
+                <td className="hidden px-4 py-3 text-slate-400 sm:table-cell">{r.source}</td>
                 <td className="px-4 py-3 text-slate-400">
                   {r.sentiment_label || "—"}
                   {r.sentiment_score != null && (

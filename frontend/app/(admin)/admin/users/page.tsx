@@ -95,13 +95,13 @@ export default function AdminUsersPage() {
       )}
 
       <div className="overflow-x-auto rounded-2xl border border-slate-800">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full min-w-[640px] text-left text-sm md:min-w-[720px]">
           <thead className="border-b border-slate-800 bg-slate-900/80 text-xs uppercase text-slate-500">
             <tr>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Active</th>
-              <th className="px-4 py-3">Chats / trips</th>
+              <th className="hidden px-4 py-3 sm:table-cell">Active</th>
+              <th className="hidden px-4 py-3 md:table-cell">Chats / trips</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
@@ -113,14 +113,14 @@ export default function AdminUsersPage() {
                   <div className="text-xs text-slate-500">{u.full_name}</div>
                 </td>
                 <td className="px-4 py-3 text-slate-300">{u.role}</td>
-                <td className="px-4 py-3">
+                <td className="hidden px-4 py-3 sm:table-cell">
                   {u.is_active ? (
                     <span className="text-emerald-400">Yes</span>
                   ) : (
                     <span className="text-red-400">No</span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-slate-400">
+                <td className="hidden px-4 py-3 text-slate-400 md:table-cell">
                   {u.chat_session_count ?? 0} / {u.itinerary_count ?? 0}
                 </td>
                 <td className="px-4 py-3">

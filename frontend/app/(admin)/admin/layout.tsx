@@ -14,10 +14,10 @@ export default function AdminLayout({
 }) {
   return (
     <AdminGate>
-      <div className="flex min-h-screen bg-slate-950 text-slate-100">
+      <div className="flex min-h-screen flex-col bg-slate-950 text-slate-100 lg:flex-row">
         <AdminSidebar />
         <div className="flex-1 overflow-x-auto">
-          <div className="mx-auto max-w-6xl px-6 py-8">{children}</div>
+          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">{children}</div>
         </div>
       </div>
     </AdminGate>

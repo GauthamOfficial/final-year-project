@@ -86,7 +86,7 @@ export function WeatherCard({ districtId }: { districtId: number | null }) {
         </span>
       </div>
       {forecast.length > 0 && (
-        <div className="mt-4 grid grid-cols-5 gap-2">
+        <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5">
           {forecast.map((f) => (
             <div
               key={f.date}
