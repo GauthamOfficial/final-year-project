@@ -31,7 +31,7 @@ export function FeaturedDestinations() {
           </h2>
           <p className="mt-5 max-w-lg text-base leading-relaxed text-ink-600">
             From rock-cut palaces and cloud-forest railways to leopard
-            country and Dutch fort sunsets — start with the icons, then let
+            country and Dutch fort sunsets, start with the icons, then let
             the AI guide you off the beaten path.
           </p>
         </div>

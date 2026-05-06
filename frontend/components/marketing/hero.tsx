@@ -40,7 +40,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-7 max-w-xl text-base leading-relaxed text-white/85 md:text-lg">
-            Plan trips with a guide that actually knows the island —
+            Plan trips with a guide that actually knows the island,
             grounded in 25 districts of curated local knowledge, fluent in
             Sinhala &amp; Tamil, and honest when it doesn&apos;t know.
           </p>

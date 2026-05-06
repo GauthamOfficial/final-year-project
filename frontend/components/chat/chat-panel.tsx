@@ -228,8 +228,7 @@ export function ChatPanel() {
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-600 md:text-base">
             Every answer is grounded in a curated atlas of 25 districts.
-            When the guide isn&apos;t sure, it tells you — no hallucinations
-            sold as facts.
+
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -316,7 +315,7 @@ function EmptyState({ onPick }: { onPick: (q: string) => void }) {
         Where shall we start?
       </h2>
       <p className="mt-3 max-w-md text-sm text-ink-600">
-        Ask about cultural sites, monsoons, food, train routes — or have
+        Ask about cultural sites, monsoons, food, train routes or have
         the guide draft a full itinerary for you.
       </p>
       <div className="mt-8 grid w-full max-w-xl gap-2 sm:grid-cols-2">
@@ -456,7 +455,7 @@ function Composer({
         placeholder={
           listening
             ? "Listening… speak now"
-            : "Type your question — Enter to send · Shift + Enter for newline"
+            : "Type your question"
         }
         rows={2}
         disabled={busy}
@@ -561,7 +560,7 @@ function TipCard() {
       <p className="mt-3 text-sm leading-relaxed text-jade-100/90">
         After a great answer, jump straight to the{" "}
         <span className="font-semibold text-saffron-300">Itinerary</span>{" "}
-        builder — your conversation context will inform the trip plan.
+        builder, your conversation context will inform the trip plan.
       </p>
     </div>
   );

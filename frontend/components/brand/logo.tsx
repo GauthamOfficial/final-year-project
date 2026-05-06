@@ -1,61 +1,88 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+type LogoSize = "default" | "footer";
+
+/** `white` = monochrome white (for dark footer / jade backgrounds); does not stretch raster. */
+type LogoTone = "default" | "white";
+
 /**
- * LankaGuide wordmark with a Sri Lanka-inspired island mark.
+ * Official mark from `public/lg-logo.png`.
+ * Fixed-height frame + `object-contain` keeps aspect ratio; logo is never stretched.
  */
 export function Logo({
   href = "/",
   className,
   invert = false,
+  size = "default",
+  tone = "default",
 }: {
   href?: string | null;
   className?: string;
   invert?: boolean;
+  size?: LogoSize;
+  tone?: LogoTone;
 }) {
+  const lightWordmark = tone === "white" || invert;
+
+  const imgClass =
+    size === "footer"
+      ? "h-9 max-h-9 w-auto max-w-[min(120px,calc(35vw))] shrink-0 sm:h-10 sm:max-h-10 sm:max-w-[min(140px,28vw)]"
+      : "h-8 max-h-8 w-auto max-w-[min(110px,32vw)] shrink-0 sm:h-9 sm:max-h-9 sm:max-w-[min(128px,30vw)]";
+
   const inner = (
-    <span className={cn("flex items-center gap-2.5", className)}>
+    <span
+      className={cn(
+        "isolate inline-flex shrink-0 items-center justify-start gap-2.5",
+        className
+      )}
+    >
+      <Image
+        src="/lg-logo.png"
+        alt=""
+        aria-hidden
+        width={800}
+        height={200}
+        sizes={
+          size === "footer"
+            ? "(max-width: 640px) 112px, 140px"
+            : "(max-width: 640px) 104px, 128px"
+        }
+        className={cn(
+          "object-contain object-left",
+          imgClass,
+          tone === "white" && "brightness-0 invert",
+          invert && tone !== "white" && "drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
+        )}
+        priority={size !== "footer"}
+      />
       <span
         className={cn(
-          "relative grid h-9 w-9 place-items-center rounded-2xl border shadow-soft",
-          invert
-            ? "border-white/20 bg-white/10 text-white"
-            : "border-jade-100 bg-white text-jade-700"
+          "display font-medium leading-none tracking-tightest whitespace-nowrap",
+          size === "footer" ? "text-lg sm:text-xl" : "text-[1.1rem] sm:text-[1.25rem]",
+          lightWordmark ? "text-white" : "text-ink-900",
+          invert && tone !== "white" &&
+            "drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]"
         )}
       >
-        <svg
-          viewBox="0 0 24 24"
-          aria-hidden
-          className="h-5 w-5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path
-            d="M11 2.4c1.1.3 2.1 1.1 2.5 2.1.5 1.1.4 2.4 1 3.5.7 1.2 2 2 2.4 3.4.3 1-.1 1.9-.5 2.8-.4 1.1-.7 2.2-.6 3.4.1 1.1-.3 2.2-1.2 2.9-.8.7-1.9 1-2.9.9-1.1-.1-2.2.1-3.2.6-.9.4-1.9.6-2.9.3-1.2-.3-2.1-1.2-2.6-2.3-.5-1-.5-2.2-.2-3.3.3-1 .8-1.9 1.3-2.8.5-.8.8-1.8.8-2.8 0-1.1.3-2.1.9-2.9.6-.9 1.5-1.5 2.4-2 .8-.4 1.6-.8 2.2-1.8.5-.7 1.4-1.2 2.6-1Z"
-            fill="currentColor"
-            fillOpacity="0.14"
-          />
-          <path d="M11 2.4c1.1.3 2.1 1.1 2.5 2.1.5 1.1.4 2.4 1 3.5.7 1.2 2 2 2.4 3.4.3 1-.1 1.9-.5 2.8-.4 1.1-.7 2.2-.6 3.4.1 1.1-.3 2.2-1.2 2.9-.8.7-1.9 1-2.9.9-1.1-.1-2.2.1-3.2.6-.9.4-1.9.6-2.9.3-1.2-.3-2.1-1.2-2.6-2.3-.5-1-.5-2.2-.2-3.3.3-1 .8-1.9 1.3-2.8.5-.8.8-1.8.8-2.8 0-1.1.3-2.1.9-2.9.6-.9 1.5-1.5 2.4-2 .8-.4 1.6-.8 2.2-1.8.5-.7 1.4-1.2 2.6-1Z" />
-          <path d="M11.5 8.5c-.9 2.1-1.3 4.2-1 6.4.2 1.2.6 2.4 1.2 3.5" />
-        </svg>
-        <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-saffron-400 ring-2 ring-white" />
-      </span>
-      <span className="flex flex-col leading-none">
-        <span
-          className={cn(
-            "display text-[1.2rem] font-medium tracking-tightest",
-            invert ? "text-white" : "text-ink-900"
-          )}
-        >
-          LankaGuide
-        </span>
+        LankaGuide
       </span>
     </span>
   );
 
   if (!href) return inner;
-  return <Link href={href} className="group">{inner}</Link>;
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "group inline-flex shrink-0 items-center outline-none ring-offset-transparent focus-visible:ring-2 focus-visible:ring-offset-2",
+        tone === "white"
+          ? "focus-visible:ring-saffron-300 ring-offset-jade-900"
+          : "focus-visible:ring-jade-500"
+      )}
+    >
+      {inner}
+    </Link>
+  );
 }

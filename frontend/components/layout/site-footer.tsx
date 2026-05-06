@@ -40,7 +40,7 @@ export function SiteFooter() {
       <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-jade-700 via-saffron-400 to-jade-700" />
       <div className="container grid gap-12 py-16 md:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div className="space-y-5">
-          <Logo invert />
+          <Logo size="footer" tone="white" />
           <p className="max-w-sm text-sm leading-relaxed text-jade-100/80">
             An AI-powered travel companion for Sri Lanka. Plan trips, ask the
             local guide, translate on the fly, and explore every district with
