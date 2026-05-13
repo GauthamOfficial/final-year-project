@@ -273,7 +273,7 @@ GOOGLE_OAUTH_CLIENT_ID = env("GOOGLE_OAUTH_CLIENT_ID", default="")
 GOOGLE_OAUTH_CLIENT_SECRET = env("GOOGLE_OAUTH_CLIENT_SECRET", default="")
 
 # OpenWeatherMap (free tier) for the weather widget
-OPENWEATHER_API_KEY = env("OPENWEATHER_API_KEY", default="")
+OPENWEATHER_API_KEY = (env("OPENWEATHER_API_KEY", default="") or "").strip()
 
 # Public OSRM endpoint for drive-time estimates
 OSRM_BASE_URL = env(

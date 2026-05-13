@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Case, IntegerField, When
 from django.utils import timezone
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,28 +16,30 @@ def _truthy(val: str | None) -> bool:
     return str(val).lower() in ("1", "true", "yes")
 
 
-class AlertListView(APIView):
-    """GET /api/v1/alerts/ — public read for travel advisories."""
+class AlertListView(ListAPIView):
+    """GET /api/v1/alerts/ — public read (no global page-size wrapper)."""
 
+    serializer_class = SafetyAlertSerializer
     permission_classes = [AllowAny]
+    pagination_class = None
 
-    def get(self, request):
+    def get_queryset(self):
         qs = SafetyAlert.objects.select_related("district").all()
-        if _truthy(request.query_params.get("active", "true")):
+        if _truthy(self.request.query_params.get("active", "true")):
             qs = qs.filter(active=True)
             now = timezone.now()
             qs = qs.filter(
                 models.Q(expires_at__isnull=True) | models.Q(expires_at__gt=now)
             )
 
-        did = request.query_params.get("district_id")
+        did = self.request.query_params.get("district_id")
         if did:
             qs = qs.filter(district_id=did)
-        severity = request.query_params.get("severity")
+        severity = self.request.query_params.get("severity")
         if severity:
             qs = qs.filter(severity=severity)
 
-        qs = qs.annotate(
+        return qs.annotate(
             severity_order=Case(
                 When(severity=SafetyAlert.Severity.DANGER, then=0),
                 When(severity=SafetyAlert.Severity.WARNING, then=1),
@@ -45,9 +48,6 @@ class AlertListView(APIView):
                 output_field=IntegerField(),
             )
         ).order_by("severity_order", "-created_at")
-
-        ser = SafetyAlertSerializer(qs, many=True)
-        return Response(ser.data)
 
 
 class AlertActiveCountView(APIView):

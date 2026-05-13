@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ExternalLink } from "lucide-react";
+import { normalizeAlertsList } from "@/lib/alerts";
 import { api, toApiError } from "@/lib/api";
 import { formatRelativeTime } from "@/lib/relative-time";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -44,11 +45,14 @@ export function AlertsPageContent() {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await api.get<AlertRow[]>("/api/v1/alerts/", {
-          params: { active: "true" },
-        });
+        const { data } = await api.get<AlertRow[] | { results: AlertRow[] }>(
+          "/api/v1/alerts/",
+          {
+            params: { active: "true" },
+          }
+        );
         if (!cancelled) {
-          setRows(Array.isArray(data) ? data : []);
+          setRows(normalizeAlertsList<AlertRow>(data));
           setErr(null);
         }
       } catch (e) {
@@ -104,7 +108,16 @@ export function AlertsPageContent() {
       <div className="container max-w-3xl py-12">
         <Alert variant="info">
           <AlertDescription>
-            No active travel advisories at this time.
+            No active travel advisories at this time. If you just deployed the
+            API, run{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">
+              python manage.py seed_demo_alerts
+            </code>{" "}
+            for sample rows, or{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">
+              python manage.py sync_weather_alerts
+            </code>{" "}
+            to generate weather-based alerts.
           </AlertDescription>
         </Alert>
       </div>

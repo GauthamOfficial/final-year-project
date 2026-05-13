@@ -45,8 +45,11 @@ class WeatherView(APIView):
         if current is None:
             return Response(
                 {
-                    "detail": "Weather is unavailable. Set OPENWEATHER_API_KEY to enable this widget.",
-                    "code": "weather_disabled",
+                    "detail": (
+                        "Weather could not be loaded (Open-Meteo and OpenWeatherMap "
+                        "both failed). Check your network or try again later."
+                    ),
+                    "code": "weather_unavailable",
                 },
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
+import { normalizeAlertsList } from "@/lib/alerts";
 import { api } from "@/lib/api";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
@@ -58,10 +59,13 @@ export function AlertsBanner() {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await api.get<AlertRow[]>("/api/v1/alerts/", {
-          params: { active: "true" },
-        });
-        const list = Array.isArray(data) ? data : [];
+        const { data } = await api.get<AlertRow[] | { results: AlertRow[] }>(
+          "/api/v1/alerts/",
+          {
+            params: { active: "true" },
+          }
+        );
+        const list = normalizeAlertsList<AlertRow>(data);
         if (!cancelled) {
           setRows(
             [...list].sort(
