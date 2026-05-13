@@ -101,9 +101,7 @@ class AdminMediaSerializer(serializers.ModelSerializer):
     attraction_name = serializers.CharField(
         source="attraction.name", read_only=True, default=""
     )
-    district_name = serializers.CharField(
-        source="district.name", read_only=True, default=""
-    )
+    district_name = serializers.SerializerMethodField()
 
     class Meta:
         model = MediaAsset
@@ -122,6 +120,16 @@ class AdminMediaSerializer(serializers.ModelSerializer):
             "license",
             "source_url",
         ]
+
+    @staticmethod
+    def get_district_name(obj: MediaAsset) -> str:
+        if getattr(obj, "attraction_id", None) and getattr(
+            obj.attraction, "district_id", None
+        ):
+            return obj.attraction.district.name
+        if getattr(obj, "district_id", None):
+            return obj.district.name
+        return ""
 
 
 class AdminItinerarySerializer(serializers.ModelSerializer):

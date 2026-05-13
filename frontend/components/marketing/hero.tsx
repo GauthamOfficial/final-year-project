@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Compass, Play, Sparkles } from "lucide-react";
+import { ArrowRight, Camera, Compass, Play, Sparkles } from "lucide-react";
 import { HERO_PHOTOS } from "@/lib/photos";
 
 /**
@@ -45,7 +45,7 @@ export function Hero() {
             Sinhala &amp; Tamil, and honest when it doesn&apos;t know.
           </p>
 
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/itinerary"
               className="group inline-flex items-center justify-center gap-2 rounded-full bg-saffron-400 px-7 py-4 text-sm font-semibold text-jade-900 shadow-glow transition-all hover:bg-saffron-300"
@@ -59,6 +59,13 @@ export function Hero() {
             >
               <Compass className="h-4 w-4" />
               Ask anything about Sri Lanka
+            </Link>
+            <Link
+              href="/identify"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-7 py-4 text-sm font-semibold text-white/95 backdrop-blur transition-colors hover:bg-white/15"
+            >
+              <Camera className="h-4 w-4" />
+              Identify a landmark
             </Link>
           </div>
 

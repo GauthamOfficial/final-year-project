@@ -12,6 +12,7 @@ from django.db.models import Count, Q
 from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -180,6 +181,7 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 class AdminDistrictViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminRole]
     serializer_class = AdminDistrictSerializer
+    pagination_class = None
 
     def get_queryset(self):
         return District.objects.annotate(
@@ -207,13 +209,24 @@ class AdminAttractionViewSet(viewsets.ModelViewSet):
         return qs
 
 
+class AdminMediaPagination(PageNumberPagination):
+    page_size = 80
+    page_size_query_param = "page_size"
+    max_page_size = 250
+
+
 class AdminMediaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminRole]
     serializer_class = AdminMediaSerializer
+    pagination_class = AdminMediaPagination
 
     def get_queryset(self):
         qs = (
-            MediaAsset.objects.select_related("attraction", "district")
+            MediaAsset.objects.select_related(
+                "attraction",
+                "attraction__district",
+                "district",
+            )
             .all()
             .order_by("-id")
         )

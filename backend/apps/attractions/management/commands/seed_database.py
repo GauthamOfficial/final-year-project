@@ -10,7 +10,7 @@ Re-run safely: `--flush` wipes attractions/districts before seeding.
 
 from __future__ import annotations
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils.text import slugify
 
@@ -34,10 +34,10 @@ DISTRICTS: list[dict] = [
     {"name": "Matara", "province": "Southern", "lat": 5.9485, "lng": 80.5353, "climate": ClimateZone.WET, "peak": [12, 1, 2, 3, 4], "yt": ["XcANUuvFqfY"], "desc": "Mirissa's whales and surf, Weherahena temple, Polhena snorkelling and the Star Fort."},
     {"name": "Hambantota", "province": "Southern", "lat": 6.1241, "lng": 81.1185, "climate": ClimateZone.DRY, "peak": [2, 3, 4, 5, 6, 7], "yt": ["UMpV5lzRnVk"], "desc": "Yala safari country, salt pans, Bundala wetlands and the dry-zone south coast — leopards, elephants and flamingos."},
     {"name": "Jaffna", "province": "Northern", "lat": 9.6615, "lng": 80.0255, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8, 9], "yt": ["7DJVqz2N6F4"], "desc": "Tamil cultural heartland — Nallur Kovil, Dutch fort, the islands of Karaitivu and the long causeway to Delft."},
-    {"name": "Kilinochchi", "province": "Northern", "lat": 9.3961, "lng": 80.4036, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8], "yt": ["7DJVqz2N6F4", "sXCDNk8lh-A"], "desc": "Inland Northern district rebuilding after the war — Iranamadu tank, palmyra plantations and lesser-visited temples."},
-    {"name": "Mannar", "province": "Northern", "lat": 8.9810, "lng": 79.9047, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8], "yt": ["7DJVqz2N6F4", "kZpkmJ72eeA"], "desc": "Bridge of Adam's Bridge / Rama's Setu, baobab trees, wild donkeys and Talaimannar's lighthouse on the Indian crossing."},
-    {"name": "Vavuniya", "province": "Northern", "lat": 8.7514, "lng": 80.4971, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8], "yt": ["7DJVqz2N6F4", "BiP8njLE4uY"], "desc": "Crossroads town between the cultural triangle and Jaffna — tanks, Madhu road and quiet rural Buddhism."},
-    {"name": "Mullaitivu", "province": "Northern", "lat": 9.2671, "lng": 80.8142, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8], "yt": ["bDH5Wq6hI3I", "kZpkmJ72eeA"], "desc": "The eastern Vanni coast — pristine beaches at Nayaru, Nanthikadal lagoon and one of the country's wildest stretches."},
+    {"name": "Kilinochchi", "province": "Northern", "lat": 9.3961, "lng": 80.4036, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8], "yt": ["sXCDNk8lh-A", "G37oTtH5KdM"], "desc": "Inland Northern district rebuilding after the war — Iranamadu tank, palmyra plantations and lesser-visited temples."},
+    {"name": "Mannar", "province": "Northern", "lat": 8.9810, "lng": 79.9047, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8], "yt": ["kZpkmJ72eeA", "ZZ7vbZB7Z3w"], "desc": "Bridge of Adam's Bridge / Rama's Setu, baobab trees, wild donkeys and Talaimannar's lighthouse on the Indian crossing."},
+    {"name": "Vavuniya", "province": "Northern", "lat": 8.7514, "lng": 80.4971, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8], "yt": ["BiP8njLE4uY", "7e8VC9q3-cI"], "desc": "Crossroads town between the cultural triangle and Jaffna — tanks, Madhu road and quiet rural Buddhism."},
+    {"name": "Mullaitivu", "province": "Northern", "lat": 9.2671, "lng": 80.8142, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8], "yt": ["bDH5Wq6hI3I", "UMpV5lzRnVk"], "desc": "The eastern Vanni coast — pristine beaches at Nayaru, Nanthikadal lagoon and one of the country's wildest stretches."},
     {"name": "Batticaloa", "province": "Eastern", "lat": 7.7170, "lng": 81.7000, "climate": ClimateZone.DRY, "peak": [4, 5, 6, 7, 8, 9], "yt": ["bDH5Wq6hI3I"], "desc": "Sun-drenched east-coast town with a Dutch fort, lagoon kallady bridge, and Pasikudah's bath-warm reef beach."},
     {"name": "Ampara", "province": "Eastern", "lat": 7.2916, "lng": 81.6747, "climate": ClimateZone.DRY, "peak": [5, 6, 7, 8, 9], "yt": ["bDH5Wq6hI3I", "kZpkmJ72eeA", "UMpV5lzRnVk"], "desc": "Eastern wildlife and surf — Arugam Bay's point break, Lahugala's elephants and Buddhangala's hilltop forest temple."},
     {"name": "Trincomalee", "province": "Eastern", "lat": 8.5874, "lng": 81.2152, "climate": ClimateZone.DRY, "peak": [4, 5, 6, 7, 8, 9], "yt": ["kZpkmJ72eeA"], "desc": "Natural deep-water harbour, Hindu pilgrimage at Koneswaram, blue whales offshore and Nilaveli's white sand."},
@@ -50,6 +50,40 @@ DISTRICTS: list[dict] = [
     {"name": "Ratnapura", "province": "Sabaragamuwa", "lat": 6.6828, "lng": 80.3992, "climate": ClimateZone.WET, "peak": [1, 2, 3, 7, 8], "yt": ["fZsVdGhTYxw", "KqYwEksjVTI", "Hb8a2L1zXkE"], "desc": "'City of Gems' — Sinharaja rainforest, Adam's Peak's southern trail and gem-mining lore."},
     {"name": "Kegalle", "province": "Sabaragamuwa", "lat": 7.2513, "lng": 80.3464, "climate": ClimateZone.INTERMEDIATE, "peak": [1, 2, 3, 7, 8], "yt": ["Gj6cxvrL2u4", "S6XKLR2tPvY", "WUyB-O5Tnyk"], "desc": "Pinnawala elephant orphanage, Bible Rock (Bathalegala), Utuwankanda outlaw legends and tea-plus-rubber estates."},
 ]
+
+# All 25 administrative districts — verified on load (see _validate_district_seed).
+SL_DISTRICT_COUNT = 25
+
+# Curated hero thumbnails via Wikimedia Commons (persisted as District.hero_image_url).
+WIKIMEDIA_COMMONS_HERO = "https://commons.wikimedia.org/wiki/Special:FilePath/"
+
+DISTRICT_HERO_IMAGE_URL: dict[str, str] = {
+    "Colombo": WIKIMEDIA_COMMONS_HERO + "Stunning_Night_View_of_Colombo_City_Skyline.jpg",
+    "Gampaha": WIKIMEDIA_COMMONS_HERO + "Negombo_Beach.jpg",
+    "Kalutara": WIKIMEDIA_COMMONS_HERO + "KalutaraCityViewFromTheBridge.jpg",
+    "Kandy": WIKIMEDIA_COMMONS_HERO + "Kandy_Sri_Lanka.jpg",
+    "Matale": WIKIMEDIA_COMMONS_HERO + "Sigiriya2.jpg",
+    "Nuwara Eliya": WIKIMEDIA_COMMONS_HERO + "Gregory_Lake_Nuwara_Eliya.jpg",
+    "Galle": WIKIMEDIA_COMMONS_HERO + "Galle_Fort_Beach.jpg",
+    "Matara": WIKIMEDIA_COMMONS_HERO + "Mirissa_Beach.jpg",
+    "Hambantota": WIKIMEDIA_COMMONS_HERO + "View_of_yala_national_park.jpg",
+    "Jaffna": WIKIMEDIA_COMMONS_HERO + "Jaffna_Shores.jpg",
+    "Kilinochchi": WIKIMEDIA_COMMONS_HERO + "Lotus_Pond_Reflection.jpg",
+    "Mannar": WIKIMEDIA_COMMONS_HERO + "Mannar_Trip20.jpg",
+    "Vavuniya": WIKIMEDIA_COMMONS_HERO + "Kk_kulam.jpg",
+    "Mullaitivu": WIKIMEDIA_COMMONS_HERO + "Vadduvakkal_causeway.jpg",
+    "Batticaloa": WIKIMEDIA_COMMONS_HERO + "Sea_Fishing,_Batticaloa.jpg",
+    "Ampara": WIKIMEDIA_COMMONS_HERO + "Arugam_bay_beach.jpg",
+    "Trincomalee": WIKIMEDIA_COMMONS_HERO + "Bay_of_Bengal_from_Koneshwaram.jpg",
+    "Kurunegala": WIKIMEDIA_COMMONS_HERO + "Kurunegala_City_from_the_Sky.jpg",
+    "Puttalam": WIKIMEDIA_COMMONS_HERO + "Wilpattu_National_Park.jpg",
+    "Anuradhapura": WIKIMEDIA_COMMONS_HERO + "Anuradhapura_view.jpg",
+    "Polonnaruwa": WIKIMEDIA_COMMONS_HERO + "Rankoth_Vehera_Polonnaruwa_Sri_Lanka.jpg",
+    "Badulla": WIKIMEDIA_COMMONS_HERO + "Badulla_Clock_Tower.JPG",
+    "Moneragala": WIKIMEDIA_COMMONS_HERO + "Buduruvagala.JPG",
+    "Ratnapura": WIKIMEDIA_COMMONS_HERO + "Sinharaja_Forest.JPG",
+    "Kegalle": WIKIMEDIA_COMMONS_HERO + "Kegalle_Town_Clock_Tower.jpg",
+}
 
 
 # ─────────────────────────── Attractions ───────────────────────────────
@@ -305,6 +339,49 @@ ATTRACTIONS: dict[str, list[dict]] = {
 }
 
 
+def _validate_district_seed() -> None:
+    """Ensure all 25 districts, hero URLs, attractions keys, and field shapes line up."""
+    names = [d["name"] for d in DISTRICTS]
+    if len(names) != SL_DISTRICT_COUNT:
+        raise CommandError(
+            f"Expected exactly {SL_DISTRICT_COUNT} districts in DISTRICTS, got {len(names)}."
+        )
+    if len(set(names)) != len(names):
+        raise CommandError("Duplicate district name in DISTRICTS.")
+    hero_keys = set(DISTRICT_HERO_IMAGE_URL)
+    if hero_keys != set(names):
+        raise CommandError(
+            "DISTRICT_HERO_IMAGE_URL must have exactly one entry per district. "
+            f"Missing: {sorted(set(names) - hero_keys)}. "
+            f"Extra: {sorted(hero_keys - set(names))}."
+        )
+    att = set(ATTRACTIONS.keys())
+    if att != set(names):
+        raise CommandError(
+            "ATTRACTIONS must define one key per district (exact name match). "
+            f"Only attractions: {sorted(att - set(names))}. "
+            f"Only districts: {sorted(set(names) - att)}."
+        )
+    for d in DISTRICTS:
+        n = d["name"]
+        for key in ("province", "lat", "lng", "climate", "desc"):
+            if key not in d or d[key] in (None, ""):
+                raise CommandError(f"District {n!r} missing or empty {key!r}.")
+        yt = d.get("yt") or []
+        if not isinstance(yt, list) or len(yt) < 1:
+            raise CommandError(
+                f"District {n!r} needs a non-empty list 'yt' (YouTube ids)."
+            )
+        peak = d.get("peak") or []
+        if not isinstance(peak, list) or not peak:
+            raise CommandError(f"District {n!r} needs a non-empty 'peak' month list.")
+        for m in peak:
+            if not isinstance(m, int) or not (1 <= m <= 12):
+                raise CommandError(
+                    f"District {n!r} has invalid peak month {m!r} (expected int 1–12)."
+                )
+
+
 # ─────────────────────────── Command ───────────────────────────────────
 class Command(BaseCommand):
     help = (
@@ -321,6 +398,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **opts):
+        _validate_district_seed()
         if opts["flush"]:
             MediaAsset.objects.all().delete()
             Attraction.objects.all().delete()
@@ -340,6 +418,7 @@ class Command(BaseCommand):
                     "climate_zone": d["climate"],
                     "peak_months": d["peak"],
                     "youtube_video_ids": d.get("yt") or [],
+                    "hero_image_url": DISTRICT_HERO_IMAGE_URL.get(d["name"], ""),
                     "description": d.get("desc")
                     or f"{d['name']} is one of the {d['province']} Province districts of Sri Lanka.",
                 },

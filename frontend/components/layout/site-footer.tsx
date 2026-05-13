@@ -7,6 +7,7 @@ const COLUMNS = [
     title: "Discover",
     links: [
       { href: "/explore", label: "All destinations" },
+      { href: "/identify", label: "Landmark ID" },
       { href: "/explore?category=cultural", label: "Cultural sites" },
       { href: "/explore?category=wildlife", label: "Wildlife parks" },
       { href: "/explore?category=beach", label: "Beaches & coast" },

@@ -238,6 +238,35 @@ export function LandmarkIdentifier({ className }: { className?: string }) {
                 </div>
               ) : null}
 
+              {Array.isArray(result.sources) && result.sources.length > 0 ? (
+                <div className="space-y-2 rounded-xl border border-border bg-muted/20 px-4 py-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Sources
+                  </h3>
+                  <ul className="space-y-1.5 text-xs text-muted-foreground">
+                    {result.sources.map((s, i) => {
+                      const title =
+                        typeof s.title === "string"
+                          ? s.title
+                          : typeof s.doc_id === "string"
+                            ? s.doc_id
+                            : `Reference ${i + 1}`;
+                      const rel = s.relevance;
+                      return (
+                        <li key={i} className="leading-snug">
+                          <span className="text-foreground/80">{title}</span>
+                          {typeof rel === "number" ? (
+                            <span className="ml-1 text-muted-foreground">
+                              (score {rel.toFixed(2)})
+                            </span>
+                          ) : null}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : null}
+
               {result.attraction_slug ? (
                 <Link
                   href={`/explore/${result.attraction_slug}`}

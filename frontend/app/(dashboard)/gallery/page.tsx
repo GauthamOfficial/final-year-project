@@ -12,10 +12,10 @@ type District = {
 };
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+/** Last-resort thumbnails from Wikimedia Commons (no search-proxy hotlinks). */
 const DISTRICT_FREE_SOURCE_THUMBNAILS: Record<string, string> = {
   ampara:
-    "https://1.bp.blogspot.com/-HJCuSlsV7ZY/UD1dyRvfj3I/AAAAAAAAAJc/9KFQtaGZRRA/s1600/Ampara+trip+034.jpg",
-  // Provided link is a web page, so keep a direct image URL for the exact place.
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Arugam_bay_beach.jpg",
   anuradhapura:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Anuradhapura_view.jpg",
   badulla:
@@ -29,11 +29,7 @@ const DISTRICT_FREE_SOURCE_THUMBNAILS: Record<string, string> = {
   mannar:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Mannar_Trip20.jpg",
   monaragala:
-    "https://imgs.search.brave.com/oqy0aUm48bZJoJXhKNY38xkPTHR1WdhKM9QZZYQBgG0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRpYS5pc3RvY2twaG90by5jb20vaWQvMjE2MjYzNDA0My9waG90by9tb25hcmFnYWxhLXRlbXBsZS1rdXJ1bmVnYWxhLXNyaS1sYW5rYS5qcGc_cz02MTJ4NjEyJnc9MCZrPTIwJmM9R3JZdUFjVmZ6RGRYSjFVcklDSzY4MzBIQlBES2xnNjcxWGtGVDlkbFpxWT0",
-  mullaitivu:
-    "https://imgs.search.brave.com/q4mE2AViptlfIfAa_eUsn3OofbpK24EAZYOGTzpqm5g/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxvYWQud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy82LzYzL0xvYWRpbmdfTFRURV9jYWRyZXNfaW5fY2FsbV9zZWEuanBn",
-  mullativu:
-    "https://imgs.search.brave.com/q4mE2AViptlfIfAa_eUsn3OofbpK24EAZYOGTzpqm5g/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxvYWQud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy82LzYzL0xvYWRpbmdfTFRURV9jYWRyZXNfaW5fY2FsbV9zZWEuanBn",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Buduruvagala.JPG",
 };
 
 export const metadata = {

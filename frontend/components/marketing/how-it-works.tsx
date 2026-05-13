@@ -22,7 +22,7 @@ const STEPS = [
     icon: ScanLine,
     title: "Identify a landmark",
     body:
-      "Point your camera at a temple, beach, or rock outcrop. A MobileNetV2 vision model returns the top-3 matches and the AI explains its history on the spot.",
+      "Upload or snap a photo of a stupa, fort, or coastline. Gemini Vision names the place, we match it to our attraction atlas, and the knowledge base adds a short, cited summary when available.",
     accent: "jade",
   },
 ] as const;

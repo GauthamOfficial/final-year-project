@@ -25,6 +25,7 @@ class DistrictsViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = [permissions.AllowAny]
     serializer_class = DistrictSerializer
+    pagination_class = None
 
     def get_queryset(self):
         return District.objects.annotate(
