@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { AttractionSeasonalPanel } from "@/components/attractions/AttractionSeasonalPanel";
+import { SentimentBadge } from "@/components/attractions/SentimentBadge";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -25,6 +27,7 @@ type AttractionDetail = {
   best_season: number[];
   crowd_index: number;
   trend_score: number;
+  best_months_names?: string[];
   district: {
     id: number;
     name: string;
@@ -40,6 +43,10 @@ type AttractionDetail = {
     caption: string;
   }>;
   created_at: string;
+  sentiment_label: string | null;
+  sentiment_score: number | null;
+  positive_pct: number;
+  sentiment_summary: string | null;
 };
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -147,6 +154,20 @@ export default async function AttractionPage({
             {attraction.name}
           </h1>
 
+          <div className="mt-4 max-w-2xl [&_p.sentiment-summary]:text-white/85">
+            <SentimentBadge
+              label={
+                (attraction.sentiment_label as
+                  | "positive"
+                  | "neutral"
+                  | "negative"
+                  | null) ?? null
+              }
+              positive_pct={attraction.positive_pct ?? 0}
+              summary={attraction.sentiment_summary ?? ""}
+            />
+          </div>
+
           {attraction.address && (
             <p className="mt-4 max-w-xl text-sm text-white/75">
               {attraction.address}
@@ -168,6 +189,8 @@ export default async function AttractionPage({
               {attraction.description.split(". ").slice(1).join(". ")}
             </p>
           </div>
+
+          <AttractionSeasonalPanel slug={attraction.slug} />
 
           <div className="rounded-3xl border border-jade-100 bg-jade-50/60 p-8 md:p-10">
             <span className="kicker">About the district</span>

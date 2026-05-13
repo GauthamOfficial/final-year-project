@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from rest_framework import serializers
 
-from .models import Attraction, District, MediaAsset
+from .models import Attraction, District, MediaAsset, SeasonalData
+from .seasonal_utils import best_month_names
 
 
 class MediaAssetSerializer(serializers.ModelSerializer):
@@ -45,11 +46,30 @@ class DistrictSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "attraction_count"]
 
 
+class SeasonalDataSerializer(serializers.ModelSerializer):
+    month_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SeasonalData
+        fields = [
+            "month",
+            "month_name",
+            "crowd_index",
+            "weather_rating",
+            "is_peak_season",
+            "visitor_note",
+        ]
+
+    def get_month_name(self, obj: SeasonalData) -> str:
+        return SeasonalData.MONTH_NAMES[obj.month - 1]
+
+
 class AttractionListSerializer(serializers.ModelSerializer):
     """Lean serializer used by the explorer grid (Prompt 5C)."""
 
     district_name = serializers.CharField(source="district.name", read_only=True)
     featured_media = serializers.SerializerMethodField()
+    best_months_names = serializers.SerializerMethodField()
 
     class Meta:
         model = Attraction
@@ -64,8 +84,19 @@ class AttractionListSerializer(serializers.ModelSerializer):
             "trend_score",
             "best_season",
             "featured_media",
+            "sentiment_label",
+            "sentiment_score",
+            "positive_pct",
+            "sentiment_summary",
+            "best_months_names",
         ]
         read_only_fields = fields
+
+    def get_best_months_names(self, obj: Attraction) -> list[str]:
+        rows = list(obj.seasonal_data.all())
+        if not rows:
+            return []
+        return best_month_names(sorted(rows, key=lambda r: r.month))
 
     def get_featured_media(self, obj: Attraction) -> dict | None:
         media_list = list(obj.media.all())
@@ -86,6 +117,7 @@ class AttractionDetailSerializer(serializers.ModelSerializer):
 
     district = DistrictSerializer(read_only=True)
     media = serializers.SerializerMethodField()
+    best_months_names = serializers.SerializerMethodField()
 
     class Meta:
         model = Attraction
@@ -102,12 +134,23 @@ class AttractionDetailSerializer(serializers.ModelSerializer):
             "best_season",
             "crowd_index",
             "trend_score",
+            "sentiment_label",
+            "sentiment_score",
+            "positive_pct",
+            "sentiment_summary",
             "chroma_doc_id",
             "district",
             "media",
             "created_at",
+            "best_months_names",
         ]
         read_only_fields = fields
+
+    def get_best_months_names(self, obj: Attraction) -> list[str]:
+        rows = list(obj.seasonal_data.all())
+        if not rows:
+            return []
+        return best_month_names(sorted(rows, key=lambda r: r.month))
 
     def get_media(self, obj: Attraction):
         """

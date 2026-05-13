@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SentimentBadge } from "@/components/attractions/SentimentBadge";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Video } from "lucide-react";
 
@@ -20,6 +21,10 @@ type GalleryPayload = {
     name: string;
     slug: string;
     category: string;
+    sentiment_label: string | null;
+    sentiment_score: number | null;
+    positive_pct: number;
+    sentiment_summary: string | null;
   }>;
   media: Array<{
     id: number;
@@ -179,6 +184,19 @@ export default async function DistrictGalleryPage({
                 <p className="display mt-2 text-lg font-medium text-ink-900 group-hover:text-jade-700">
                   {a.name}
                 </p>
+                <div className="mt-3">
+                  <SentimentBadge
+                    label={
+                      (a.sentiment_label as
+                        | "positive"
+                        | "neutral"
+                        | "negative"
+                        | null) ?? null
+                    }
+                    positive_pct={a.positive_pct ?? 0}
+                    summary={a.sentiment_summary ?? ""}
+                  />
+                </div>
               </Link>
             ))}
           </div>

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import {
   Calendar,
   Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Compass,
@@ -20,12 +21,18 @@ import {
   TreePine,
   UtensilsCrossed,
   Users,
+  Download,
 } from "lucide-react";
 import { api, toApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { MapView } from "@/components/maps/map-view";
 import { WeatherCard } from "@/components/weather/weather-card";
-import { Download } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 // ─────────────────────────── Types ──────────────────────────────────────
 type District = {
@@ -34,6 +41,28 @@ type District = {
   province: string;
   attraction_count: number;
 };
+
+type SeasonalDistrictPayload = {
+  attraction_id: number;
+  attraction_name: string;
+  best_months: number[];
+  peak_months: number[];
+};
+
+const MONTH_SHORT = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
 
 type Stop = {
   id: number;
@@ -69,6 +98,8 @@ type Itinerary = {
   status: string;
   share_token: string;
   days: Day[];
+  rag_context_used?: boolean;
+  sources?: Array<{ doc_id: string; attraction: string; relevance: number }>;
 };
 
 type InterestId =
@@ -123,6 +154,9 @@ export function ItineraryWizard() {
     () => new Set<InterestId>(["cultural"])
   );
   const [districtIds, setDistrictIds] = useState<Set<number>>(new Set());
+  const [districtSeasonal, setDistrictSeasonal] =
+    useState<SeasonalDistrictPayload | null>(null);
+  const [districtSeasonalLoading, setDistrictSeasonalLoading] = useState(false);
   const [groupType, setGroupType] = useState("couple");
   const [groupSize, setGroupSize] = useState(2);
 
@@ -154,6 +188,53 @@ export function ItineraryWizard() {
       cancelled = true;
     };
   }, []);
+
+  const loneDistrictId = useMemo(
+    () => (districtIds.size === 1 ? [...districtIds][0] : null),
+    [districtIds]
+  );
+
+  useEffect(() => {
+    if (loneDistrictId == null) {
+      setDistrictSeasonal(null);
+      setDistrictSeasonalLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setDistrictSeasonalLoading(true);
+    (async () => {
+      try {
+        const { data } = await api.get("/api/v1/attractions/", {
+          params: { district_id: loneDistrictId },
+        });
+        const list = (data.results ?? data) as Array<{
+          slug: string;
+          trend_score: number;
+          name: string;
+        }>;
+        if (!list.length) {
+          if (!cancelled) setDistrictSeasonal(null);
+          return;
+        }
+        const top = list.reduce((a, b) =>
+          b.trend_score > a.trend_score ? b : a
+        );
+        const { data: seasonal } = await api.get(
+          `/api/v1/attractions/${encodeURIComponent(top.slug)}/seasonal/`
+        );
+        if (!cancelled) {
+          setDistrictSeasonal(seasonal as SeasonalDistrictPayload);
+        }
+      } catch {
+        if (!cancelled) setDistrictSeasonal(null);
+      } finally {
+        if (!cancelled) setDistrictSeasonalLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [loneDistrictId]);
 
   const stepIndex = STEPS.findIndex((s) => s.key === step);
   const canPrev = stepIndex > 0;
@@ -306,6 +387,8 @@ export function ItineraryWizard() {
               error={districtError}
               value={districtIds}
               onChange={setDistrictIds}
+              seasonal={districtSeasonal}
+              seasonalLoading={districtSeasonalLoading}
             />
           )}
           {step === "budget" && (
@@ -483,12 +566,18 @@ function StepDistricts({
   error,
   value,
   onChange,
+  seasonal,
+  seasonalLoading,
 }: {
   districts: District[];
   error: string | null;
   value: Set<number>;
   onChange: (v: Set<number>) => void;
+  seasonal: SeasonalDistrictPayload | null;
+  seasonalLoading: boolean;
 }) {
+  const showSeasonal = value.size === 1 && (seasonalLoading || seasonal);
+
   return (
     <div className="space-y-5">
       <h2 className="display text-3xl font-medium tracking-tightest text-ink-900">
@@ -538,6 +627,51 @@ function StepDistricts({
               </button>
             );
           })}
+        </div>
+      )}
+      {showSeasonal && (
+        <div className="rounded-2xl border border-jade-100 bg-jade-50/50 px-4 py-4">
+          <p className="kicker mb-2">Best months for this district</p>
+          {seasonalLoading ? (
+            <div className="flex flex-wrap gap-1.5">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <Skeleton key={i} className="h-7 w-10 shrink-0 rounded-full" />
+              ))}
+            </div>
+          ) : seasonal ? (
+            <>
+              <p className="mb-3 text-xs text-ink-600">
+                Based on seasonal data for{" "}
+                <span className="font-semibold text-ink-900">
+                  {seasonal.attraction_name}
+                </span>{" "}
+                (top-trending attraction here).
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {MONTH_SHORT.map((label, idx) => {
+                  const m = idx + 1;
+                  const isBest = seasonal.best_months.includes(m);
+                  const isPeak = seasonal.peak_months.includes(m);
+                  const tone = isBest
+                    ? "border-emerald-700 bg-emerald-600 text-white"
+                    : isPeak
+                      ? "border-amber-500 bg-amber-400 text-jade-900"
+                      : "border-border bg-muted text-ink-600";
+                  return (
+                    <span
+                      key={label}
+                      className={cn(
+                        "rounded-full border px-2.5 py-1 text-[11px] font-semibold",
+                        tone
+                      )}
+                    >
+                      {label}
+                    </span>
+                  );
+                })}
+              </div>
+            </>
+          ) : null}
         </div>
       )}
     </div>
@@ -1027,6 +1161,39 @@ function ItineraryResult({
           ))}
         </div>
       </div>
+
+      {itinerary.sources && itinerary.sources.length > 0 ? (
+        <Collapsible className="mx-auto mt-12 max-w-3xl rounded-2xl border border-border/70 bg-muted/25 px-4 py-1 text-sm text-ink-600 shadow-sm md:px-5">
+          <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 py-3 text-left [&[data-state=open]_svg]:rotate-180">
+            <span className="text-xs font-medium text-ink-500">
+              AI sources used
+            </span>
+            <ChevronDown className="h-4 w-4 shrink-0 text-ink-400 transition-transform" />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pb-4 pt-0">
+            <p className="mb-3 text-xs leading-relaxed text-ink-500">
+              This itinerary was generated using {itinerary.sources.length}{" "}
+              verified Sri Lanka knowledge source
+              {itinerary.sources.length === 1 ? "" : "s"}.
+            </p>
+            <ul className="space-y-2 border-t border-border/60 pt-3">
+              {itinerary.sources.map((s) => (
+                <li
+                  key={`${s.doc_id}-${s.attraction}`}
+                  className="flex flex-wrap items-baseline justify-between gap-2 text-xs"
+                >
+                  <span className="font-medium text-ink-700">
+                    {s.attraction || s.doc_id}
+                  </span>
+                  <span className="tabular-nums text-ink-400">
+                    relevance {(s.relevance * 100).toFixed(0)}%
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </CollapsibleContent>
+        </Collapsible>
+      ) : null}
     </div>
   );
 }

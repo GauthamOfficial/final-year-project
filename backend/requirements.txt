@@ -24,22 +24,25 @@ gunicorn>=22.0.0
 # ─── Media / Imaging ──────────────────────────────────────────────────
 pillow>=10.4.0
 requests>=2.31.0
+google-api-python-client>=2.130.0
 
 # ─── PDF Generation ──────────────────────────────────────────────────
 # ReportLab is the cross-platform choice (no GTK / Cairo needed on Windows).
 reportlab>=4.0.9
 
 # ─── AI / RAG Stack ───────────────────────────────────────────────────
-# Chat/generate still uses `google-generativeai`; embeddings use `google-genai`.
+# `google-generativeai`: text + multimodal (vision) for Gemini models such as
+# gemini-1.5-flash. Embeddings use `google-genai`.
 google-generativeai>=0.7.2
 google-genai>=1.0
 chromadb>=0.5.5
 
 # ─── ML — Sentiment + Vision + Forecasting ────────────────────────────
-# torch wheels from PyPI default to CPU on Windows (no CUDA). On Linux/macOS
-# install via the official PyTorch CPU index for the smallest footprint:
-#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-torch>=2.2.2
-torchvision>=0.17.2
-transformers>=4.43.3
+# CPU wheels: pip also needs --extra-index-url https://download.pytorch.org/whl/cpu
+# for torch==2.2.0+cpu / torchvision==0.17.0+cpu.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.2.0+cpu
+torchvision==0.17.0+cpu
+numpy>=1.26.4,<2
+transformers==4.40.0
 prophet>=1.1.5

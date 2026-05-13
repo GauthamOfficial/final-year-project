@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowUpRight,
+  Camera,
   Filter,
   MapPin,
   Search,
@@ -11,6 +12,14 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
+import { SentimentBadge } from "@/components/attractions/SentimentBadge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { LandmarkIdentifier } from "@/components/vision/LandmarkIdentifier";
 import { api, toApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +36,10 @@ type Attraction = {
   trend_score: number;
   best_season: number[];
   featured_media?: { type: string; url: string; caption: string } | null;
+  sentiment_label?: string | null;
+  sentiment_score?: number | null;
+  positive_pct?: number;
+  sentiment_summary?: string | null;
 };
 
 const CATEGORIES = [
@@ -67,6 +80,8 @@ export function ExploreGrid() {
   const [category, setCategory] = useState<string>("");
   const [districtId, setDistrictId] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
+  const [visionOpen, setVisionOpen] = useState(false);
+  const [visionMountKey, setVisionMountKey] = useState(0);
 
   // Districts (one-shot)
   useEffect(() => {
@@ -198,8 +213,19 @@ export function ExploreGrid() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search attractions, regions, themes…"
-              className="h-11 w-full rounded-full border border-border bg-white pl-11 pr-4 text-sm text-ink-900 placeholder:text-ink-400 shadow-soft focus:border-jade-400 focus:outline-none focus:ring-2 focus:ring-jade-100"
+              className="h-11 w-full rounded-full border border-border bg-white pl-11 pr-14 text-sm text-ink-900 placeholder:text-ink-400 shadow-soft focus:border-jade-400 focus:outline-none focus:ring-2 focus:ring-jade-100"
             />
+            <button
+              type="button"
+              onClick={() => {
+                setVisionMountKey((k) => k + 1);
+                setVisionOpen(true);
+              }}
+              aria-label="Identify landmark from photo"
+              className="absolute right-3 top-1/2 grid h-9 w-9 shrink-0 -translate-y-1/2 place-items-center rounded-full border border-border bg-white text-ink-600 shadow-soft transition-colors hover:border-jade-300 hover:text-jade-700"
+            >
+              <Camera className="h-4 w-4" />
+            </button>
           </div>
 
           {/* Category pills */}
@@ -311,6 +337,15 @@ export function ExploreGrid() {
           </div>
         )}
       </section>
+
+      <Dialog open={visionOpen} onOpenChange={setVisionOpen}>
+        <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Identify a landmark from a photo</DialogTitle>
+          </DialogHeader>
+          <LandmarkIdentifier key={visionMountKey} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
@@ -407,6 +442,19 @@ function AttractionCard({
         <h3 className="display text-2xl font-medium leading-tight tracking-tightest">
           {attraction.name}
         </h3>
+        <div className="[&_p.sentiment-summary]:text-white/80">
+          <SentimentBadge
+            label={
+              (attraction.sentiment_label as
+                | "positive"
+                | "neutral"
+                | "negative"
+                | null) ?? null
+            }
+            positive_pct={attraction.positive_pct ?? 0}
+            summary={attraction.sentiment_summary ?? ""}
+          />
+        </div>
         <div className="flex items-center justify-between pt-2">
           <CrowdMeter value={attraction.crowd_index} />
           <ArrowUpRight className="h-4 w-4 text-white/80 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-saffron-200" />

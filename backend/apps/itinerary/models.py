@@ -50,6 +50,8 @@ class Itinerary(models.Model):
         max_length=64, unique=True, default=_new_share_token
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    retrieved_doc_ids = models.JSONField(default=list, blank=True)
+    rag_used = models.BooleanField(default=False)
 
     class Meta:
         db_table = "itineraries"

@@ -97,6 +97,11 @@ class Attraction(models.Model):
         help_text="Steady-state crowd level (1 quiet → 10 packed).",
     )
     trend_score = models.FloatField(default=0.0)
+    sentiment_score = models.FloatField(null=True, blank=True)
+    sentiment_label = models.CharField(max_length=20, null=True, blank=True)
+    sentiment_summary = models.TextField(null=True, blank=True)
+    sentiment_updated_at = models.DateTimeField(null=True, blank=True)
+    positive_pct = models.IntegerField(default=0)
     chroma_doc_id = models.CharField(max_length=128, blank=True)
     wikipedia_title = models.CharField(max_length=200, blank=True)
     youtube_video_id = models.CharField(max_length=32, blank=True)
@@ -113,6 +118,49 @@ class Attraction(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} — {self.district.name}"
+
+
+# ───────────────────────── Seasonal demand (monthly) ─────────────────────
+class SeasonalData(models.Model):
+    """Per-month crowd / weather curve for forecasting-friendly UX (Gap 8)."""
+
+    MONTH_NAMES = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ]
+
+    attraction = models.ForeignKey(
+        Attraction,
+        on_delete=models.CASCADE,
+        related_name="seasonal_data",
+    )
+    month = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(12)],
+    )
+    crowd_index = models.FloatField()
+    weather_rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+    )
+    is_peak_season = models.BooleanField(default=False)
+    visitor_note = models.CharField(max_length=200, blank=True)
+
+    class Meta:
+        db_table = "attraction_seasonal_data"
+        ordering = ["month"]
+        unique_together = ("attraction", "month")
+
+    def __str__(self) -> str:
+        return f"{self.attraction.name} · M{self.month}"
 
 
 # ───────────────────────── Media Assets ─────────────────────────────────

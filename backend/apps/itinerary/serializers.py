@@ -98,6 +98,8 @@ class ItineraryDaySerializer(serializers.ModelSerializer):
 
 class ItinerarySerializer(serializers.ModelSerializer):
     days = ItineraryDaySerializer(many=True, read_only=True)
+    rag_context_used = serializers.SerializerMethodField()
+    sources = serializers.SerializerMethodField()
 
     class Meta:
         model = Itinerary
@@ -113,5 +115,37 @@ class ItinerarySerializer(serializers.ModelSerializer):
             "share_token",
             "created_at",
             "days",
+            "rag_used",
+            "retrieved_doc_ids",
+            "rag_context_used",
+            "sources",
         ]
-        read_only_fields = ["id", "share_token", "created_at", "days"]
+        read_only_fields = [
+            "id",
+            "share_token",
+            "created_at",
+            "days",
+            "rag_context_used",
+            "sources",
+            "rag_used",
+            "retrieved_doc_ids",
+        ]
+
+    def get_rag_context_used(self, obj: Itinerary) -> bool:
+        return bool(obj.rag_used)
+
+    def get_sources(self, obj: Itinerary) -> list[dict]:
+        raw = obj.retrieved_doc_ids or []
+        out: list[dict] = []
+        for item in raw:
+            if isinstance(item, dict):
+                out.append(
+                    {
+                        "doc_id": str(item.get("doc_id", "")),
+                        "attraction": str(item.get("attraction", "")),
+                        "relevance": float(item.get("relevance", 0)),
+                    }
+                )
+            elif isinstance(item, str):
+                out.append({"doc_id": item, "attraction": "", "relevance": 0.0})
+        return out

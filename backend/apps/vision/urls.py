@@ -2,10 +2,10 @@
 
 from django.urls import path
 
-from .views import IdentifyView
+from .views import VisionIdentifyView
 
 app_name = "vision"
 
 urlpatterns = [
-    path("identify/", IdentifyView.as_view(), name="identify"),
+    path("identify/", VisionIdentifyView.as_view(), name="identify"),
 ]

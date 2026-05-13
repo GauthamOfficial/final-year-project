@@ -3,8 +3,13 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Calendar, FileDown, Loader2, MapPinned } from "lucide-react";
+import { Calendar, ChevronDown, FileDown, Loader2, MapPinned } from "lucide-react";
 import { api, toApiError } from "@/lib/api";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 type Stop = {
   id: number;
@@ -30,6 +35,7 @@ type Itinerary = {
   end_date: string;
   share_token: string;
   days: Day[];
+  sources?: Array<{ doc_id: string; attraction: string; relevance: number }>;
 };
 
 export default function ItineraryDetailPage() {
@@ -120,6 +126,36 @@ export default function ItineraryDetailPage() {
           </section>
         ))}
       </div>
+
+      {item.sources && item.sources.length > 0 ? (
+        <Collapsible className="mt-10 max-w-3xl rounded-2xl border border-border/70 bg-muted/25 px-4 py-1 text-sm text-ink-600 shadow-sm md:px-5">
+          <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 py-3 text-left [&[data-state=open]_svg]:rotate-180">
+            <span className="text-xs font-medium text-ink-500">AI sources used</span>
+            <ChevronDown className="h-4 w-4 shrink-0 text-ink-400 transition-transform" />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pb-4 pt-0">
+            <p className="mb-3 text-xs leading-relaxed text-ink-500">
+              This itinerary was generated using {item.sources.length} verified Sri
+              Lanka knowledge source{item.sources.length === 1 ? "" : "s"}.
+            </p>
+            <ul className="space-y-2 border-t border-border/60 pt-3">
+              {item.sources.map((s) => (
+                <li
+                  key={`${s.doc_id}-${s.attraction}`}
+                  className="flex flex-wrap items-baseline justify-between gap-2 text-xs"
+                >
+                  <span className="font-medium text-ink-700">
+                    {s.attraction || s.doc_id}
+                  </span>
+                  <span className="tabular-nums text-ink-400">
+                    relevance {(s.relevance * 100).toFixed(0)}%
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </CollapsibleContent>
+        </Collapsible>
+      ) : null}
     </div>
   );
 }

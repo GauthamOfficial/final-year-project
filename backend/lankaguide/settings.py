@@ -232,10 +232,27 @@ CORS_ALLOW_HEADERS = [
 
 # ───────────────────────── External Services ───────────────────────────
 GEMINI_API_KEY = env("GEMINI_API_KEY", default="")
+# OpenStreetMap Nominatim (free, no key) — used to resolve POIs to Wikipedia articles.
+# See https://operations.osmfoundation.org/policies/nominatim/ — set a real contact in production.
+NOMINATIM_BASE_URL = env(
+    "NOMINATIM_BASE_URL", default="https://nominatim.openstreetmap.org"
+)
+NOMINATIM_USER_AGENT = env(
+    "NOMINATIM_USER_AGENT",
+    default="LankaGuide-AI/1.0 (research project; configure contact email in .env)",
+)
+# Wikipedia edition for extracts when using `Attraction.wikipedia_title` or Nominatim `wikipedia` tags.
+WIKIPEDIA_LANG = env("WIKIPEDIA_LANG", default="en")
 GEMINI_CHAT_MODEL = env("GEMINI_CHAT_MODEL", default="gemini-2.5-flash")
 GEMINI_PRO_MODEL = env("GEMINI_PRO_MODEL", default="gemini-2.5-pro")
 GEMINI_EMBEDDING_MODEL = env(
     "GEMINI_EMBEDDING_MODEL", default="gemini-embedding-001"
+)
+# Itinerary RAG generation uses this model (JSON itineraries); override via .env.
+ITINERARY_RAG_MODEL = env("ITINERARY_RAG_MODEL", default="gemini-1.5-pro")
+# Short weather-advisory blurbs for synced SafetyAlert rows (Gemini vision-free).
+WEATHER_ALERT_GEMINI_MODEL = env(
+    "WEATHER_ALERT_GEMINI_MODEL", default="gemini-1.5-flash"
 )
 
 CHROMA_PERSIST_DIR = env(

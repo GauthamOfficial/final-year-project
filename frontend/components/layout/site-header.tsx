@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, History, LogOut, Menu, Sparkles, User as UserIcon, X } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { href: "/explore", label: "Explore" },
   { href: "/gallery", label: "Gallery" },
+  { href: "/alerts", label: "Alerts" },
   { href: "/itinerary", label: "Plan a trip" },
   { href: "/chat", label: "AI guide" },
   { href: "/translate", label: "Translate" },
@@ -25,6 +27,7 @@ export function SiteHeader({
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(!transparentTop);
   const [open, setOpen] = useState(false);
+  const [activeAlertTotal, setActiveAlertTotal] = useState(0);
 
   useEffect(() => {
     if (!transparentTop) return;
@@ -33,6 +36,21 @@ export function SiteHeader({
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [transparentTop]);
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get<{ total: number }>("/api/v1/alerts/active-count/")
+      .then(({ data }) => {
+        if (!cancelled) setActiveAlertTotal(Number(data?.total) || 0);
+      })
+      .catch(() => {
+        if (!cancelled) setActiveAlertTotal(0);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const transparent = transparentTop && !scrolled;
 
@@ -65,6 +83,13 @@ export function SiteHeader({
                 )}
               >
                 {item.label}
+                {item.href === "/alerts" && activeAlertTotal > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="pointer-events-none absolute -right-1 -top-1 size-2 min-h-2 min-w-2 rounded-full border-2 border-background p-0 shadow-sm"
+                    aria-label={`${activeAlertTotal} active alerts`}
+                  />
+                )}
                 {active && (
                   <span
                     className={cn(
@@ -105,9 +130,16 @@ export function SiteHeader({
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-xl px-4 py-3 text-base font-medium text-ink-900 hover:bg-muted"
+                  className="relative rounded-xl px-4 py-3 text-base font-medium text-ink-900 hover:bg-muted"
                 >
                   {item.label}
+                  {item.href === "/alerts" && activeAlertTotal > 0 && (
+                    <Badge
+                      variant="destructive"
+                      className="pointer-events-none absolute right-3 top-3 size-2 min-h-2 min-w-2 rounded-full p-0"
+                      aria-hidden
+                    />
+                  )}
                 </Link>
               ))}
               <div className="mt-3 border-t border-border pt-3">

@@ -1,0 +1,837 @@
+"""
+Itinerary generation via **Retrieval-Augmented Generation** (Gap — academic RAG claim).
+
+Pipeline:
+1. **ChromaDB** semantic search (Gemini embeddings via `get_embedding_client`).
+2. MySQL **district / seasonal / top attractions** context.
+3. Structured **multi-section prompt** to **Gemini 1.5 Pro** (`application/json`).
+4. Persist itinerary with **RAG audit** metadata (`rag_used`, `retrieved_doc_ids`).
+
+Embeddings follow the project default (`GEMINI_EMBEDDING_MODEL`, typically
+`gemini-embedding-001`) — not the older `text-embedding-004` name, but the
+retrieval step is still RAG: vector store query → context injection → LLM.
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+import re
+import time
+from dataclasses import dataclass
+from datetime import date, timedelta
+from typing import Any
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.db import transaction
+
+from apps.attractions.models import Attraction, District, SeasonalData
+from apps.core.services.embeddings import get_embedding_client
+from apps.core.services.vectorstore import get_collection
+from apps.itinerary.models import (
+    Itinerary,
+    ItineraryDay,
+    ItineraryStatus,
+    ItineraryStop,
+)
+
+User = get_user_model()
+logger = logging.getLogger("lankaguide.itinerary.rag")
+
+MAX_OUTPUT_TOKENS = 4096
+
+ITINERARY_SYSTEM = """
+You are a Sri Lanka travel planning expert.
+Generate a day-by-day itinerary as valid JSON matching the schema provided below.
+Use ONLY attractions, places and facts mentioned in the RETRIEVED KNOWLEDGE section.
+Respect the user's budget, interests, group type, and travel dates.
+Factor in the seasonal notes provided — avoid flooding-prone areas during monsoon months.
+Output ONLY a valid JSON object. No markdown, no explanation, no commentary outside JSON.
+""".strip()
+
+OUTPUT_SCHEMA_BLOCK = """
+=== OUTPUT JSON SCHEMA ===
+{
+  "title": "string — trip title",
+  "days": [
+    {
+      "day": 1,
+      "district": "string",
+      "theme": "string — one-line day theme",
+      "stops": [
+        {
+          "name": "string — attraction name",
+          "arrival_time": "HH:MM",
+          "duration_mins": 90,
+          "description": "string — 1-2 sentences why this fits the user",
+          "tip": "string — practical visitor tip"
+        }
+      ],
+      "accommodation_note": "string — brief advice on where to stay"
+    }
+  ],
+  "budget_note": "string — brief note on estimated daily cost",
+  "best_transport": "string — recommended transport between stops"
+}
+=== END SCHEMA ===
+""".strip()
+
+
+# ───────────────────────── Data containers ─────────────────────────────
+@dataclass
+class AttractionContext:
+    id: int
+    name: str
+    slug: str
+    district_id: int
+    district_name: str
+    category: str
+    crowd_index: int
+    trend_score: float
+    description: str
+
+    def as_hint_line(self) -> str:
+        return (
+            f"- attraction_id={self.id} | {self.name} | district={self.district_name} | "
+            f"{self.category} | crowd_index={self.crowd_index}"
+        )
+
+
+@dataclass
+class DistrictSeasonContext:
+    id: int
+    name: str
+    climate_zone: str
+    peak_months: list[int]
+
+    def as_prompt_line(self) -> str:
+        return (
+            f"- {self.name} (district_id={self.id}, climate={self.climate_zone}, "
+            f"peak_months={self.peak_months})"
+        )
+
+
+# ───────────────────────── MySQL + RAG helpers ───────────────────────
+def _build_attraction_pool(
+    interests: list[str], district_ids: list[int], limit: int = 60
+) -> list[AttractionContext]:
+    qs = (
+        Attraction.objects.filter(
+            district_id__in=district_ids, category__in=interests
+        )
+        .select_related("district")
+        .order_by("-trend_score")[:limit]
+    )
+    return [
+        AttractionContext(
+            id=a.id,
+            name=a.name,
+            slug=a.slug,
+            district_id=a.district_id,
+            district_name=a.district.name,
+            category=a.category,
+            crowd_index=a.crowd_index,
+            trend_score=a.trend_score,
+            description=a.description or "",
+        )
+        for a in qs
+    ]
+
+
+def _district_season_context(district_ids: list[int]) -> list[DistrictSeasonContext]:
+    qs = District.objects.filter(id__in=district_ids)
+    return [
+        DistrictSeasonContext(
+            id=d.id,
+            name=d.name,
+            climate_zone=d.climate_zone,
+            peak_months=list(d.peak_months or []),
+        )
+        for d in qs
+    ]
+
+
+def _district_name_list(district_ids: list[int]) -> str:
+    names = list(
+        District.objects.filter(id__in=district_ids)
+        .order_by("name")
+        .values_list("name", flat=True)
+    )
+    return ", ".join(names)
+
+
+def _top_attractions_hints(district_ids: list[int], n: int = 3) -> str:
+    lines: list[str] = []
+    for did in district_ids:
+        qs = (
+            Attraction.objects.filter(district_id=did)
+            .select_related("district")
+            .order_by("-trend_score")[:n]
+        )
+        for a in qs:
+            lines.append(
+                f"- attraction_id={a.id} | {a.name} | {a.district.name} | {a.category}"
+            )
+    return "\n".join(lines) if lines else "(no attractions in selected districts)"
+
+
+def _seasonal_window_notes(
+    district_ids: list[int], start: date, end: date
+) -> str:
+    """Summarise `SeasonalData` for the travel months (via top attraction per district)."""
+    months: set[int] = set()
+    d = start
+    while d <= end:
+        months.add(d.month)
+        d += timedelta(days=1)
+    lines: list[str] = []
+    month_names = SeasonalData.MONTH_NAMES
+    for did in district_ids:
+        top = (
+            Attraction.objects.filter(district_id=did)
+            .select_related("district")
+            .order_by("-trend_score")
+            .first()
+        )
+        if not top:
+            continue
+        rows = SeasonalData.objects.filter(
+            attraction=top, month__in=sorted(months)
+        ).order_by("month")
+        for r in rows:
+            lines.append(
+                f"- {top.district.name} (sample: {top.name}) · "
+                f"{month_names[r.month - 1]}: crowd={r.crowd_index:.1f}/10, "
+                f"weather={r.weather_rating}/5, peak_season={r.is_peak_season}"
+                + (f"; {r.visitor_note}" if r.visitor_note else "")
+            )
+    if not lines:
+        return "No per-month seasonal rows found in DB (run `seed_seasonal_data`)."
+    return "\n".join(lines)
+
+
+def _distance_to_relevance(distance: float) -> float:
+    """Chroma cosine distance is on [0, 2]; map to a [0, 1] relevance score."""
+    try:
+        d = float(distance)
+    except (TypeError, ValueError):
+        return 0.0
+    sim = max(0.0, 1.0 - d)
+    return round(min(1.0, max(0.0, sim)), 4)
+
+
+def _chroma_retrieve(
+    *,
+    interests: list[str],
+    district_ids: list[int],
+    district_names: str,
+    n_results: int = 8,
+) -> tuple[list[dict[str, Any]], str, list[dict[str, Any]]]:
+    """
+    Returns (audit_records, context_block, raw_rows).
+
+    `audit_records` are safe to serialise to the API (no raw chunk text).
+    """
+    audit: list[dict[str, Any]] = []
+    rows: list[dict[str, Any]] = []
+    context_lines: list[str] = []
+
+    search_query = (
+        f"tourist attractions {' '.join(interests)} Sri Lanka {district_names}"
+    )
+    try:
+        embed_client = get_embedding_client()
+        collection = get_collection()
+        embedding = embed_client.embed(search_query, purpose="query")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Embedding / Chroma setup failed: %s", exc)
+        return (
+            audit,
+            "(Retrieval unavailable — proceeding with database hints only.)",
+            rows,
+        )
+
+    where = {"$and": [{"district_id": {"$in": district_ids}}, {"category": {"$in": interests}}]}
+    result: dict[str, Any] | None = None
+    try:
+        result = collection.query(
+            query_embeddings=[embedding],
+            n_results=n_results,
+            where=where,
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.debug("Filtered Chroma query failed, retrying broadly: %s", exc)
+        result = None
+
+    ids_row = (result.get("ids") or [[]])[0] if result else []
+    if not ids_row:
+        try:
+            result = collection.query(
+                query_embeddings=[embedding], n_results=n_results
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Chroma query failed: %s", exc)
+            return (
+                audit,
+                "(No Chroma results — proceeding with database hints only.)",
+                rows,
+            )
+
+    ids = (result.get("ids") or [[]])[0]
+    if not ids:
+        return (
+            audit,
+            "(No Chroma results — proceeding with database hints only.)",
+            rows,
+        )
+    docs = (result.get("documents") or [[]])[0]
+    metas = (result.get("metadatas") or [[]])[0]
+    dists = (result.get("distances") or [[]])[0]
+
+    slug_to_name: dict[str, str] = {}
+    try:
+        slugs = {
+            str(m.get("slug") or "")
+            for m in metas
+            if m and m.get("slug")
+        }
+        slugs.discard("")
+        if slugs:
+            for a in Attraction.objects.filter(slug__in=slugs).only("slug", "name"):
+                slug_to_name[a.slug] = a.name
+    except Exception:  # noqa: BLE001
+        pass
+
+    for i, doc_id in enumerate(ids):
+        doc = docs[i] if i < len(docs) else ""
+        meta = metas[i] if i < len(metas) else {}
+        meta = meta or {}
+        dist = dists[i] if i < len(dists) else 1.0
+        rel = _distance_to_relevance(dist)
+        slug = str(meta.get("slug") or "")
+        title = slug_to_name.get(slug) or slug or f"chunk-{doc_id}"
+        audit.append(
+            {"doc_id": str(doc_id), "attraction": title, "relevance": rel}
+        )
+        rows.append({"id": doc_id, "text": doc or "", "meta": meta, "relevance": rel})
+        excerpt = (doc or "")[:900]
+        context_lines.append(
+            f"[doc_id={doc_id} slug={slug or '—'} relevance≈{rel}]\n{excerpt}"
+        )
+
+    context_block = "\n\n".join(context_lines) if context_lines else ""
+    return audit, context_block, rows
+
+
+# ───────────────────────── JSON + normalisation ──────────────────────
+def _strip_fences(raw: str) -> str:
+    return re.sub(
+        r"^```(?:json)?|```$", "", raw.strip(), flags=re.MULTILINE
+    ).strip()
+
+
+def _parse_json_with_retry(
+    *, model_primary: Any, model_fallback: Any | None, prompt: str
+) -> dict | None:
+    models = [model_primary] + ([model_fallback] if model_fallback else [])
+    follow = (
+        "\n\nYour previous response was not valid JSON. "
+        "Reply again with ONLY a single JSON object matching the schema. "
+        "No markdown fences, no commentary."
+    )
+
+    for round_i in range(2):
+        active_prompt = prompt if round_i == 0 else prompt + follow
+        attempt = 0
+        delay = 1.0
+        while attempt < 3:
+            for model in models:
+                try:
+                    response = model.generate_content(
+                        active_prompt,
+                        generation_config={
+                            "max_output_tokens": MAX_OUTPUT_TOKENS,
+                            "temperature": 0.45,
+                            "top_p": 0.95,
+                            "response_mime_type": "application/json",
+                        },
+                    )
+                    text = (getattr(response, "text", "") or "").strip()
+                    if not text:
+                        text = _extract_text_from_response(response).strip()
+                    if not text:
+                        continue
+                    cleaned = _strip_fences(text)
+                    return json.loads(cleaned)
+                except json.JSONDecodeError:
+                    logger.warning("Itinerary JSON parse failed (round %s)", round_i)
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning(
+                        "Gemini itinerary call failed (attempt %s): %s",
+                        attempt + 1,
+                        exc,
+                    )
+            time.sleep(delay)
+            delay = min(delay * 2, 20)
+            attempt += 1
+    return None
+
+
+def _extract_text_from_response(response: Any) -> str:
+    candidates = getattr(response, "candidates", None) or []
+    out: list[str] = []
+    for candidate in candidates:
+        content = getattr(candidate, "content", None)
+        parts = getattr(content, "parts", None) or []
+        for part in parts:
+            text = getattr(part, "text", None)
+            if text:
+                out.append(text)
+    return "\n".join(out)
+
+
+def _district_map(district_ids: list[int]) -> dict[str, int]:
+    return {
+        d.name.lower(): d.id
+        for d in District.objects.filter(id__in=district_ids)
+    }
+
+
+def _convert_llm_plan(
+    data: dict,
+    pool: list[AttractionContext],
+    district_ids: list[int],
+) -> dict:
+    """Map LLM JSON (names) → internal structure with `district_id` + `attraction_id`."""
+    dmap = _district_map(district_ids)
+    by_id = {a.id: a for a in pool}
+    by_name: dict[str, AttractionContext] = {}
+    for a in pool:
+        by_name[a.name.lower()] = a
+
+    def resolve_attraction(name: str) -> int | None:
+        key = name.strip().lower()
+        if key in by_name:
+            return by_name[key].id
+        for a in pool:
+            if key in a.name.lower() or a.name.lower() in key:
+                return a.id
+        return None
+
+    out_days: list[dict] = []
+    for day in data.get("days") or []:
+        dname = (day.get("district") or "").strip()
+        did = dmap.get(dname.lower())
+        if not did and district_ids:
+            did = district_ids[0]
+        theme = day.get("theme") or ""
+        accom = day.get("accommodation_note") or ""
+        notes_parts = [theme, accom, day.get("notes")]
+        notes = " — ".join(p for p in notes_parts if p) or "Planned day"
+
+        stops_out: list[dict] = []
+        for s in day.get("stops") or []:
+            name = (s.get("name") or "").strip()
+            if not name:
+                continue
+            aid = resolve_attraction(name)
+            if aid is None or aid not in by_id:
+                continue
+            desc = (s.get("description") or "").strip()
+            tip = (s.get("tip") or "").strip()
+            tip_merged = " ".join(p for p in [desc, tip] if p)
+            stops_out.append(
+                {
+                    "attraction_id": aid,
+                    "name": by_id[aid].name,
+                    "arrival_time": s.get("arrival_time"),
+                    "duration_mins": s.get("duration_mins"),
+                    "tip": tip_merged or "Confirm opening hours before visiting.",
+                }
+            )
+        if did and stops_out:
+            out_days.append(
+                {
+                    "day": day.get("day"),
+                    "district_id": did,
+                    "notes": notes,
+                    "stops": stops_out,
+                }
+            )
+
+    footers: list[str] = []
+    if data.get("budget_note"):
+        footers.append(str(data["budget_note"]))
+    if data.get("best_transport"):
+        footers.append("Transport: " + str(data["best_transport"]))
+    return {
+        "title": data.get("title"),
+        "days": out_days,
+        "_footer": " | ".join(footers),
+    }
+
+
+def _normalize_plan(
+    *, plan: dict, pool: list[AttractionContext], preferences: dict
+) -> dict:
+    """Ensure exactly `num_days`, de-duplicate stops, pad from the relational pool."""
+    num_days = int(preferences["num_days"])
+    district_ids = list(preferences["district_ids"])
+    by_id = {a.id: a for a in pool}
+    by_district: dict[int, list[int]] = {}
+    for a in pool:
+        by_district.setdefault(a.district_id, []).append(a.id)
+
+    footer = plan.get("_footer") or ""
+    input_days = plan.get("days") or []
+    normalized_days: list[dict] = []
+    used_global: set[int] = set()
+
+    for i in range(num_days):
+        src = input_days[i] if i < len(input_days) else {}
+        day_number = i + 1
+        district_id = src.get("district_id")
+        if not district_id and district_ids:
+            district_id = district_ids[i % len(district_ids)]
+
+        candidate_pool = by_district.get(district_id) or list(by_id.keys())
+        day_stops: list[dict] = []
+        day_seen: set[int] = set()
+
+        for stop in src.get("stops") or []:
+            attraction_id = stop.get("attraction_id")
+            if not isinstance(attraction_id, int):
+                continue
+            if attraction_id not in by_id:
+                continue
+            if attraction_id in day_seen or attraction_id in used_global:
+                continue
+            day_seen.add(attraction_id)
+            used_global.add(attraction_id)
+            day_stops.append(stop)
+            if len(day_stops) >= 4:
+                break
+
+        if len(day_stops) < 3:
+            fill_order = candidate_pool + [
+                aid for aid in by_id if aid not in candidate_pool
+            ]
+            for attraction_id in fill_order:
+                if attraction_id in day_seen or attraction_id in used_global:
+                    continue
+                day_seen.add(attraction_id)
+                used_global.add(attraction_id)
+                att = by_id[attraction_id]
+                day_stops.append(
+                    {
+                        "attraction_id": attraction_id,
+                        "name": att.name,
+                        "duration_mins": 120,
+                        "tip": "Added to diversify the plan across days.",
+                    }
+                )
+                if len(day_stops) >= 3:
+                    break
+
+        if len(day_stops) < 1 and candidate_pool:
+            attraction_id = candidate_pool[i % len(candidate_pool)]
+            att = by_id[attraction_id]
+            day_stops.append(
+                {
+                    "attraction_id": attraction_id,
+                    "name": att.name,
+                    "duration_mins": 120,
+                    "tip": "Limited dataset; core suggestion.",
+                }
+            )
+
+        cleaned_stops: list[dict] = []
+        for order, stop in enumerate(day_stops, start=1):
+            attraction_id = stop["attraction_id"]
+            cleaned_stops.append(
+                {
+                    "attraction_id": attraction_id,
+                    "name": stop.get("name") or by_id[attraction_id].name,
+                    "stop_order": order,
+                    "arrival_time": stop.get("arrival_time")
+                    or _suggested_time(order - 1),
+                    "duration_mins": int(stop.get("duration_mins") or 120),
+                    "tip": stop.get("tip") or "Best visited during daylight hours.",
+                }
+            )
+
+        notes = src.get("notes") or "AI optimized route for this day."
+        if footer and i == 0:
+            notes = f"{notes}\n\n{footer}".strip()
+
+        normalized_days.append(
+            {
+                "day": day_number,
+                "district_id": district_id,
+                "notes": notes,
+                "stops": cleaned_stops,
+            }
+        )
+
+    plan["days"] = normalized_days
+    plan["title"] = plan.get("title") or f"{num_days}-Day Sri Lanka Trip"
+    return plan
+
+
+_TIMES = ["09:00", "11:30", "14:30", "17:00"]
+
+
+def _suggested_time(idx: int) -> str:
+    return _TIMES[min(idx, len(_TIMES) - 1)]
+
+
+def _parse_time(value: Any):
+    from datetime import time as _t
+
+    if value is None:
+        return None
+    if isinstance(value, str):
+        try:
+            hh, mm = value.split(":")[:2]
+            return _t(int(hh), int(mm))
+        except Exception:
+            return None
+    return None
+
+
+# ───────────────────────── Service ───────────────────────────────────
+class ItineraryService:
+    def __init__(self, gemini_client: Any | None = None):
+        key = getattr(settings, "GEMINI_API_KEY", "")
+        if not key:
+            raise RuntimeError(
+                "GEMINI_API_KEY is not configured. The itinerary planner is unavailable."
+            )
+        self._itinerary_model_name = getattr(
+            settings,
+            "ITINERARY_RAG_MODEL",
+            "gemini-1.5-pro",
+        )
+        self._fallback_model = getattr(
+            settings, "GEMINI_CHAT_MODEL", "gemini-1.5-flash"
+        )
+        if gemini_client is not None:
+            self._gemini = gemini_client
+            self._gemini_fallback = None
+        else:
+            try:
+                import google.generativeai as genai
+
+                genai.configure(api_key=key)
+                self._gemini = genai.GenerativeModel(self._itinerary_model_name)
+                self._gemini_fallback = (
+                    genai.GenerativeModel(self._fallback_model)
+                    if self._fallback_model
+                    != self._itinerary_model_name
+                    else None
+                )
+            except Exception as exc:  # noqa: BLE001
+                raise RuntimeError(
+                    f"Failed to initialise Gemini for itinerary: {exc}"
+                ) from exc
+
+    @transaction.atomic
+    def generate(self, *, user, preferences: dict) -> Itinerary:
+        pool = _build_attraction_pool(
+            interests=preferences["interests"],
+            district_ids=preferences["district_ids"],
+        )
+        if not pool:
+            raise RuntimeError(
+                "No attractions match the requested districts/interests. "
+                "Run `python manage.py seed_database` first."
+            )
+        district_names = _district_name_list(preferences["district_ids"])
+        seasons = _district_season_context(preferences["district_ids"])
+        seasonal_notes = _seasonal_window_notes(
+            preferences["district_ids"],
+            preferences["start_date"],
+            preferences["end_date"],
+        )
+        top_hints = _top_attractions_hints(preferences["district_ids"], n=3)
+
+        audit, rag_context_block, _rows = _chroma_retrieve(
+            interests=preferences["interests"],
+            district_ids=preferences["district_ids"],
+            district_names=district_names,
+            n_results=8,
+        )
+        rag_used = bool(audit)
+
+        CONTEXT = f"""
+=== RETRIEVED KNOWLEDGE ===
+{rag_context_block or "(no vector hits — use DATABASE HINTS and stay within Sri Lanka tourism facts you know to be widely accepted)."}
+=== END RETRIEVED KNOWLEDGE ===
+""".strip()
+
+        climate_block = "\n".join(s.as_prompt_line() for s in seasons)
+
+        SEASONAL = f"""
+=== SEASONAL NOTES ===
+Travel period: {preferences['start_date']} to {preferences['end_date']}
+Districts selected: {district_names}
+Climate / peak snapshot:
+{climate_block}
+
+Monthly crowd & weather during trip months (representative top attraction / district):
+{seasonal_notes}
+
+=== DATABASE HINTS (top attractions by district — verified rows) ===
+{top_hints}
+=== END DATABASE HINTS ===
+=== END SEASONAL NOTES ===
+""".strip()
+
+        duration_days = preferences["num_days"]
+        user_req = f"""
+User request:
+- Duration: {duration_days} days ({preferences['start_date']} to {preferences['end_date']})
+- Budget: LKR {preferences['budget_lkr']} total
+- Interests: {", ".join(preferences["interests"])}
+- Group: {preferences['group_size']} {preferences['group_type']}
+- Districts of interest: {district_names}
+Generate a complete {duration_days}-day itinerary.
+""".strip()
+
+        final_prompt = "\n\n".join(
+            [
+                ITINERARY_SYSTEM,
+                CONTEXT,
+                SEASONAL,
+                OUTPUT_SCHEMA_BLOCK,
+                user_req,
+            ]
+        )
+
+        plan_raw = _parse_json_with_retry(
+            model_primary=self._gemini,
+            model_fallback=self._gemini_fallback,
+            prompt=final_prompt,
+        )
+        if plan_raw is None:
+            raise RuntimeError(
+                "AI planner could not return valid JSON after retries. Please try again."
+            )
+
+        internal = _convert_llm_plan(
+            plan_raw,
+            pool=pool,
+            district_ids=preferences["district_ids"],
+        )
+        if not internal.get("days"):
+            raise RuntimeError(
+                "The model produced no usable days matching your districts."
+            )
+        plan = _normalize_plan(plan=internal, pool=pool, preferences=preferences)
+
+        return self._persist(
+            user=user,
+            preferences=preferences,
+            plan=plan,
+            rag_used=rag_used,
+            retrieval_audit=audit,
+        )
+
+    @transaction.atomic
+    def regenerate_day(self, *, itinerary: Itinerary, day_number: int) -> ItineraryDay:
+        try:
+            day = itinerary.days.get(day_number=day_number)
+        except ItineraryDay.DoesNotExist as exc:
+            raise ValueError(
+                f"Day {day_number} not found on itinerary {itinerary.id}"
+            ) from exc
+
+        existing_district_ids = list(
+            itinerary.days.values_list("district_id", flat=True)
+        )
+        all_districts = [d for d in existing_district_ids if d] or [day.district_id]
+        pool = _build_attraction_pool(
+            interests=[s.attraction.category for s in day.stops.all()]
+            or ["cultural"],
+            district_ids=all_districts,
+        )
+        if not pool:
+            return day
+
+        used_ids = set(
+            ItineraryStop.objects.filter(day__itinerary=itinerary).values_list(
+                "attraction_id", flat=True
+            )
+        )
+        fresh = [a for a in pool if a.id not in used_ids][:3] or pool[:3]
+
+        ItineraryStop.objects.filter(day=day).delete()
+        for order, att in enumerate(fresh, start=1):
+            ItineraryStop.objects.create(
+                day=day,
+                attraction_id=att.id,
+                stop_order=order,
+                duration_mins=120,
+                tip="Regenerated suggestion — confirm opening hours.",
+            )
+        day.notes = "Day regenerated from updated preferences."
+        day.save(update_fields=["notes"])
+        return day
+
+    @staticmethod
+    def _persist(
+        *,
+        user,
+        preferences: dict,
+        plan: dict,
+        rag_used: bool,
+        retrieval_audit: list[dict[str, Any]],
+    ) -> Itinerary:
+        itinerary = Itinerary.objects.create(
+            user=user,
+            title=plan.get("title")
+            or preferences.get("title")
+            or f"{preferences['num_days']}-Day Sri Lanka Trip",
+            start_date=preferences["start_date"],
+            end_date=preferences["end_date"],
+            budget_lkr=preferences["budget_lkr"],
+            group_type=preferences["group_type"],
+            group_size=preferences["group_size"],
+            status=ItineraryStatus.DRAFT,
+            rag_used=rag_used,
+            retrieved_doc_ids=retrieval_audit,
+        )
+
+        for raw_day in plan.get("days", []):
+            district_id = raw_day.get("district_id")
+            if not district_id:
+                first_stop = (raw_day.get("stops") or [{}])[0]
+                attraction_id = first_stop.get("attraction_id")
+                if attraction_id:
+                    district_id = (
+                        Attraction.objects.filter(id=attraction_id)
+                        .values_list("district_id", flat=True)
+                        .first()
+                    )
+
+            day = ItineraryDay.objects.create(
+                itinerary=itinerary,
+                day_number=int(raw_day.get("day") or 0),
+                district_id=district_id,
+                notes=raw_day.get("notes", ""),
+                ai_generated=True,
+            )
+            for order, stop in enumerate(raw_day.get("stops") or [], start=1):
+                attraction_id = stop.get("attraction_id")
+                if not attraction_id:
+                    continue
+                ItineraryStop.objects.create(
+                    day=day,
+                    attraction_id=attraction_id,
+                    stop_order=int(stop.get("stop_order") or order),
+                    arrival_time=_parse_time(stop.get("arrival_time")),
+                    duration_mins=stop.get("duration_mins"),
+                    tip=stop.get("tip", ""),
+                )
+        return itinerary

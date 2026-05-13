@@ -1,7 +1,12 @@
-"""Routes for the `alerts` app — populated when Section 4.2.4 work begins."""
+"""Routes for travel advisories / safety alerts."""
 
 from django.urls import path
 
+from apps.alerts.views import AlertActiveCountView, AlertListView
+
 app_name = "alerts"
 
-urlpatterns: list[path] = []
+urlpatterns = [
+    path("", AlertListView.as_view(), name="list"),
+    path("active-count/", AlertActiveCountView.as_view(), name="active-count"),
+]

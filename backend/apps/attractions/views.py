@@ -3,18 +3,21 @@
 from __future__ import annotations
 
 from django.db.models import Count, Prefetch
+from django.utils import timezone
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .filters import filter_attractions
-from .models import Attraction, District, MediaAsset
+from .models import Attraction, District, MediaAsset, SeasonalData
 from .serializers import (
     AttractionDetailSerializer,
     AttractionListSerializer,
     DistrictSerializer,
     MediaAssetSerializer,
+    SeasonalDataSerializer,
 )
+from .seasonal_utils import MONTH_NAMES, best_month_indices, peak_month_indices
 
 
 class DistrictsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -51,7 +54,16 @@ class DistrictsViewSet(viewsets.ReadOnlyModelViewSet):
         attractions = (
             Attraction.objects.filter(district=district)
             .order_by("-trend_score", "name")
-            .values("id", "name", "slug", "category")
+            .values(
+                "id",
+                "name",
+                "slug",
+                "category",
+                "sentiment_label",
+                "sentiment_score",
+                "positive_pct",
+                "sentiment_summary",
+            )
         )
         media = (
             MediaAsset.objects.filter(attraction__district=district)
@@ -86,9 +98,13 @@ class AttractionsViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         media_qs = MediaAsset.objects.all().order_by("-is_featured", "id")
+        seasonal_qs = SeasonalData.objects.order_by("month")
         qs = (
             Attraction.objects.select_related("district")
-            .prefetch_related(Prefetch("media", queryset=media_qs))
+            .prefetch_related(
+                Prefetch("media", queryset=media_qs),
+                Prefetch("seasonal_data", queryset=seasonal_qs),
+            )
             .all()
         )
         return filter_attractions(qs, self.request)
@@ -97,6 +113,52 @@ class AttractionsViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == "retrieve":
             return AttractionDetailSerializer
         return AttractionListSerializer
+
+    @action(detail=True, methods=["get"], url_path="sentiment")
+    def sentiment(self, request, slug=None):
+        attraction = self.get_object()
+        if attraction.sentiment_score is None:
+            return Response(
+                {"message": "Sentiment not yet computed for this attraction."},
+                status=404,
+            )
+        updated = attraction.sentiment_updated_at
+        last_updated: str | None = None
+        if updated is not None:
+            if timezone.is_naive(updated):
+                updated = timezone.make_aware(updated, timezone.get_current_timezone())
+            last_updated = updated.astimezone(timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            )
+        return Response(
+            {
+                "attraction_id": attraction.id,
+                "attraction_name": attraction.name,
+                "sentiment_label": attraction.sentiment_label,
+                "sentiment_score": attraction.sentiment_score,
+                "positive_pct": attraction.positive_pct,
+                "sentiment_summary": attraction.sentiment_summary or "",
+                "last_updated": last_updated,
+            }
+        )
+
+    @action(detail=True, methods=["get"], url_path="seasonal")
+    def seasonal(self, request, slug=None):
+        attraction = self.get_object()
+        rows = list(attraction.seasonal_data.order_by("month"))
+        monthly_ser = SeasonalDataSerializer(rows, many=True)
+        best = best_month_indices(rows)
+        peak = peak_month_indices(rows)
+        return Response(
+            {
+                "attraction_id": attraction.id,
+                "attraction_name": attraction.name,
+                "best_months": best,
+                "best_months_names": [MONTH_NAMES[m - 1] for m in best],
+                "peak_months": peak,
+                "monthly_data": monthly_ser.data,
+            }
+        )
 
     @action(detail=False, methods=["get"], url_path="trending")
     def trending(self, request):

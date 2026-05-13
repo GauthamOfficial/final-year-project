@@ -1,5 +1,4 @@
-import { Suspense } from "react";
-import { ChatPanel } from "@/components/chat/chat-panel";
+import { GuideTabs } from "@/components/chat/guide-tabs";
 
 export const metadata = {
   title: "Travel guide · LankaGuide",
@@ -8,9 +7,5 @@ export const metadata = {
 };
 
 export default function ChatPage() {
-  return (
-    <Suspense fallback={null}>
-      <ChatPanel />
-    </Suspense>
-  );
+  return <GuideTabs />;
 }
