@@ -1,24 +1,26 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 export function AdminGate({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, hydrated } = useAuth();
 
   useEffect(() => {
     if (!hydrated) return;
+    const loginUrl = `/login?next=${encodeURIComponent(pathname)}&admin=1`;
     if (!user) {
-      router.replace("/login?next=/admin&admin=1");
+      router.replace(loginUrl);
       return;
     }
     if (!user.is_admin && user.role !== "admin") {
-      router.replace("/");
+      router.replace(loginUrl);
     }
-  }, [hydrated, user, router]);
+  }, [hydrated, user, pathname, router]);
 
   if (!hydrated || !user) {
     return (
