@@ -43,12 +43,11 @@ medium confidence, set identified=false.
 
 
 class VisionService:
-    """Gemini vision (`gemini-1.5-flash`) + optional `RAGService` context."""
+    """Gemini vision (multimodal) + optional `RAGService` context."""
 
     def __init__(self) -> None:
-        self._model_name = getattr(
-            settings, "VISION_GEMINI_MODEL", "gemini-1.5-flash"
-        )
+        override = (getattr(settings, "VISION_GEMINI_MODEL", "") or "").strip()
+        self._model_name = override or settings.GEMINI_CHAT_MODEL
 
     def identify_landmark(self, image_file: BinaryIO) -> dict[str, Any]:
         """
@@ -67,7 +66,10 @@ class VisionService:
         }
 
         if not getattr(settings, "GEMINI_API_KEY", ""):
-            return {**err_base, "error": "Could not process image"}
+            return {
+                **err_base,
+                "error": "AI vision is not configured. Set GEMINI_API_KEY in the backend environment.",
+            }
 
         try:
             raw = image_file.read()
@@ -97,9 +99,7 @@ class VisionService:
                     "max_output_tokens": 1024,
                 },
             )
-            text = (getattr(response, "text", None) or "").strip()
-            if not text:
-                text = _extract_candidate_text(response)
+            text = _response_text_safe(response)
         except Exception as exc:  # noqa: BLE001
             logger.warning("Gemini vision failed: %s", exc)
             return {**err_base, "error": "Could not process image"}
@@ -162,6 +162,16 @@ class VisionService:
             logger.warning("RAG follow-up after vision failed: %s", exc)
 
         return out
+
+
+def _response_text_safe(response: Any) -> str:
+    """`response.text` raises ValueError when the candidate is blocked or empty."""
+    try:
+        raw = response.text
+    except (ValueError, AttributeError) as exc:
+        logger.warning("Gemini vision response text unavailable: %s", exc)
+        return _extract_candidate_text(response)
+    return (raw or "").strip() or _extract_candidate_text(response)
 
 
 def _parse_json_block(text: str) -> dict | None:
