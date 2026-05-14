@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Cloud, Droplets, Wind } from "lucide-react";
 import { api } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Current = {
   temp_c: number;
@@ -22,19 +23,67 @@ type Forecast = {
   icon: string;
 };
 
+function WeatherCardSkeleton() {
+  return (
+    <div
+      className="rounded-3xl border border-border bg-white p-5 shadow-soft"
+      aria-busy="true"
+      aria-label="Loading weather"
+    >
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-14 w-14 shrink-0 rounded-xl" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <Skeleton className="h-9 w-24 rounded-md" />
+          <Skeleton className="h-3 w-48 max-w-full rounded-md" />
+        </div>
+      </div>
+      <div className="mt-3 flex items-center gap-4">
+        <Skeleton className="h-3 w-24 rounded-md" />
+        <Skeleton className="h-3 w-14 rounded-md" />
+      </div>
+      <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex flex-col items-center gap-2 rounded-xl bg-jade-50/80 p-2"
+          >
+            <Skeleton className="h-2.5 w-9 rounded-md" />
+            <Skeleton className="h-8 w-8 rounded-md" />
+            <Skeleton className="h-3 w-14 rounded-md" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function WeatherCard({ districtId }: { districtId: number | null }) {
   const [current, setCurrent] = useState<Current | null>(null);
   const [forecast, setForecast] = useState<Forecast[]>([]);
   const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!districtId) return;
+    if (!districtId) {
+      setCurrent(null);
+      setForecast([]);
+      setErr(null);
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
+    setLoading(true);
     setErr(null);
+    setCurrent(null);
+    setForecast([]);
     api
       .get(`/api/v1/weather/?district_id=${districtId}`)
       .then(({ data }) => {
         if (cancelled) return;
+        if (!data?.current) {
+          setErr("Weather unavailable.");
+          return;
+        }
         setCurrent(data.current);
         setForecast(data.forecast || []);
       })
@@ -42,11 +91,18 @@ export function WeatherCard({ districtId }: { districtId: number | null }) {
         if (cancelled) return;
         const msg = e?.response?.data?.detail || "Weather unavailable.";
         setErr(msg);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
     return () => {
       cancelled = true;
     };
   }, [districtId]);
+
+  if (!districtId) {
+    return null;
+  }
 
   if (err) {
     return (
@@ -55,7 +111,10 @@ export function WeatherCard({ districtId }: { districtId: number | null }) {
       </div>
     );
   }
-  if (!current) return null;
+
+  if (loading || !current) {
+    return <WeatherCardSkeleton />;
+  }
 
   return (
     <div className="rounded-3xl border border-border bg-white p-5 shadow-soft">
