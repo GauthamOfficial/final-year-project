@@ -6,6 +6,7 @@ from django.db.models import Count, Prefetch
 from django.utils import timezone
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from .filters import filter_attractions
@@ -20,12 +21,20 @@ from .serializers import (
 from .seasonal_utils import MONTH_NAMES, best_month_indices, peak_month_indices
 
 
+class DistrictsPagination(PageNumberPagination):
+    """Sri Lanka has 25 districts; the project default PAGE_SIZE is 20."""
+
+    page_size = 50
+    max_page_size = 200
+    page_size_query_param = "page_size"
+
+
 class DistrictsViewSet(viewsets.ReadOnlyModelViewSet):
     """List + retrieve districts. Aggregates a per-district attraction count."""
 
     permission_classes = [permissions.AllowAny]
     serializer_class = DistrictSerializer
-    pagination_class = None
+    pagination_class = DistrictsPagination
 
     def get_queryset(self):
         return District.objects.annotate(
