@@ -781,7 +781,6 @@ Monthly crowd & weather during trip months (representative top attraction / dist
 === END SEASONAL NOTES ===
 """.strip()
 
-        duration_days = preferences["num_days"]
         user_req = f"""
 User request:
 - Duration: {duration_days} days ({preferences['start_date']} to {preferences['end_date']})
@@ -809,32 +808,53 @@ the same stops on multiple days.
             model_fallback=self._gemini_fallback,
             prompt=final_prompt,
         )
+        bulk_days = (plan_raw or {}).get("days") or []
+        needs_sequential = duration_days > 1 and (
+            plan_raw is None
+            or len(bulk_days) < duration_days
+            or _llm_plan_has_duplicate_days(bulk_days)
+        )
+        if needs_sequential:
+            logger.info(
+                "Bulk itinerary incomplete or duplicated (%s days returned); "
+                "using sequential day generation.",
+                len(bulk_days),
+            )
+            plan_raw = self._generate_sequential_days(
+                preferences=preferences,
+                context_block=CONTEXT,
+                seasonal_block=SEASONAL,
+                district_names=district_names,
+            )
+
         if plan_raw is None:
             raise RuntimeError(
                 "AI planner could not return valid JSON after retries. Please try again."
             )
-
-        raw_days = plan_raw.get("days") or []
-        if len(raw_days) < duration_days or _llm_plan_has_duplicate_days(raw_days):
-            retry_prompt = (
-                f"{final_prompt}\n\n"
-                "Your previous output omitted days or repeated the same day plan. "
-                f"Regenerate with exactly {duration_days} day objects numbered 1..{duration_days}, "
-                "and use different attractions on each day."
-            )
-            retried = _parse_json_with_retry(
-                model_primary=self._gemini,
-                model_fallback=self._gemini_fallback,
-                prompt=retry_prompt,
-            )
-            if retried is not None:
-                plan_raw = retried
 
         internal = _convert_llm_plan(
             plan_raw,
             pool=pool,
             district_ids=preferences["district_ids"],
         )
+        if _internal_plan_needs_sequential_fallback(
+            internal=internal, num_days=duration_days
+        ) and duration_days > 1:
+            logger.info(
+                "Converted itinerary still lacks unique days; retrying sequentially."
+            )
+            plan_raw = self._generate_sequential_days(
+                preferences=preferences,
+                context_block=CONTEXT,
+                seasonal_block=SEASONAL,
+                district_names=district_names,
+            )
+            if plan_raw is not None:
+                internal = _convert_llm_plan(
+                    plan_raw,
+                    pool=pool,
+                    district_ids=preferences["district_ids"],
+                )
         if not internal.get("days"):
             raise RuntimeError(
                 "The model produced no usable days matching your districts."
