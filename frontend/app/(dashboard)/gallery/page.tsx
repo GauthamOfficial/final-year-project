@@ -12,24 +12,12 @@ type District = {
 };
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-/** Last-resort thumbnails from Wikimedia Commons (no search-proxy hotlinks). */
-const DISTRICT_FREE_SOURCE_THUMBNAILS: Record<string, string> = {
-  ampara:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Arugam_bay_beach.jpg",
-  anuradhapura:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Anuradhapura_view.jpg",
-  badulla:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Badulla_Clock_Tower.JPG",
+/** Wikimedia fallbacks when no local district thumbnail exists. */
+const DISTRICT_WIKIMEDIA_THUMBNAILS: Record<string, string> = {
   batticaloa:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Sea_Fishing,_Batticaloa.jpg",
   kegalle:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Kegalle_Town_Clock_Tower.jpg",
-  kurunegala:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Kurunegala_City_from_the_Sky.jpg",
-  mannar:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Mannar_Trip20.jpg",
-  monaragala:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Buduruvagala.JPG",
 };
 
 export const metadata = {
@@ -86,7 +74,7 @@ export default async function GalleryPage() {
         return { ...district, hero_image_url: galleryThumb };
       }
       const curatedThumb = district.slug
-        ? (DISTRICT_FREE_SOURCE_THUMBNAILS[district.slug] ?? "")
+        ? (DISTRICT_WIKIMEDIA_THUMBNAILS[district.slug] ?? "")
         : "";
       return { ...district, hero_image_url: curatedThumb };
     })

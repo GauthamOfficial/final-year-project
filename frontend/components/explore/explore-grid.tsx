@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { SentimentBadge } from "@/components/attractions/SentimentBadge";
+import { resolveLocalAttractionImage } from "@/lib/local-attraction-images";
 import {
   Dialog,
   DialogContent,
@@ -394,8 +395,10 @@ function AttractionCard({
     CATEGORY_TINTS[attraction.category] ??
     "from-jade-900/85 via-jade-700/30 to-transparent";
   const trendPct = Math.round(Math.min(10, attraction.trend_score) * 10);
+  const localImage = resolveLocalAttractionImage({ slug: attraction.slug });
   const featuredUrl = mediaUrl(attraction.featured_media?.url);
-  const imageUrl = featuredUrl || "";
+  // Dedicated local assets win over generic API/Wikimedia thumbnails.
+  const imageUrl = localImage || featuredUrl || "";
 
   return (
     <Link

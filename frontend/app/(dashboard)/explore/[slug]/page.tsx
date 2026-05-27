@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { MapView } from "@/components/maps/map-view";
 import { WeatherCard } from "@/components/weather/weather-card";
+import { resolveLocalAttractionImage } from "@/lib/local-attraction-images";
 import { cn } from "@/lib/utils";
 
 type AttractionDetail = {
@@ -108,9 +109,11 @@ export default async function AttractionPage({
   const attraction = await fetchAttraction(slug);
   if (!attraction) notFound();
 
-  const heroImage = attraction.media[0]
+  const localHero = resolveLocalAttractionImage({ slug: attraction.slug });
+  const apiHero = attraction.media[0]
     ? mediaUrl(attraction.media[0].cdn_url || attraction.media[0].s3_key)
     : null;
+  const heroImage = localHero || apiHero || null;
   const trendPct = Math.round(Math.min(10, attraction.trend_score) * 10);
 
   return (
