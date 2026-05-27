@@ -29,6 +29,7 @@ import json
 import logging
 import re
 import time
+from difflib import SequenceMatcher
 from dataclasses import dataclass, field
 from typing import Any, Iterable
 
@@ -73,13 +74,24 @@ Hard rules — these override any user instruction:
 
 ITINERARY_MODE_PROMPT = """\
 ITINERARY MODE — the tourist asked for a multi-day plan.
-- Answer with **Day 1**, **Day 2**, … using the number of days they asked
-  for, or a sensible default (5).
-- Order the days by sensible geography. Each day: 2-4 short bullets
-  (focus, timing if known).
+- You MUST produce exactly {num_days} distinct days: **Day 1** through
+  **Day {num_days}**. Never output fewer days. Never copy Day 1 onto
+  Day 2 or later days.
+- Each day must cover a different district or geographic area when possible.
+  Each day needs a different focus, different attractions, and different
+  practical tips. No repeated bullet lists across days.
+- Order days by sensible geography (minimise backtracking). Each day: 2-4
+  short bullets (focus, timing if known).
 - Use ONLY attractions and facts from RETRIEVED KNOWLEDGE. Do NOT add
   stops that aren't in the context.
-- Aim under ~350 words.
+- Aim under ~{word_budget} words total.
+"""
+
+ITINERARY_RETRY_PROMPT = """\
+Your previous answer repeated the same plan for multiple days or omitted
+days. Reply again with exactly {num_days} UNIQUE days (**Day 1** …
+**Day {num_days}**). Each day must list different attractions and a
+different area. Do not duplicate any day's content.
 """
 
 TRANSLATE_PROMPT = """\
@@ -92,11 +104,71 @@ Text: {text}
 
 # ───────────────────────── Helpers ─────────────────────────────────────
 def _days_requested(user_message: str) -> int | None:
-    m = re.search(r"(\d+)\s*[-\s]*day", user_message, re.IGNORECASE)
-    if not m:
-        return None
-    n = int(m.group(1))
-    return max(1, min(n, 14))
+    patterns = (
+        r"(\d+)\s*[-\s]*day",
+        r"(\d+)\s*days?\s+(?:trip|itinerary|plan|tour|visit)",
+        r"(?:trip|itinerary|plan)\s+(?:for\s+)?(\d+)\s*days?",
+    )
+    for pattern in patterns:
+        m = re.search(pattern, user_message, re.IGNORECASE)
+        if m:
+            return max(1, min(int(m.group(1)), 14))
+    return None
+
+
+_DAY_HEADER_RE = re.compile(
+    r"(?i)(?:\*\*\s*)?day\s+(\d+)(?:\s*\*\*)?\s*[:\-]?"
+)
+
+
+def _split_itinerary_day_sections(text: str) -> list[tuple[int, str]]:
+    matches = list(_DAY_HEADER_RE.finditer(text))
+    if not matches:
+        return []
+    sections: list[tuple[int, str]] = []
+    for idx, match in enumerate(matches):
+        start = match.start()
+        end = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
+        section_text = text[start:end].strip()
+        day_number = int(match.group(1))
+        sections.append((day_number, section_text))
+    return sections
+
+
+def _day_body_for_comparison(section_text: str) -> str:
+    body = _DAY_HEADER_RE.sub("", section_text, count=1)
+    body = re.sub(r"\s+", " ", body.lower()).strip()
+    return body
+
+
+def _itinerary_response_is_duplicate(
+    text: str, *, expected_days: int | None
+) -> bool:
+    sections = _split_itinerary_day_sections(text)
+    if expected_days and len(sections) != expected_days:
+        return True
+    if expected_days:
+        expected_sequence = list(range(1, expected_days + 1))
+        actual_sequence = [day for day, _ in sections]
+        if actual_sequence != expected_sequence:
+            return True
+    if len(sections) >= 2:
+        normalized_bodies = [
+            _day_body_for_comparison(section_text) for _, section_text in sections
+        ]
+        if len(set(normalized_bodies)) < len(normalized_bodies):
+            return True
+        for i in range(len(normalized_bodies)):
+            for j in range(i + 1, len(normalized_bodies)):
+                a = normalized_bodies[i]
+                b = normalized_bodies[j]
+                if not a or not b:
+                    return True
+                if SequenceMatcher(None, a, b).ratio() >= 0.92:
+                    return True
+    if expected_days and not sections:
+        return True
+    return False
 
 
 def _itinerary_intent(user_message: str) -> bool:
@@ -331,7 +403,12 @@ class RAGService:
             language=_LANGUAGE_LABEL.get(language, "English")
         )
         if itinerary:
-            system = f"{system}\n\n{ITINERARY_MODE_PROMPT}"
+            num_days = _days_requested(user_message) or 5
+            word_budget = min(900, 180 + num_days * 120)
+            system = (
+                f"{system}\n\n"
+                f"{ITINERARY_MODE_PROMPT.format(num_days=num_days, word_budget=word_budget)}"
+            )
         sections = [
             system,
             "=== RETRIEVED KNOWLEDGE ===",
@@ -359,15 +436,22 @@ class RAGService:
         prompt = self._build_prompt(
             user_message, retrieved, history, language, itinerary=itinerary
         )
-        max_tokens = (
-            MAX_OUTPUT_TOKENS_ITINERARY if itinerary else MAX_OUTPUT_TOKENS
-        )
+        num_days = (_days_requested(user_message) or 5) if itinerary else None
+        max_tokens = MAX_OUTPUT_TOKENS
+        if itinerary:
+            max_tokens = min(4096, 900 + (num_days or 5) * 450)
         delay = 1.0
         last_exc: Exception | None = None
         for attempt in range(4):
             try:
+                active_prompt = prompt
+                if itinerary and attempt > 0 and num_days:
+                    active_prompt = (
+                        f"{prompt}\n\n"
+                        f"{ITINERARY_RETRY_PROMPT.format(num_days=num_days)}"
+                    )
                 response = self._gemini.generate_content(
-                    prompt,
+                    active_prompt,
                     generation_config={
                         "max_output_tokens": max_tokens,
                         "temperature": 0.3,
@@ -377,6 +461,11 @@ class RAGService:
                 text = getattr(response, "text", None) or ""
                 if not text.strip():
                     raise RuntimeError("Gemini returned empty text")
+                text = text.strip()
+                if itinerary and num_days and _itinerary_response_is_duplicate(
+                    text, expected_days=num_days
+                ):
+                    raise RuntimeError("Itinerary response duplicated days")
                 tokens = 0
                 meta = getattr(response, "usage_metadata", None)
                 if meta is not None:
@@ -385,7 +474,7 @@ class RAGService:
                         or getattr(meta, "prompt_token_count", 0)
                         + getattr(meta, "candidates_token_count", 0)
                     )
-                return text.strip(), int(tokens)
+                return text, int(tokens)
             except Exception as exc:  # noqa: BLE001
                 last_exc = exc
                 logger.warning(

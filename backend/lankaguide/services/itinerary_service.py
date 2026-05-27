@@ -47,7 +47,41 @@ Generate a day-by-day itinerary as valid JSON matching the schema provided below
 Use ONLY attractions, places and facts mentioned in the RETRIEVED KNOWLEDGE section.
 Respect the user's budget, interests, group type, and travel dates.
 Factor in the seasonal notes provided — avoid flooding-prone areas during monsoon months.
+
+CRITICAL multi-day rules (never violate these):
+- The "days" array MUST contain exactly the requested number of day objects,
+  numbered 1 through N with no gaps and no duplicate day numbers.
+- Each day MUST visit different attractions — the same place must NOT appear
+  on more than one day.
+- Each day MUST have a distinct theme, district focus, and schedule. Never
+  copy Day 1's stops onto Day 2 or later days.
+- Spread the trip across the selected districts in a logical geographic order.
+
 Output ONLY a valid JSON object. No markdown, no explanation, no commentary outside JSON.
+""".strip()
+
+SINGLE_DAY_SCHEMA_BLOCK = """
+=== OUTPUT JSON SCHEMA (single day only) ===
+{{
+  "days": [
+    {{
+      "day": {day_number},
+      "district": "string",
+      "theme": "string — one-line day theme",
+      "stops": [
+        {{
+          "name": "string — attraction name",
+          "arrival_time": "HH:MM",
+          "duration_mins": 90,
+          "description": "string — 1-2 sentences why this fits the user",
+          "tip": "string — practical visitor tip"
+        }}
+      ],
+      "accommodation_note": "string — brief advice on where to stay"
+    }}
+  ]
+}}
+=== END SCHEMA ===
 """.strip()
 
 OUTPUT_SCHEMA_BLOCK = """
@@ -398,6 +432,48 @@ def _district_map(district_ids: list[int]) -> dict[str, int]:
     }
 
 
+def _day_stop_fingerprint(stops: list[dict]) -> tuple[int, ...]:
+    ids: list[int] = []
+    for stop in stops:
+        aid = stop.get("attraction_id")
+        if isinstance(aid, int):
+            ids.append(aid)
+    return tuple(sorted(ids))
+
+
+def _llm_plan_has_duplicate_days(days: list[dict]) -> bool:
+    seen: set[tuple[str, ...]] = set()
+    for day in days:
+        names = tuple(
+            sorted(
+                (s.get("name") or "").strip().lower()
+                for s in (day.get("stops") or [])
+                if (s.get("name") or "").strip()
+            )
+        )
+        if not names:
+            continue
+        if names in seen:
+            return True
+        seen.add(names)
+    return False
+
+
+def _internal_plan_needs_sequential_fallback(
+    *, internal: dict, num_days: int
+) -> bool:
+    days = internal.get("days") or []
+    if len(days) < num_days:
+        return True
+    fingerprints = [_day_stop_fingerprint(d.get("stops") or []) for d in days]
+    non_empty = [fp for fp in fingerprints if fp]
+    if len(non_empty) < num_days:
+        return True
+    if len(set(non_empty)) < len(non_empty):
+        return True
+    return False
+
+
 def _convert_llm_plan(
     data: dict,
     pool: list[AttractionContext],
@@ -420,11 +496,11 @@ def _convert_llm_plan(
         return None
 
     out_days: list[dict] = []
-    for day in data.get("days") or []:
+    for idx, day in enumerate(data.get("days") or []):
         dname = (day.get("district") or "").strip()
         did = dmap.get(dname.lower())
         if not did and district_ids:
-            did = district_ids[0]
+            did = district_ids[idx % len(district_ids)]
         theme = day.get("theme") or ""
         accom = day.get("accommodation_note") or ""
         notes_parts = [theme, accom, day.get("notes")]
@@ -487,19 +563,26 @@ def _normalize_plan(
     input_days = plan.get("days") or []
     normalized_days: list[dict] = []
     used_global: set[int] = set()
+    seen_fingerprints: set[tuple[int, ...]] = set()
 
     for i in range(num_days):
         src = input_days[i] if i < len(input_days) else {}
         day_number = i + 1
-        district_id = src.get("district_id")
-        if not district_id and district_ids:
-            district_id = district_ids[i % len(district_ids)]
+        district_id = district_ids[i % len(district_ids)] if district_ids else None
+        src_district = src.get("district_id")
+        if src_district and len(district_ids) <= 1:
+            district_id = src_district
+
+        src_stops = list(src.get("stops") or [])
+        src_fp = _day_stop_fingerprint(src_stops)
+        if src_fp and src_fp in seen_fingerprints:
+            src_stops = []
 
         candidate_pool = by_district.get(district_id) or list(by_id.keys())
         day_stops: list[dict] = []
         day_seen: set[int] = set()
 
-        for stop in src.get("stops") or []:
+        for stop in src_stops:
             attraction_id = stop.get("attraction_id")
             if not isinstance(attraction_id, int):
                 continue
@@ -535,7 +618,10 @@ def _normalize_plan(
                     break
 
         if len(day_stops) < 1 and candidate_pool:
-            attraction_id = candidate_pool[i % len(candidate_pool)]
+            attraction_id = next(
+                (aid for aid in candidate_pool if aid not in used_global),
+                candidate_pool[i % len(candidate_pool)],
+            )
             att = by_id[attraction_id]
             day_stops.append(
                 {
@@ -561,9 +647,13 @@ def _normalize_plan(
                 }
             )
 
-        notes = src.get("notes") or "AI optimized route for this day."
+        notes = src.get("notes") or f"Day {day_number} — explore a fresh set of highlights."
         if footer and i == 0:
             notes = f"{notes}\n\n{footer}".strip()
+
+        day_fp = _day_stop_fingerprint(cleaned_stops)
+        if day_fp:
+            seen_fingerprints.add(day_fp)
 
         normalized_days.append(
             {
@@ -656,11 +746,14 @@ class ItineraryService:
         )
         top_hints = _top_attractions_hints(preferences["district_ids"], n=3)
 
+        duration_days = int(preferences["num_days"])
+        n_results = min(24, 8 + duration_days * 2)
+
         audit, rag_context_block, _rows = _chroma_retrieve(
             interests=preferences["interests"],
             district_ids=preferences["district_ids"],
             district_names=district_names,
-            n_results=8,
+            n_results=n_results,
         )
         rag_used = bool(audit)
 
@@ -696,7 +789,9 @@ User request:
 - Interests: {", ".join(preferences["interests"])}
 - Group: {preferences['group_size']} {preferences['group_type']}
 - Districts of interest: {district_names}
-Generate a complete {duration_days}-day itinerary.
+Generate a complete {duration_days}-day itinerary with exactly {duration_days} unique
+days in the "days" array. Each day must list different attractions — never repeat
+the same stops on multiple days.
 """.strip()
 
         final_prompt = "\n\n".join(
@@ -719,6 +814,22 @@ Generate a complete {duration_days}-day itinerary.
                 "AI planner could not return valid JSON after retries. Please try again."
             )
 
+        raw_days = plan_raw.get("days") or []
+        if len(raw_days) < duration_days or _llm_plan_has_duplicate_days(raw_days):
+            retry_prompt = (
+                f"{final_prompt}\n\n"
+                "Your previous output omitted days or repeated the same day plan. "
+                f"Regenerate with exactly {duration_days} day objects numbered 1..{duration_days}, "
+                "and use different attractions on each day."
+            )
+            retried = _parse_json_with_retry(
+                model_primary=self._gemini,
+                model_fallback=self._gemini_fallback,
+                prompt=retry_prompt,
+            )
+            if retried is not None:
+                plan_raw = retried
+
         internal = _convert_llm_plan(
             plan_raw,
             pool=pool,
@@ -737,6 +848,67 @@ Generate a complete {duration_days}-day itinerary.
             rag_used=rag_used,
             retrieval_audit=audit,
         )
+
+    def _generate_sequential_days(
+        self,
+        *,
+        preferences: dict,
+        context_block: str,
+        seasonal_block: str,
+        district_names: str,
+    ) -> dict | None:
+        """Generate one day at a time so later days cannot copy earlier ones."""
+        num_days = int(preferences["num_days"])
+        district_ids = list(preferences["district_ids"])
+        id_to_name = {
+            d.id: d.name
+            for d in District.objects.filter(id__in=district_ids).only("id", "name")
+        }
+        merged: dict[str, Any] = {"days": []}
+        used_names: list[str] = []
+
+        for day_num in range(1, num_days + 1):
+            focus_id = district_ids[(day_num - 1) % len(district_ids)]
+            focus_name = id_to_name.get(focus_id, district_names)
+            avoid = ", ".join(used_names) or "none yet"
+            day_req = f"""
+Generate ONLY Day {day_num} of {num_days} for this Sri Lanka trip.
+Focus district for today: {focus_name}
+Do NOT include these attractions already used on earlier days: {avoid}
+Each stop must be a different attraction from all previous days.
+Output JSON with a "days" array containing exactly one day object with "day": {day_num}.
+""".strip()
+            schema = SINGLE_DAY_SCHEMA_BLOCK.format(day_number=day_num)
+            prompt = "\n\n".join(
+                [
+                    ITINERARY_SYSTEM,
+                    context_block,
+                    seasonal_block,
+                    schema,
+                    day_req,
+                ]
+            )
+            day_raw = _parse_json_with_retry(
+                model_primary=self._gemini,
+                model_fallback=self._gemini_fallback,
+                prompt=prompt,
+            )
+            if not day_raw or not day_raw.get("days"):
+                continue
+            day_obj = day_raw["days"][0]
+            day_obj["day"] = day_num
+            merged["days"].append(day_obj)
+            if day_raw.get("title") and not merged.get("title"):
+                merged["title"] = day_raw["title"]
+            for stop in day_obj.get("stops") or []:
+                name = (stop.get("name") or "").strip()
+                if name:
+                    used_names.append(name)
+
+        if not merged["days"]:
+            return None
+        merged.setdefault("title", f"{num_days}-Day Sri Lanka Trip")
+        return merged
 
     @transaction.atomic
     def regenerate_day(self, *, itinerary: Itinerary, day_number: int) -> ItineraryDay:

@@ -10,7 +10,10 @@ from __future__ import annotations
 import pytest
 from django.core.cache import cache
 
-from apps.chat.services import RAGService
+from apps.chat.services import (
+    RAGService,
+    _itinerary_response_is_duplicate,
+)
 from apps.core.services.embeddings import HashEmbeddingClient
 
 
@@ -134,3 +137,37 @@ def test_prompt_includes_retrieved_chunks(fake_chroma, mocker, gemini_settings):
     assert "LankaGuide AI" in prompt
     assert "RETRIEVED KNOWLEDGE" in prompt
     assert "Plan a Sigiriya visit" in prompt
+
+
+def test_itinerary_duplicate_detection_flags_near_identical_days():
+    text = """
+**Day 1**
+- Sigiriya Rock Fortress
+- Dambulla Cave Temple
+
+**Day 2**
+- Sigiriya Rock Fortress
+- Dambulla Cave Temple
+
+**Day 3**
+- Kandy Lake
+- Temple of the Tooth
+""".strip()
+    assert _itinerary_response_is_duplicate(text, expected_days=3) is True
+
+
+def test_itinerary_duplicate_detection_accepts_distinct_days():
+    text = """
+**Day 1**
+- Sigiriya Rock Fortress
+- Dambulla Cave Temple
+
+**Day 2**
+- Temple of the Tooth
+- Royal Botanical Gardens
+
+**Day 3**
+- Galle Fort
+- Unawatuna Beach
+""".strip()
+    assert _itinerary_response_is_duplicate(text, expected_days=3) is False
