@@ -155,21 +155,15 @@ class WeatherAlertService:
         return None
 
     def generate_ai_summary(self, district_name: str, weather_data: dict) -> str:
-        model_name = getattr(
-            settings,
-            "WEATHER_ALERT_GEMINI_MODEL",
-            "gemini-1.5-flash",
-        )
-        if not getattr(settings, "GEMINI_API_KEY", ""):
+        if not getattr(settings, "GROQ_API_KEY", ""):
             return (
                 f"Weather in {district_name}: review the outlook and pack "
                 "accordingly; allow flexibility for rain if showers are expected."
             )
         try:
-            import google.generativeai as genai
+            from lankaguide.services.llm_client import get_llm
 
-            genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel(model_name)
+            model = get_llm("fast")
             system = (
                 "You are a helpful travel assistant for Sri Lanka. Write a "
                 "friendly, practical weather advisory for tourists in 2 "
@@ -190,7 +184,7 @@ class WeatherAlertService:
             if text:
                 return text
         except Exception as exc:  # noqa: BLE001
-            logger.warning("Gemini weather advisory failed: %s", exc)
+            logger.warning("Groq weather advisory failed: %s", exc)
         return (
             f"Keep an eye on conditions in {district_name}—adjust outdoor plans "
             "if rain or storms are in the forecast."

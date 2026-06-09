@@ -365,6 +365,21 @@ def _strip_fences(raw: str) -> str:
     ).strip()
 
 
+def _extract_retry_delay(exc: Exception) -> float | None:
+    """Parse the retry delay from a Gemini 429 error message."""
+    msg = str(exc)
+    if "429" not in msg:
+        return None
+    # Match "retry in 56.81255321s" or "retry_delay { seconds: 57 }"
+    m = re.search(r"retry in ([\d.]+)s", msg, re.IGNORECASE)
+    if m:
+        return float(m.group(1))
+    m = re.search(r"seconds:\s*(\d+)", msg)
+    if m:
+        return float(m.group(1))
+    return 5.0  # conservative default for 429s to prevent 60s frontend timeout
+
+
 def _parse_json_with_retry(
     *, model_primary: Any, model_fallback: Any | None, prompt: str
 ) -> dict | None:
@@ -378,8 +393,8 @@ def _parse_json_with_retry(
     for round_i in range(2):
         active_prompt = prompt if round_i == 0 else prompt + follow
         attempt = 0
-        delay = 1.0
-        while attempt < 3:
+        delay = 2.0
+        while attempt < 2:
             for model in models:
                 try:
                     response = model.generate_content(
@@ -406,8 +421,19 @@ def _parse_json_with_retry(
                         attempt + 1,
                         exc,
                     )
-            time.sleep(delay)
-            delay = min(delay * 2, 20)
+                    # On rate-limit errors, wait the suggested delay and
+                    # skip the fallback model (it shares the same quota).
+                    retry_wait = _extract_retry_delay(exc)
+                    if retry_wait is not None:
+                        logger.info(
+                            "Rate-limited — waiting %.0fs before retry", retry_wait
+                        )
+                        time.sleep(min(retry_wait + 1, 120))
+                        break  # skip remaining models, go to next attempt
+            else:
+                # Only sleep the normal backoff if we weren't rate-limited
+                time.sleep(delay)
+            delay = min(delay * 2, 30)
             attempt += 1
     return None
 
@@ -693,37 +719,18 @@ def _parse_time(value: Any):
 # ───────────────────────── Service ───────────────────────────────────
 class ItineraryService:
     def __init__(self, gemini_client: Any | None = None):
-        key = getattr(settings, "GEMINI_API_KEY", "")
-        if not key:
-            raise RuntimeError(
-                "GEMINI_API_KEY is not configured. The itinerary planner is unavailable."
-            )
-        self._itinerary_model_name = getattr(
-            settings,
-            "ITINERARY_RAG_MODEL",
-            "gemini-1.5-pro",
-        )
-        self._fallback_model = getattr(
-            settings, "GEMINI_CHAT_MODEL", "gemini-1.5-flash"
-        )
         if gemini_client is not None:
             self._gemini = gemini_client
             self._gemini_fallback = None
         else:
-            try:
-                import google.generativeai as genai
+            from lankaguide.services.llm_client import get_llm
 
-                genai.configure(api_key=key)
-                self._gemini = genai.GenerativeModel(self._itinerary_model_name)
-                self._gemini_fallback = (
-                    genai.GenerativeModel(self._fallback_model)
-                    if self._fallback_model
-                    != self._itinerary_model_name
-                    else None
-                )
+            try:
+                self._gemini = get_llm("itinerary")
+                self._gemini_fallback = None
             except Exception as exc:  # noqa: BLE001
                 raise RuntimeError(
-                    f"Failed to initialise Gemini for itinerary: {exc}"
+                    f"Failed to initialise Groq for itinerary: {exc}"
                 ) from exc
 
     @transaction.atomic

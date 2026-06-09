@@ -65,10 +65,10 @@ class VisionService:
             "sources": None,
         }
 
-        if not getattr(settings, "GEMINI_API_KEY", ""):
+        if not getattr(settings, "GROQ_API_KEY", ""):
             return {
                 **err_base,
-                "error": "AI vision is not configured. Set GEMINI_API_KEY in the backend environment.",
+                "error": "AI vision is not configured. Set GROQ_API_KEY in the backend environment.",
             }
 
         try:
@@ -88,10 +88,9 @@ class VisionService:
             return {**err_base, "error": "Could not process image"}
 
         try:
-            import google.generativeai as genai
+            from lankaguide.services.llm_client import get_llm
 
-            genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel(self._model_name)
+            model = get_llm("vision")
             response = model.generate_content(
                 [PROMPT, img],
                 generation_config={
@@ -101,7 +100,7 @@ class VisionService:
             )
             text = _response_text_safe(response)
         except Exception as exc:  # noqa: BLE001
-            logger.warning("Gemini vision failed: %s", exc)
+            logger.warning("Groq vision failed: %s", exc)
             return {**err_base, "error": "Could not process image"}
 
         parsed = _parse_json_block(text)

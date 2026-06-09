@@ -251,11 +251,16 @@ GEMINI_EMBEDDING_MODEL = env(
 # Landmark photo ID (`VisionService`); defaults to the same multimodal model as chat.
 VISION_GEMINI_MODEL = env("VISION_GEMINI_MODEL", default=GEMINI_CHAT_MODEL)
 # Itinerary RAG generation uses this model (JSON itineraries); override via .env.
-ITINERARY_RAG_MODEL = env("ITINERARY_RAG_MODEL", default="gemini-1.5-pro")
+ITINERARY_RAG_MODEL = env("ITINERARY_RAG_MODEL", default="gemini-2.5-flash")
 # Short weather-advisory blurbs for synced SafetyAlert rows (Gemini vision-free).
 WEATHER_ALERT_GEMINI_MODEL = env(
-    "WEATHER_ALERT_GEMINI_MODEL", default="gemini-1.5-flash"
+    "WEATHER_ALERT_GEMINI_MODEL", default="gemini-2.5-flash"
 )
+
+GROQ_API_KEY = env("GROQ_API_KEY", default="")
+GROQ_CHAT_MODEL = env("GROQ_CHAT_MODEL", default="llama-3.3-70b-versatile")
+GROQ_FAST_MODEL = env("GROQ_FAST_MODEL", default="llama-3.1-8b-instant")
+GROQ_VISION_MODEL = env("GROQ_VISION_MODEL", default="meta-llama/llama-4-scout-17b-16e-instruct")
 
 CHROMA_PERSIST_DIR = env(
     "CHROMA_PERSIST_DIR", default=str(BASE_DIR / "var" / "chroma")

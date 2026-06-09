@@ -217,9 +217,9 @@ class RAGService:
         gemini_client: Any | None = None,
         collection: Any | None = None,
     ):
-        if not settings.GEMINI_API_KEY:
+        if not settings.GROQ_API_KEY:
             raise RuntimeError(
-                "GEMINI_API_KEY is not set. The AI guide is unavailable."
+                "GROQ_API_KEY is not set. The AI guide is unavailable."
             )
 
         self.embed_client: EmbeddingClient = embed_client or GeminiEmbeddingClient()
@@ -227,14 +227,12 @@ class RAGService:
         self._gemini_model = settings.GEMINI_CHAT_MODEL
 
         if gemini_client is None:
+            from lankaguide.services.llm_client import get_llm
             try:
-                import google.generativeai as genai
-
-                genai.configure(api_key=settings.GEMINI_API_KEY)
-                self._gemini = genai.GenerativeModel(self._gemini_model)
+                self._gemini = get_llm("chat")
             except Exception as exc:
                 raise RuntimeError(
-                    f"Failed to initialise Gemini client: {exc}"
+                    f"Failed to initialise Groq client: {exc}"
                 ) from exc
         else:
             self._gemini = gemini_client

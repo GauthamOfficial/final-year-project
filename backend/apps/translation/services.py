@@ -34,8 +34,8 @@ def translate(text: str, *, source: str, target: str) -> str:
         return ""
     if source == target:
         return text
-    if not settings.GEMINI_API_KEY:
-        raise TranslationUnavailable("GEMINI_API_KEY is not set.")
+    if not settings.GROQ_API_KEY:
+        raise TranslationUnavailable("GROQ_API_KEY is not set.")
     src = _LANGUAGE_LABEL.get(source, source)
     dst = _LANGUAGE_LABEL.get(target, target)
     key = hashlib.sha256(f"{src}|{dst}|{text}".encode()).hexdigest()
@@ -44,10 +44,9 @@ def translate(text: str, *, source: str, target: str) -> str:
     if cached:
         return cached
     try:
-        import google.generativeai as genai
+        from lankaguide.services.llm_client import get_llm
 
-        genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel(settings.GEMINI_CHAT_MODEL)
+        model = get_llm("chat")
         resp = model.generate_content(
             PROMPT.format(src=src, dst=dst, text=text),
             generation_config={"max_output_tokens": 1024, "temperature": 0.0},
