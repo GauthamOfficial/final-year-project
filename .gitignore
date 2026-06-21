@@ -10,13 +10,14 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
 parts/
 sdist/
 var/
 wheels/
 share/python-wheels/
+# NOTE: do NOT add a bare `lib/` here — it would also ignore `frontend/lib/`
+# (the Next.js app's api/auth/stores). Python virtualenv libs live under
+# `venv/`, which is ignored separately below.
 *.egg-info/
 .installed.cfg
 *.egg

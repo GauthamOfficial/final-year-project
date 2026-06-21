@@ -29,6 +29,9 @@ def _clear_cache():
 
 @pytest.fixture
 def gemini_settings(settings):
+    # RAGService guards on GROQ_API_KEY (the active LLM backend); keep the
+    # legacy GEMINI key set too so embedding code paths stay happy.
+    settings.GROQ_API_KEY = "test-key"
     settings.GEMINI_API_KEY = "test-key"
     return settings
 
@@ -42,7 +45,7 @@ def _make_rag(*, gemini, collection):
 
 
 def test_init_without_api_key_raises(settings):
-    settings.GEMINI_API_KEY = ""
+    settings.GROQ_API_KEY = ""
     with pytest.raises(RuntimeError):
         RAGService(
             embed_client=HashEmbeddingClient(),

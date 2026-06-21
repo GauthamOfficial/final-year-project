@@ -440,7 +440,10 @@ class RAGService:
             max_tokens = min(4096, 900 + (num_days or 5) * 450)
         delay = 1.0
         last_exc: Exception | None = None
-        for attempt in range(4):
+        # Itinerary mode may need an extra try to fix duplicated days; plain
+        # chat only retries on transient API errors, so keep attempts low.
+        max_attempts = 3 if itinerary else 2
+        for attempt in range(max_attempts):
             try:
                 active_prompt = prompt
                 if itinerary and attempt > 0 and num_days:
@@ -476,10 +479,15 @@ class RAGService:
             except Exception as exc:  # noqa: BLE001
                 last_exc = exc
                 logger.warning(
-                    "Gemini generate failed (attempt %s/4): %s", attempt + 1, exc
+                    "Gemini generate failed (attempt %s/%s): %s",
+                    attempt + 1,
+                    max_attempts,
+                    exc,
                 )
-                time.sleep(delay)
-                delay = min(delay * 2, 20)
+                # No point sleeping after the final attempt.
+                if attempt < max_attempts - 1:
+                    time.sleep(delay)
+                    delay = min(delay * 2, 8)
         raise RuntimeError(f"Gemini generation failed: {last_exc}") from last_exc
 
     @staticmethod

@@ -390,11 +390,14 @@ def _parse_json_with_retry(
         "No markdown fences, no commentary."
     )
 
+    # Two rounds: the first sends the plain prompt, the second re-asks with an
+    # explicit "valid JSON only" nudge. One try per round keeps the call count
+    # low — the sequential-day generator is the real safety net above this.
     for round_i in range(2):
         active_prompt = prompt if round_i == 0 else prompt + follow
         attempt = 0
         delay = 2.0
-        while attempt < 2:
+        while attempt < 1:
             for model in models:
                 try:
                     response = model.generate_content(
@@ -428,12 +431,12 @@ def _parse_json_with_retry(
                         logger.info(
                             "Rate-limited — waiting %.0fs before retry", retry_wait
                         )
-                        time.sleep(min(retry_wait + 1, 120))
+                        time.sleep(min(retry_wait + 1, 30))
                         break  # skip remaining models, go to next attempt
             else:
                 # Only sleep the normal backoff if we weren't rate-limited
                 time.sleep(delay)
-            delay = min(delay * 2, 30)
+            delay = min(delay * 2, 8)
             attempt += 1
     return None
 

@@ -488,18 +488,36 @@ function CrowdMeter({ value }: { value: number }) {
 }
 
 function PlaceholderCanvas({ label }: { label: string }) {
+  // On-brand "no photo yet" tile for the handful of minor sites without
+  // licensed photography. Reads as an intentional design, not a broken image:
+  // deep jade→saffron wash, a faint topographic texture, and the place's
+  // monogram in the display serif. Angle varies per name so adjacent tiles
+  // never look identical.
   const hash = Array.from(label).reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  const hue = hash % 360;
+  const angle = 110 + (hash % 60);
+  const initial = (label.trim()[0] || "•").toUpperCase();
   return (
-    <div
-      className="absolute inset-0 -z-10"
-      style={{
-        background: `linear-gradient(135deg, hsl(${hue} 35% 22%) 0%, hsl(${
-          (hue + 50) % 360
-        } 45% 35%) 100%)`,
-      }}
-      aria-label={label}
-    />
+    <div className="absolute inset-0 -z-10" aria-label={label}>
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(${angle}deg, #0E5C45 0%, #147a5b 48%, #D88B25 140%)`,
+        }}
+      />
+      {/* faint dotted topography */}
+      <div
+        className="absolute inset-0 opacity-[0.14]"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1.4px)",
+          backgroundSize: "16px 16px",
+        }}
+      />
+      {/* display-serif monogram */}
+      <span className="display absolute -bottom-3 right-3 select-none text-[8rem] font-medium leading-none text-white/10">
+        {initial}
+      </span>
+    </div>
   );
 }
 

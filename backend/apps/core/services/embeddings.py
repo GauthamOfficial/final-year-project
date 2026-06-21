@@ -97,7 +97,7 @@ class GeminiEmbeddingClient(EmbeddingClient):
 
     name = "gemini"
 
-    def __init__(self, model: str | None = None, max_retries: int = 5):
+    def __init__(self, model: str | None = None, max_retries: int = 3):
         from google import genai
         from google.genai import types as genai_types
 
@@ -144,7 +144,7 @@ class GeminiEmbeddingClient(EmbeddingClient):
                     exc,
                 )
                 time.sleep(delay)
-                delay = min(delay * 2, 30)
+                delay = min(delay * 2, 8)
         raise RuntimeError(
             f"Gemini embed failed after {self.max_retries} retries"
         ) from last_exc
