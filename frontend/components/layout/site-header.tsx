@@ -342,8 +342,11 @@ function ProfileMenu({
 
 function Avatar({ user }: { user: { full_name?: string; email: string; avatar_url?: string } }) {
   if (user.avatar_url) {
-    // eslint-disable-next-line @next/next/no-img-element
+    // Remote avatar from an arbitrary provider (Google, etc.) and a tiny 24px
+    // element — plain <img> is intentional here; next/image would require
+    // whitelisting every avatar host. Disable the lint on the element itself.
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={user.avatar_url}
         alt=""

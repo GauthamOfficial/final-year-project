@@ -19,7 +19,7 @@ const display = Fraunces({
 
 export const metadata: Metadata = {
   title: {
-    default: "LankaGuide · Your travel companion for Sri Lanka",
+    default: "LankaGuide",
     template: "%s · LankaGuide",
   },
   description:
