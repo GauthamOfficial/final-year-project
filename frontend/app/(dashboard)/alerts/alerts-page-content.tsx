@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { normalizeAlertsList } from "@/lib/alerts";
 import { api, toApiError } from "@/lib/api";
@@ -40,31 +40,45 @@ export function AlertsPageContent() {
   const [rows, setRows] = useState<AlertRow[]>([]);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  // True while we give the backend's background weather sync a moment to
+  // populate fresh alerts after an empty first response.
+  const [refreshing, setRefreshing] = useState(false);
+  const cancelledRef = useRef(false);
+  const retriedRef = useRef(false);
+
+  const load = useCallback(async () => {
+    try {
+      const { data } = await api.get<AlertRow[] | { results: AlertRow[] }>(
+        "/api/v1/alerts/",
+        { params: { active: "true" } }
+      );
+      if (cancelledRef.current) return;
+      const list = normalizeAlertsList<AlertRow>(data);
+      setRows(list);
+      setErr(null);
+      // First load came back empty: the GET just triggered a background
+      // weather sync. Wait once for it to finish, then refetch.
+      if (list.length === 0 && !retriedRef.current) {
+        retriedRef.current = true;
+        setRefreshing(true);
+        setTimeout(() => {
+          if (!cancelledRef.current) load().finally(() => setRefreshing(false));
+        }, 8000);
+      }
+    } catch (e) {
+      if (!cancelledRef.current) setErr(toApiError(e).message);
+    } finally {
+      if (!cancelledRef.current) setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const { data } = await api.get<AlertRow[] | { results: AlertRow[] }>(
-          "/api/v1/alerts/",
-          {
-            params: { active: "true" },
-          }
-        );
-        if (!cancelled) {
-          setRows(normalizeAlertsList<AlertRow>(data));
-          setErr(null);
-        }
-      } catch (e) {
-        if (!cancelled) setErr(toApiError(e).message);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
+    cancelledRef.current = false;
+    load();
     return () => {
-      cancelled = true;
+      cancelledRef.current = true;
     };
-  }, []);
+  }, [load]);
 
   const grouped = useMemo(() => {
     const map: Record<string, AlertRow[]> = {
@@ -108,16 +122,9 @@ export function AlertsPageContent() {
       <div className="container max-w-3xl py-12">
         <Alert variant="info">
           <AlertDescription>
-            No active travel advisories at this time. If you just deployed the
-            API, run{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs">
-              python manage.py seed_demo_alerts
-            </code>{" "}
-            for sample rows, or{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs">
-              python manage.py sync_weather_alerts
-            </code>{" "}
-            to generate weather-based alerts.
+            {refreshing
+              ? "Checking for the latest weather advisories across Sri Lanka…"
+              : "No active travel advisories right now — conditions are calm across the monitored districts. This page refreshes automatically with live weather data."}
           </AlertDescription>
         </Alert>
       </div>

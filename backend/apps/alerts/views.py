@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.alerts.auto_sync import ensure_alerts_fresh
 from apps.alerts.models import SafetyAlert
 from apps.alerts.serializers import SafetyAlertSerializer
 
@@ -24,6 +25,9 @@ class AlertListView(ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
+        # Keep live weather alerts fresh without a manual cron run; this is a
+        # non-blocking background refresh, throttled to once per interval.
+        ensure_alerts_fresh()
         qs = SafetyAlert.objects.select_related("district").all()
         if _truthy(self.request.query_params.get("active", "true")):
             qs = qs.filter(active=True)
@@ -56,6 +60,7 @@ class AlertActiveCountView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        ensure_alerts_fresh()
         now = timezone.now()
         base = SafetyAlert.objects.filter(active=True).filter(
             models.Q(expires_at__isnull=True) | models.Q(expires_at__gt=now)
