@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SentimentBadge } from "@/components/attractions/SentimentBadge";
+import { YouTubeFacade } from "@/components/gallery/youtube-facade";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Video } from "lucide-react";
 
@@ -151,20 +152,11 @@ export default async function DistrictGalleryPage({
           </span>
           <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {district.youtube_video_ids.map((id) => (
-              <div
+              <YouTubeFacade
                 key={id}
-                className="overflow-hidden rounded-2xl border border-border shadow-soft"
-              >
-                <div className="aspect-video w-full">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${id}`}
-                    title={`${district.name} video`}
-                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="h-full w-full"
-                  />
-                </div>
-              </div>
+                id={id}
+                title={`${district.name} travel video`}
+              />
             ))}
           </div>
         </section>

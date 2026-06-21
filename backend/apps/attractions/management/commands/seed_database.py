@@ -70,7 +70,7 @@ DISTRICT_HERO_IMAGE_URL: dict[str, str] = {
     "Jaffna": WIKIMEDIA_COMMONS_HERO + "Jaffna_Shores.jpg",
     "Kilinochchi": WIKIMEDIA_COMMONS_HERO + "Lotus_Pond_Reflection.jpg",
     "Mannar": WIKIMEDIA_COMMONS_HERO + "Mannar_Trip20.jpg",
-    "Vavuniya": WIKIMEDIA_COMMONS_HERO + "Kk_kulam.jpg",
+    "Vavuniya": WIKIMEDIA_COMMONS_HERO + "Vavuniya_City.jpg",
     "Mullaitivu": WIKIMEDIA_COMMONS_HERO + "Vadduvakkal_causeway.jpg",
     "Batticaloa": WIKIMEDIA_COMMONS_HERO + "Sea_Fishing,_Batticaloa.jpg",
     "Ampara": WIKIMEDIA_COMMONS_HERO + "Arugam_bay_beach.jpg",

@@ -1,0 +1,235 @@
+{
+  "_instructions": [
+    "For each district, open every link and replace any that do NOT play/embed with a working YouTube link.",
+    "You may paste either a full watch URL (https://www.youtube.com/watch?v=XXXXXXXXXXX), a youtu.be/XXXX link, or just the 11-character video ID.",
+    "Keep 1 to 3 videos per district. Prefer travel/scenic videos relevant to that district.",
+    "Save the file and send it back — I will validate every link and update the database + seed."
+  ],
+  "districts": [
+    {
+      "district": "Colombo",
+      "province": "Western",
+      "videos": [
+        "https://www.youtube.com/watch?v=tcqMG8NZURc",
+        "https://www.youtube.com/watch?v=VSdZnrSwP8I",
+        "https://www.youtube.com/watch?v=hk85rk26fDQ"
+      ]
+    },
+    {
+      "district": "Gampaha",
+      "province": "Western",
+      "videos": [
+        "https://www.youtube.com/watch?v=llA56UBNqBQ",
+        "https://www.youtube.com/watch?v=C62fuZeo2so",
+        "https://www.youtube.com/watch?v=tgcQpHK6wyQ"
+      ]
+    },
+    {
+      "district": "Kalutara",
+      "province": "Western",
+      "videos": [
+        "https://www.youtube.com/watch?v=33xDujp7GmE",
+        "https://www.youtube.com/watch?v=x7RpolqXIEo",
+        "https://www.youtube.com/watch?v=g8_HPmV8AME"
+      ]
+    },
+    {
+      "district": "Kandy",
+      "province": "Central",
+      "videos": [
+        "https://www.youtube.com/watch?v=iYNweZN2qPo",
+        "https://www.youtube.com/watch?v=BaoSjXdyNGY",
+        "https://www.youtube.com/watch?v=WJldB3xYTHI"
+      ]
+    },
+    {
+      "district": "Matale",
+      "province": "Central",
+      "videos": [
+        "https://www.youtube.com/watch?v=KL1NZgAIVIM",
+        "https://www.youtube.com/watch?v=BfLU2yvW2Ek",
+        "https://www.youtube.com/watch?v=gvDRZMOW4o8"
+      ]
+    },
+    {
+      "district": "Nuwara Eliya",
+      "province": "Central",
+      "videos": [
+        "https://www.youtube.com/watch?v=kCrakG35qis",
+        "https://www.youtube.com/watch?v=L803cf7duq0",
+        "https://www.youtube.com/watch?v=cTIR-907xS0"
+      ]
+    },
+    {
+      "district": "Galle",
+      "province": "Southern",
+      "videos": [
+        "https://www.youtube.com/watch?v=jBZVnrk06qw",
+        "https://www.youtube.com/watch?v=i8FCX3mDm8Y",
+        "https://www.youtube.com/watch?v=Rl7AsWX5Lk8"
+      ]
+    },
+    {
+      "district": "Matara",
+      "province": "Southern",
+      "videos": [
+        "https://www.youtube.com/watch?v=RwerNQISf_k",
+        "https://www.youtube.com/watch?v=7dFyYaI5g8s",
+        "https://www.youtube.com/watch?v=HbSEE7BUAOg"
+      ]
+    },
+    {
+      "district": "Hambantota",
+      "province": "Southern",
+      "videos": [
+        "https://www.youtube.com/watch?v=VQCfjUmHKGI",
+        "https://www.youtube.com/watch?v=2yzyFEYR4EU",
+        "https://www.youtube.com/watch?v=i75to7Pihfw"
+      ]
+    },
+    {
+      "district": "Jaffna",
+      "province": "Northern",
+      "videos": [
+        "https://www.youtube.com/watch?v=AGbvoCfY1KQ",
+        "https://www.youtube.com/watch?v=71mv4JpE0dc",
+        "https://www.youtube.com/watch?v=-NfyZ43u7kc"
+      ]
+    },
+    {
+      "district": "Kilinochchi",
+      "province": "Northern",
+      "videos": [
+        "https://www.youtube.com/watch?v=K7P_cLimo3E",
+        "https://www.youtube.com/watch?v=vfy6Nn1nuk0",
+        "https://www.youtube.com/watch?v=xpupX8r35PI"
+      ]
+    },
+    {
+      "district": "Mannar",
+      "province": "Northern",
+      "videos": [
+        "https://www.youtube.com/watch?v=ukTnYlv_Cfk",
+        "https://www.youtube.com/watch?v=nmF4ky2PJXo",
+        "https://www.youtube.com/watch?v=dA-0KzXAuPA"
+      ]
+    },
+    {
+      "district": "Vavuniya",
+      "province": "Northern",
+      "videos": [
+        "https://www.youtube.com/watch?v=wjMecjUPtnE",
+        "https://www.youtube.com/watch?v=ajr6LsKmsFU",
+        "https://www.youtube.com/watch?v=AE1dKGnyBFg"
+      ]
+    },
+    {
+      "district": "Mullaitivu",
+      "province": "Northern",
+      "videos": [
+        "https://www.youtube.com/watch?v=RY31Myp0onY",
+        "https://www.youtube.com/watch?v=dfDJ8ur1aZQ",
+        "https://www.youtube.com/watch?v=dW7BU3CCOxc"
+      ]
+    },
+    {
+      "district": "Batticaloa",
+      "province": "Eastern",
+      "videos": [
+        "https://www.youtube.com/watch?v=RyJbPbry-j0",
+        "https://www.youtube.com/watch?v=oyMPzbi-I-4",
+        "https://www.youtube.com/watch?v=O2JfdKyVNlg"
+      ]
+    },
+    {
+      "district": "Ampara",
+      "province": "Eastern",
+      "videos": [
+        "https://www.youtube.com/watch?v=lYOf55wRIhI",
+        "https://www.youtube.com/watch?v=n5sGC2W6njc",
+        "https://www.youtube.com/watch?v=ZuizY-dmVrQ"
+      ]
+    },
+    {
+      "district": "Trincomalee",
+      "province": "Eastern",
+      "videos": [
+        "https://www.youtube.com/watch?v=celUKrnMuEg",
+        "https://www.youtube.com/watch?v=uuh9b6ZG_Rg",
+        "https://www.youtube.com/watch?v=_UWAbRHR4O4"
+      ]
+    },
+    {
+      "district": "Kurunegala",
+      "province": "North Western",
+      "videos": [
+        "https://www.youtube.com/watch?v=te3i4kTtD3U",
+        "https://www.youtube.com/watch?v=TqF8BxmoJXo",
+        "https://www.youtube.com/watch?v=1vBlToJxhJU"
+      ]
+    },
+    {
+      "district": "Puttalam",
+      "province": "North Western",
+      "videos": [
+        "https://www.youtube.com/watch?v=wTdi45kjvI8",
+        "https://www.youtube.com/watch?v=EriAm6yPsDw",
+        "https://www.youtube.com/watch?v=H7XOHk5qcYQ"
+      ]
+    },
+    {
+      "district": "Anuradhapura",
+      "province": "North Central",
+      "videos": [
+        "https://www.youtube.com/watch?v=qLzCSAcu8Aw",
+        "https://www.youtube.com/watch?v=AmquI9BPUfc",
+        "https://www.youtube.com/watch?v=2kQIV1lYdKA"
+      ]
+    },
+    {
+      "district": "Polonnaruwa",
+      "province": "North Central",
+      "videos": [
+        "https://www.youtube.com/watch?v=M_6mSRs1sxY",
+        "https://www.youtube.com/watch?v=eWCHxAkH4Gc",
+        "https://www.youtube.com/watch?v=abWyCycB1M4"
+      ]
+    },
+    {
+      "district": "Badulla",
+      "province": "Uva",
+      "videos": [
+        "https://www.youtube.com/watch?v=9cT0WJAjnBA",
+        "https://www.youtube.com/watch?v=z7_7lJ1-dBM",
+        "https://www.youtube.com/watch?v=2vq4uwWIEZE"
+      ]
+    },
+    {
+      "district": "Moneragala",
+      "province": "Uva",
+      "videos": [
+        "https://www.youtube.com/watch?v=rWRl1Zb-64k",
+        "https://www.youtube.com/watch?v=jnyU296_QT0",
+        "https://www.youtube.com/watch?v=kAiAUZvuTn0"
+      ]
+    },
+    {
+      "district": "Ratnapura",
+      "province": "Sabaragamuwa",
+      "videos": [
+        "https://www.youtube.com/watch?v=toq_pKYawx0",
+        "https://www.youtube.com/watch?v=VZuZ8rTFP0E",
+        "https://www.youtube.com/watch?v=70pEe5Bwfeo"
+      ]
+    },
+    {
+      "district": "Kegalle",
+      "province": "Sabaragamuwa",
+      "videos": [
+        "https://www.youtube.com/watch?v=kBSRwoZpAXE",
+        "https://www.youtube.com/watch?v=vX7uv24jbok",
+        "https://www.youtube.com/watch?v=9M68O-88FG0"
+      ]
+    }
+  ]
+}
