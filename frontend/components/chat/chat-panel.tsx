@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { api, toApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -309,8 +310,8 @@ function MessageBubble({ message }: { message: Message }) {
         ) : isUser ? (
           message.content
         ) : (
-          <div className="space-y-3 [&_a]:text-jade-700 [&_a]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_h1]:font-display [&_h1]:text-lg [&_h1]:font-medium [&_h2]:font-display [&_h2]:text-base [&_h2]:font-medium [&_li]:ml-5 [&_li]:list-disc [&_p]:leading-relaxed">
-            <ReactMarkdown>{message.content}</ReactMarkdown>
+          <div className="space-y-3 [&_a]:text-jade-700 [&_a]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_h1]:font-display [&_h1]:text-lg [&_h1]:font-medium [&_h2]:font-display [&_h2]:text-base [&_h2]:font-medium [&_li]:ml-5 [&_li]:list-disc [&_p]:leading-relaxed [&_table]:my-2 [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto [&_table]:border-collapse [&_table]:text-xs [&_thead]:border-b [&_thead]:border-border [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-ink-700 [&_td]:border-t [&_td]:border-border/60 [&_td]:px-3 [&_td]:py-2 [&_td]:align-top">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
           </div>
         )}
 
