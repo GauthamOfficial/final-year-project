@@ -258,7 +258,7 @@ WEATHER_ALERT_GEMINI_MODEL = env(
 )
 
 GROQ_API_KEY = env("GROQ_API_KEY", default="")
-GROQ_CHAT_MODEL = env("GROQ_CHAT_MODEL", default="llama-3.3-70b-versatile")
+GROQ_CHAT_MODEL = env("GROQ_CHAT_MODEL", default="openai/gpt-oss-120b")
 GROQ_FAST_MODEL = env("GROQ_FAST_MODEL", default="llama-3.1-8b-instant")
 GROQ_VISION_MODEL = env("GROQ_VISION_MODEL", default="meta-llama/llama-4-scout-17b-16e-instruct")
 

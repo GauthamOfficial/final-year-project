@@ -10,7 +10,7 @@ Usage::
 
     from lankaguide.services.llm_client import get_llm
 
-    model = get_llm("chat")          # llama-3.3-70b-versatile
+    model = get_llm("chat")          # openai/gpt-oss-120b
     model = get_llm("fast")          # llama-3.1-8b-instant
     model = get_llm("vision")        # llama-4-scout (multimodal)
 
@@ -196,7 +196,7 @@ def _pil_to_data_url(img: Any) -> str:
 # ─────────────────────── Factory ──────────────────────────────────────
 
 _MODEL_KEYS = {
-    "chat": lambda: getattr(settings, "GROQ_CHAT_MODEL", "llama-3.3-70b-versatile"),
+    "chat": lambda: getattr(settings, "GROQ_CHAT_MODEL", "openai/gpt-oss-120b"),
     "fast": lambda: getattr(settings, "GROQ_FAST_MODEL", "llama-3.1-8b-instant"),
     "vision": lambda: getattr(
         settings, "GROQ_VISION_MODEL", "meta-llama/llama-4-scout-17b-16e-instruct"
